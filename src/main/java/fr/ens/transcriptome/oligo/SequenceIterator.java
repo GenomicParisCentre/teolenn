@@ -26,19 +26,29 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 
+import fr.ens.transcriptome.oligo.util.FileUtils;
+
+/**
+ * This class define a iterator over sequence stored in a fasta file.
+ * @author Laurent Jourdren
+ */
 public class SequenceIterator extends Sequence {
 
   private final StringBuilder sequence = new StringBuilder();
   private final BufferedReader br;
   private String nextSequenceName;
 
+  /**
+   * Test if the file contains another sequence
+   * @return true if the file contains another sequence
+   */
   public boolean hasNext() {
 
     return nextSequenceName != null;
   }
 
   /**
-   * Get the next sequence name.
+   * Get the next sequence name and set the sequence fields.
    * @return the next sequence name
    */
   public String next() {
@@ -89,14 +99,13 @@ public class SequenceIterator extends Sequence {
   //
 
   /**
-   * Public constructor
-   * @param inputFile
-   * @throws IOException
+   * Public constructor.
+   * @param inputFile Fasta file to read
+   * @throws IOException if an error occurs while reading the file
    */
-
   public SequenceIterator(final File inputFile) throws IOException {
 
-    this.br = Util.createBufferedReader(inputFile);
+    this.br = FileUtils.createBufferedReader(inputFile);
 
     this.nextSequenceName = extractSequenceName(br.readLine());
   }

@@ -22,34 +22,62 @@
 
 package fr.ens.transcriptome.oligo;
 
+/**
+ * This class define a sequence.
+ * @author Laurent Jourdren
+ */
 public class Sequence {
 
   private int id;
   private String sequence;
   private String name;
 
+  /**
+   * Get the sequence of the sequence.
+   * @return a string with the sequence
+   */
   public final String getSequence() {
 
     return sequence;
   }
 
+  /**
+   * Set the sequence.
+   * @param sequence Sequence to set
+   */
   public final void setSequence(final String sequence) {
     this.sequence = sequence;
   }
 
+  /**
+   * Get the id of the sequence.
+   * @return the id of the sequence
+   */
   public int getId() {
     return id;
   }
 
-  public void setId(int id) {
+  /**
+   * Set the id of the sequence
+   * @param id id to set
+   */
+  public void setId(final int id) {
     this.id = id;
   }
 
+  /**
+   * Set the name of the sequence.
+   * @return the name of the sequence
+   */
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
+  /**
+   * Set the name of the sequence
+   * @param name the name to set
+   */
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -58,11 +86,21 @@ public class Sequence {
     return getTm(50, 50);
   }
 
+  /**
+   * Get the tm of the sequence.
+   * @param dnac DNA concentration [nM]
+   * @param saltc salt concentration [mM
+   * @return the tm temp for the sequence
+   */
   public final float getTm(final float dnac, final float saltc) {
 
     return MeltingTemp.tmstalucDNA(this.sequence, dnac, saltc);
   }
 
+  /**
+   * Get the GC percent for the sequence.
+   * @return the GC percent for the sequenc
+   */
   public final float getGCPercent() {
 
     if (this.sequence == null)
@@ -79,6 +117,27 @@ public class Sequence {
     }
 
     return (float) count / (float) len;
+  }
+
+  //
+  // Constructors
+  //
+
+  /**
+   * Public constructor.
+   */
+  public Sequence() {
+  }
+
+  /**
+   * Public constructor.
+   * @param name name of the sequence
+   * @param sequence sequence itself
+   */
+  public Sequence(String name, String sequence) {
+
+    setName(name);
+    setSequence(sequence);
   }
 
 }
