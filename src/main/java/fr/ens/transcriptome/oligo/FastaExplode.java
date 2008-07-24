@@ -24,18 +24,19 @@ package fr.ens.transcriptome.oligo;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
+
+import fr.ens.transcriptome.oligo.util.FileUtils;
 
 public class FastaExplode {
 
   public static void fastaExplode(final File inputFile, final File outputDir,
-      final String prefix, final String suffix) throws IOException {
+      final String prefix, final String suffix, final boolean convertXN,
+      final boolean compress) throws IOException {
 
-    BufferedReader br = Util.createBufferedReader(inputFile);
+    BufferedReader br = FileUtils.createBufferedReader(inputFile);
 
-    int count = 0;
     Writer os = null;
     boolean first = true;
     String line;
@@ -45,9 +46,13 @@ public class FastaExplode {
       if (first || line.startsWith(">")) {
         if (os != null)
           os.close();
-        os = getOutputStream(outputDir, prefix, ++count, suffix);
+
+        final String seqName = line.substring(1, line.length()).trim();
+
+        os = getOutputStream(outputDir, prefix, seqName, suffix, compress);
         first = false;
-      }
+      } else if (convertXN)
+        line = line.replace('X', 'N');
 
       os.write(line);
       os.write("\n");
@@ -58,12 +63,13 @@ public class FastaExplode {
   }
 
   private static Writer getOutputStream(final File outputDir,
-      final String prefix, final int count, final String suffix)
-      throws FileNotFoundException {
+      final String prefix, final String seqName, final String suffix,
+      final boolean compress) throws IOException {
 
-    File f = new File(outputDir, prefix + "_" + count + suffix);
+    File f = new File(outputDir, prefix + seqName + suffix);
 
-    return Util.createBufferedWriter(f);
+    return compress ? FileUtils.createBufferedGZipWriter(f) : FileUtils
+        .createBufferedWriter(f);
   }
 
 }
