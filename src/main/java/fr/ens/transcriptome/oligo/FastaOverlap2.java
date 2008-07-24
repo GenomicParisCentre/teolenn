@@ -28,6 +28,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 
+import fr.ens.transcriptome.oligo.util.FileUtils;
+
 public class FastaOverlap2 {
 
   private static final int FASTA_MAX_LEN = 70;
@@ -47,7 +49,7 @@ public class FastaOverlap2 {
       final File outputDir, final String extension, final int windowSize)
       throws IOException {
 
-    BufferedReader br = Util.createBufferedReader(inputFile);
+    BufferedReader br = FileUtils.createBufferedReader(inputFile);
 
     boolean first = true;
     String line;
@@ -174,7 +176,7 @@ public class FastaOverlap2 {
 
     File f = new File(outputDir, prefix + suffix);
 
-    return  Util.createBufferedWriter(f);
+    return  FileUtils.createBufferedWriter(f);
   }
 
   public static void main(final String[] args) throws IOException {
