@@ -22,30 +22,26 @@
 
 package fr.ens.transcriptome.oligo;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.Writer;
-
-import org.biojava.bio.BioException;
-import org.biojava.bio.seq.Sequence;
-import org.biojava.bio.seq.SequenceIterator;
-import org.biojava.bio.seq.io.SeqIOTools;
-
 public class MeltingTemp {
 
   // universal gas constant in Cal/degrees C*Mol
-  private static final double R = 1.987;
+  private static final float R = 1.987f;
 
+  /**
+   * Returns DNA tm using nearest neighbor thermodynamics. This method is
+   * adapted from bioPython MeltingTemp script.
+   * @author Sebastian Bassi <sbassi@genesdigitales.com>
+   * @param s Sequence
+   * @param dnac DNA concentration [nM]
+   * @param saltc salt concentration [mM]
+   * @return the tm of the sequence
+   */
   public static final float tmstalucDNA(final String s, final float dnac,
       final float saltc) {
 
     float dh = 0; // DeltaH. Enthalpy
     float ds = 0; // deltaS Entropy
 
-    final float R = 1.987f;
     final String sup = s.toUpperCase();
 
     final float[] tcRes = tercorrDNA(sup, ds, dh);
@@ -95,12 +91,13 @@ public class MeltingTemp {
   }
 
   /**
-   * Returns DNA/DNA tm using nearest neighbor thermodynamics
-   * @param sequence
-   * @param dnac
-   * @param saltc
-   * @param rna
-   * @return
+   * Returns RNA tm using nearest neighbor thermodynamics. This method is
+   * adapted from bioPython MeltingTemp script.
+   * @author Sebastian Bassi <sbassi@genesdigitales.com>
+   * @param s Sequence
+   * @param dnac DNA concentration [nM]
+   * @param saltc salt concentration [mM]
+   * @return the tm of the sequence
    */
   public static final float tmstalucRNA(final String s, final int dnac,
       final int saltc) {
@@ -108,7 +105,6 @@ public class MeltingTemp {
     float dh = 0; // DeltaH. Enthalpy
     float ds = 0; // deltaS Entropy
 
-    final float R = 1.987f;
     final String sup = s.toUpperCase();
 
     final float[] tcRes = tercorrRNA(sup, ds, dh);
@@ -221,7 +217,7 @@ public class MeltingTemp {
   }
 
   /**
-   * """Returns how many p are on st, works even for overlapping"""
+   * Returns how many p are on st, works even for overlapping.
    */
   private static final int overcount(final String st, final String p) {
 
@@ -240,101 +236,6 @@ public class MeltingTemp {
     }
 
     return ocu;
-  }
-
-  public static final void createTmFile(final File inputFile,
-      final File outputDir) throws IOException {
-
-    try {
-      // prepare a BufferedReader for file io
-      BufferedReader br = Util.createBufferedReader(inputFile);
-      // BufferedReader br = new BufferedReader(new FileReader(inputFile));
-
-      String scafold = inputFile.getName().split("_")[1];
-
-      File f = new File(outputDir, "scaffold." + scafold + ".tm2");
-
-      Writer writer = Util.createBufferedWriter(f);
-
-      String format = "fasta";
-      String alphabet = "dna";
-
-      /*
-       * get a Sequence Iterator over all the sequences in the file.
-       * SeqIOTools.fileToBiojava() returns an Object. If the file read is an
-       * alignment format like MSF and Alignment object is returned otherwise a
-       * SequenceIterator is returned.
-       */
-      SequenceIterator iter =
-          (SequenceIterator) SeqIOTools.fileToBiojava(format, alphabet, br);
-
-      StringBuilder sb = new StringBuilder();
-
-      int count = 0;
-      while (iter.hasNext()) {
-
-        Sequence seq = iter.nextSequence();
-        final String s = seq.seqString();
-
-        sb.append(scafold);
-        sb.append("_");
-        sb.append(count);
-        sb.append("\t");
-        sb.append(tmstalucDNA(s, 50, 50));
-        sb.append("\n");
-
-        writer.write(sb.toString());
-        sb.setLength(0);
-
-        count++;
-      }
-
-      br.close();
-      writer.close();
-
-    } catch (FileNotFoundException ex) {
-      // can't find file specified by args[0]
-      ex.printStackTrace();
-    } catch (BioException ex) {
-      // error parsing requested format
-      ex.printStackTrace();
-    }
-
-  }
-
-  public static void main(String[] args) throws IOException,
-      InterruptedException {
-
-    if (false) {
-      String seqTest =
-          "ctaacctaaccctaaccctaaccctaaccctaaccctaaccctaaccctaaccctaaccc";
-
-      System.out.println(tmstalucDNA(seqTest, 50f, 50f));
-
-      return;
-    }
-
-    // File inputDir = new File("/home/jourdren/tmp/testseq/t2");
-    // File outputDir = new File("/home/jourdren/tmp/testseq/tm");
-
-    Thread.sleep(20000);
-
-    File inputDir = new File(args[0]);
-    File outputDir = new File(args[1]);
-
-    File[] files = inputDir.listFiles(new FilenameFilter() {
-
-      public boolean accept(File dir, String name) {
-
-        return name.endsWith(".fa2");
-      }
-    });
-
-    for (int i = 0; i < files.length; i++) {
-
-      createTmFile(files[i], outputDir);
-    }
-
   }
 
 }
