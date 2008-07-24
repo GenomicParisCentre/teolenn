@@ -23,6 +23,7 @@
 package fr.ens.transcriptome.oligo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import java.util.Map;
 import fr.ens.transcriptome.oligo.measurement.Measurement;
 
 public class SequenceMeasurements {
+
   // measurement
   private int id;
   private Sequence sequence;
@@ -47,10 +49,18 @@ public class SequenceMeasurements {
   // Getters
   //
 
+  /**
+   * Get the id of the measurement.
+   * @return the id of the measurement
+   */
   public int getId() {
     return id;
   }
 
+  /**
+   * Get the sequence related to the measurement
+   * @return the sequence related to the measurement
+   */
   public Sequence getSequence() {
     return sequence;
   }
@@ -59,11 +69,19 @@ public class SequenceMeasurements {
   // Setters
   //
 
-  public void setId(int id) {
+  /**
+   * Set the id of the SequenceMeasurement
+   * @param id id to set
+   */
+  public void setId(final int id) {
     this.id = id;
   }
 
-  public void setSequence(Sequence sequence) {
+  /**
+   * Set the sequence.
+   * @param sequence The sequence to set
+   */
+  public void setSequence(final Sequence sequence) {
     this.sequence = sequence;
   }
 
@@ -71,16 +89,29 @@ public class SequenceMeasurements {
   // Other methods
   //
 
+  /**
+   * Get the number of measurements
+   * @return ths number of measurements
+   */
   public int size() {
 
     return this.measurements.size();
   }
 
+  /**
+   * Add a measurement.
+   * @param m Measurement to add
+   */
   public void addMesurement(final Measurement m) {
 
     addMesurement(m, 1.0f);
   }
 
+  /**
+   * Add a measurement.
+   * @param m Measurement to add
+   * @param weight Weight of the measurement in the final score
+   */
   public void addMesurement(final Measurement m, final float weight) {
 
     if (m == null)
@@ -93,6 +124,9 @@ public class SequenceMeasurements {
     setWeight(m, weight);
   }
 
+  /**
+   * Calc all the measurements for the sequence.
+   */
   public void calcMesurements() {
 
     if (this.arrayMeasurements == null) {
@@ -107,6 +141,9 @@ public class SequenceMeasurements {
 
   }
 
+  /**
+   * Add the current measurements to the statistics of the measurements.
+   */
   public void addMesurementsToStats() {
 
     if (this.arrayMeasurements == null)
@@ -117,11 +154,19 @@ public class SequenceMeasurements {
 
   }
 
+  /**
+   * Get an array with the measurements values.
+   * @return an array of objects with the measurements values
+   */
   public Object[] getArrayMeasurementValues() {
 
     return this.measurementValues;
   }
 
+  /**
+   * Get the measurements names.
+   * @return an array with the measurements name
+   */
   public String[] getArrayMesurementNames() {
 
     String[] result = new String[size()];
@@ -132,6 +177,11 @@ public class SequenceMeasurements {
     return result;
   }
 
+  /**
+   * Get the index of a measurement.
+   * @param name name of the measurement to search
+   * @return the index of the measurement in the SequenceMeasurement
+   */
   public int getIndexMeasurment(final String name) {
 
     if (name == null)
@@ -140,6 +190,11 @@ public class SequenceMeasurements {
     return this.measurementsIndex.get(name);
   }
 
+  /**
+   * Get a measurement object from its name.
+   * @param name The name of the measurement to search
+   * @return the index of the measurement in the SequenceMeasurement
+   */
   public Measurement getMeasurement(final String name) {
 
     final int index = getIndexMeasurment(name);
@@ -147,16 +202,29 @@ public class SequenceMeasurements {
     return index < 0 ? null : this.measurements.get(index);
   }
 
-  public void setWeight(Measurement m, float weight) {
+  /**
+   * Set the weight of a measurement.
+   * @param m Measurement
+   * @param weight weight to set
+   */
+  public void setWeight(final Measurement m, final float weight) {
 
     this.weights.put(m, weight);
   }
 
+  /**
+   * Set the arrat of measurement values
+   * @param values Values to set
+   */
   void setArrayMeasurementValues(final Object[] values) {
 
     this.measurementValues = values;
   }
 
+  /**
+   * Compute the final score of the sequence.
+   * @return the final score of the sequence
+   */
   public float getScore() {
 
     float result = 0;
@@ -171,9 +239,13 @@ public class SequenceMeasurements {
     return result;
   }
 
+  /**
+   * Get a list of the measurements
+   * @return a list of measurement
+   */
   public List<Measurement> getMeasurements() {
 
-    return new ArrayList<Measurement>(this.measurements);
+    return Collections.unmodifiableList(this.measurements);
   }
 
 }
