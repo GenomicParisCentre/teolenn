@@ -27,6 +27,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 
+import fr.ens.transcriptome.oligo.util.FileUtils;
+
 public class SequenceMeasurementsWriter {
 
   // private static final int BUFFER_SIZE = 500000;
@@ -104,6 +106,6 @@ public class SequenceMeasurementsWriter {
     if (file == null)
       throw new NullPointerException("File is null");
 
-    this.writer = Util.createBufferedWriter(file);
+    this.writer = FileUtils.createBufferedWriter(file);
   }
 }

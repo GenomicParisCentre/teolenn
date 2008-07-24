@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import fr.ens.transcriptome.oligo.measurement.Measurement;
+import fr.ens.transcriptome.oligo.util.FileUtils;
 
 public class SequenceMesurementsStatReader {
 
@@ -92,7 +93,7 @@ public class SequenceMesurementsStatReader {
     if (sm == null)
       throw new NullPointerException("SequenceMeasurements is null");
 
-    this.br = Util.createBufferedReader(file);
+    this.br = FileUtils.createBufferedReader(file);
     this.sm = sm;
   }
 
