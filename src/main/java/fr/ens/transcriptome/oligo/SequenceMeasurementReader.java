@@ -29,7 +29,12 @@ import java.util.regex.Pattern;
 
 import fr.ens.transcriptome.oligo.measurement.Measurement;
 import fr.ens.transcriptome.oligo.measurement.MeasurementRegistery;
+import fr.ens.transcriptome.oligo.util.FileUtils;
 
+/**
+ * This class implements a reader for SequenceMeasurement.
+ * @author Laurent Jourdren
+ */
 public class SequenceMeasurementReader {
 
   private BufferedReader br;
@@ -101,7 +106,7 @@ public class SequenceMeasurementReader {
     if (file == null)
       throw new NullPointerException("File is null");
 
-    this.br = Util.createBufferedReader(file);
+    this.br = FileUtils.createBufferedReader(file);
 
     readHeader();
   }

@@ -35,6 +35,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import fr.ens.transcriptome.oligo.measurement.Measurement;
+import fr.ens.transcriptome.oligo.util.FileUtils;
 
 public class SequenceMesurementsStatWriter {
 
@@ -101,7 +102,7 @@ public class SequenceMesurementsStatWriter {
     if (file == null)
       throw new NullPointerException("File is null");
 
-    this.writer = Util.createBufferedWriter(file);
+    this.writer = FileUtils.createBufferedWriter(file);
   }
 
 }

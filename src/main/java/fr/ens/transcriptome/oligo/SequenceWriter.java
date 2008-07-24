@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 
+import fr.ens.transcriptome.oligo.util.FileUtils;
+
 public class SequenceWriter {
 
   private static final int FASTA_MAX_LEN = 70;
@@ -68,7 +70,7 @@ public class SequenceWriter {
 
   public SequenceWriter(File outputFile) throws IOException {
 
-    this.writer =  Util.createBufferedWriter(outputFile);
+    this.writer =  FileUtils.createBufferedWriter(outputFile);
   }
 
 }
