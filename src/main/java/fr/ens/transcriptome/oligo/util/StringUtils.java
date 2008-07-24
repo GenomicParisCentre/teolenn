@@ -44,4 +44,20 @@ public final class StringUtils {
     return filename.substring(pos, filename.length());
   }
 
+  public static final String removeNonAlphaAtEndOfString(final String s) {
+
+    if (s == null)
+      return null;
+
+    int len = s.length();
+    if (len == 0)
+      return s;
+
+    char c = s.charAt(len - 1);
+    if (!Character.isLetter(c))
+      return s.substring(0, len - 1);
+
+    return s;
+  }
+
 }
