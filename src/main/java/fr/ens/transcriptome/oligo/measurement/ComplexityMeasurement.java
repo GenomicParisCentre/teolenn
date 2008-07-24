@@ -116,7 +116,6 @@ public class ComplexityMeasurement extends FloatMeasurement {
       try {
 
         File f = new File(StringUtils.basename(value) + ".filtered.masked");
-        System.out.println("File: " + f);
 
         this.si = new SequenceIterator(f);
 
