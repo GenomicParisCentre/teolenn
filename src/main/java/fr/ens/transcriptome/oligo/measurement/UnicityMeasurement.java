@@ -39,7 +39,8 @@ import fr.ens.transcriptome.oligo.util.StringUtils;
 
 public class UnicityMeasurement extends FloatMeasurement {
 
-  private static final String GT_PATH = "/tmp/gt";
+  private static final String GT_PATH =
+      "/export/home2/users/sgdb/jourdren/ArrayDesignTmp/src/genometools-1.0.2/bin/gt";
   private static final String SEQ_GZ_WITHOUT_X_EXTENSION = ".seqX.fa.gz";
   private static final String MUP_EXTENSION = ".mup";
   private static final String MUP_DIR = "mup";
