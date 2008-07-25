@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import fr.ens.transcriptome.oligo.filter.FloatRangeFilter;
 import fr.ens.transcriptome.oligo.filter.SequenceFilter;
 import fr.ens.transcriptome.oligo.filter.SequenceMeasurementFilter;
 import fr.ens.transcriptome.oligo.filter.UniquenessFilter;
@@ -40,6 +41,7 @@ import fr.ens.transcriptome.oligo.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.oligo.measurement.PositionMeasurement;
 import fr.ens.transcriptome.oligo.measurement.ScaffoldMeasurement;
 import fr.ens.transcriptome.oligo.measurement.TmMeasurement;
+import fr.ens.transcriptome.oligo.measurement.UnicityMeasurement;
 import fr.ens.transcriptome.oligo.util.StringUtils;
 
 public class Design {
@@ -51,22 +53,27 @@ public class Design {
   private static String OLIGO_FILTERED_SUFFIX = ".filtered.oligo";
   private static String OLIGO_MASKED_FILTERED_SUFFIX = ".filtered.masked";
 
+  /**
+   * Create a measurement file.
+   * @param inputFiles oligo input fasta files
+   * @param measurementsFile output file
+   * @param statsFile statFile to create (optional)
+   * @throws IOException if an error occurs while creating the measurement
+   */
   public static final void createMeasurementsFile(final File[] inputFiles,
-      final File measurementsFile) throws IOException {
+      final File measurementsFile, final List<Measurement> measurements,
+      final File statsFile) throws IOException {
 
     if (inputFiles == null || inputFiles.length == 0)
       return;
 
-    SequenceMeasurementsWriter smw =
+    final SequenceMeasurementsWriter smw =
         new SequenceMeasurementsWriter(measurementsFile);
 
-    SequenceMeasurements sm = new SequenceMeasurements();
-    sm.addMesurement(new ScaffoldMeasurement());
-    sm.addMesurement(new OligoStartMeasurement());
-    sm.addMesurement(new PositionMeasurement(WINDOW_SIZE));
-    sm.addMesurement(new TmMeasurement());
-    sm.addMesurement(new GCPencentMeasurement());
-    sm.addMesurement(new ComplexityMeasurement());
+    final SequenceMeasurements sm = new SequenceMeasurements();
+    if (measurements != null)
+      for (Measurement m : measurements)
+        sm.addMesurement(m);
 
     int id = 0;
 
@@ -75,11 +82,19 @@ public class Design {
 
     smw.close();
 
+    // Create a stat file if needed
+    if (statsFile != null) {
+      SequenceMesurementsStatWriter smsw =
+          new SequenceMesurementsStatWriter(statsFile);
+
+      smsw.write(sm);
+    }
+
   }
 
   private static final int createMeasurementsFile(final File inputFile,
-      SequenceMeasurementsWriter smw, SequenceMeasurements sm, final int idStart)
-      throws IOException {
+      final SequenceMeasurementsWriter smw, final SequenceMeasurements sm,
+      final int idStart) throws IOException {
 
     final SequenceIterator si = new SequenceIterator(inputFile);
 
@@ -103,8 +118,14 @@ public class Design {
     return count;
   }
 
-  public static final void filterSequencesFiles(File[] oligoFiles,
-      List<SequenceFilter> sequenceFilters) throws IOException {
+  /**
+   * Filter oligos fasta files
+   * @param oligoFiles input file
+   * @param sequenceFilters filters to apply
+   * @throws IOException if an error occurs while filtering
+   */
+  public static final void filterSequencesFiles(final File[] oligoFiles,
+      final List<SequenceFilter> sequenceFilters) throws IOException {
 
     for (int i = 0; i < oligoFiles.length; i++) {
 
@@ -147,14 +168,22 @@ public class Design {
 
   }
 
+  /**
+   * Filter a measurement file.
+   * @param measurementsFile input file
+   * @param filteredMeasurementsFile output file
+   * @param statsFile statFile to create (optional)
+   * @param filters Filters to applys
+   * @throws IOException if an error occurs while filtering
+   */
   public static final void filterMeasurementsFile(final File measurementsFile,
       final File filteredMeasurementsFile, final File statsFile,
       final List<SequenceMeasurementFilter> filters) throws IOException {
 
-    SequenceMeasurementReader smr =
+    final SequenceMeasurementReader smr =
         new SequenceMeasurementReader(measurementsFile);
 
-    SequenceMeasurementsWriter smw =
+    final SequenceMeasurementsWriter smw =
         new SequenceMeasurementsWriter(filteredMeasurementsFile);
 
     SequenceMeasurements sm = null;
@@ -180,10 +209,13 @@ public class Design {
 
     smw.close();
 
-    SequenceMesurementsStatWriter smsw =
-        new SequenceMesurementsStatWriter(statsFile);
+    // Create a stat file if needed
+    if (statsFile != null) {
+      SequenceMesurementsStatWriter smsw =
+          new SequenceMesurementsStatWriter(statsFile);
 
-    smsw.write(last);
+      smsw.write(last);
+    }
 
   }
 
@@ -202,39 +234,34 @@ public class Design {
     // "/home/jourdren/tmp/testseq/finaltest/scaffold_86.fasta"};
 
     if (args == null || args.length == 0) {
-      System.err.println("No genome files.");
+      System.err.println("No genome file.");
+      System.exit(1);
+    }
+
+    if (args.length > 1) {
+      System.err.println("Too many genomes files.");
       System.exit(1);
     }
 
     // Create input file objects
 
-    File[] genomeFiles = new File[args.length];
+    File genomeFile = new File(args[0]);
 
-    for (int i = 0; i < args.length; i++)
-      genomeFiles[i] = new File(args[i]);
+    File genomeMaskedFile =
+        new File(StringUtils.basename(genomeFile.getAbsolutePath())
+            + ".allmasked");
 
-    File[] genomeMaskedFiles = new File[args.length];
+    System.out.println("Genome file: " + genomeFile);
 
-    for (int i = 0; i < args.length; i++)
-      genomeMaskedFiles[i] =
-          new File(StringUtils.basename(args[i]) + ".allmasked");
-
-    System.out.println(Arrays.toString(genomeFiles));
-
-    File outputDir = genomeFiles[0].getAbsoluteFile().getParentFile();
+    File outputDir = genomeFile.getAbsoluteFile().getParentFile();
 
     // Create oligo sequences
+    FastaOverlap2.fastaOverlap(genomeFile, outputDir, OLIGO_SUFFIX, OLIGO_SIZE);
 
-    for (int i = 0; i < genomeFiles.length; i++)
-      FastaOverlap2.fastaOverlap(genomeFiles[i], outputDir, OLIGO_SUFFIX,
-          OLIGO_SIZE);
-
-    for (int i = 0; i < genomeMaskedFiles.length; i++)
-      FastaOverlap2.fastaOverlap(genomeMaskedFiles[i], outputDir,
-          OLIGO_MASKED_SUFFIX, OLIGO_SIZE);
+    FastaOverlap2.fastaOverlap(genomeMaskedFile, outputDir,
+        OLIGO_MASKED_SUFFIX, OLIGO_SIZE);
 
     // Filter sequences
-
     File[] oligoFiles = outputDir.listFiles(new FilenameFilter() {
 
       public boolean accept(File dir, String name) {
@@ -243,7 +270,7 @@ public class Design {
       }
     });
 
-    SequenceFilter uf = new UniquenessFilter(genomeFiles[0], oligoFiles);
+    SequenceFilter uf = new UniquenessFilter(genomeFile, oligoFiles);
     filterSequencesFiles(oligoFiles, Collections.singletonList(uf));
 
     File[] oligoFilteredFiles = outputDir.listFiles(new FilenameFilter() {
@@ -256,16 +283,30 @@ public class Design {
 
     Arrays.sort(oligoFilteredFiles);
 
+    // Create the list of measurement to compute
+    final List<Measurement> measurements = new ArrayList<Measurement>();
+    measurements.add(new ScaffoldMeasurement());
+    measurements.add(new OligoStartMeasurement());
+    measurements.add(new PositionMeasurement(WINDOW_SIZE));
+    measurements.add(new TmMeasurement());
+    measurements.add(new GCPencentMeasurement());
+    measurements.add(new ComplexityMeasurement());
+    measurements.add(new UnicityMeasurement(genomeFile, OLIGO_SIZE, 30));
+
     // Calc oligos measurements
     File oligoMeasurementsFile = new File(outputDir, "oligo.mes");
-    createMeasurementsFile(oligoFilteredFiles, oligoMeasurementsFile);
+    // createMeasurementsFile(oligoFilteredFiles, oligoMeasurementsFile,
+    // measurements, null);
 
     // Filter oligos measurements
 
+    // Define a list of filters
     List<SequenceMeasurementFilter> filters =
         new ArrayList<SequenceMeasurementFilter>();
-    // filters.add(new FloatRangeFilter("Tm", 50, 90));
-    // filters.add(new FloatRangeFilter("%GC", .4f, .6f));
+    filters.add(new FloatRangeFilter("%GC", 0, 1));
+    filters.add(new FloatRangeFilter("Tm", 0, 100));
+    filters.add(new FloatRangeFilter("Complexity", 0, 1));
+    filters.add(new FloatRangeFilter("Unicity", 0, OLIGO_SIZE));
 
     File filteredOligoMeasurementsFile = new File(outputDir, "filtered.mes");
     File statsFile = new File(outputDir, "filtered.stats");
@@ -276,13 +317,16 @@ public class Design {
     // Select oligos
 
     File selectedOligos = new File(outputDir, "select.mes");
+
+    // Define the weights of the measurements
     Select.WeightsSetter wSetter = new Select.WeightsSetter() {
 
       public void setWeights(SequenceMeasurements sm) {
 
-        sm.setWeight(sm.getMeasurement("Tm"), 0.66f * 0.75f);
-        sm.setWeight(sm.getMeasurement("%GC"), 0.33f * 0.75f);
+        sm.setWeight(sm.getMeasurement("Tm"), 0.4f * 0.75f);
+        sm.setWeight(sm.getMeasurement("%GC"), 0.2f * 0.75f);
         sm.setWeight(sm.getMeasurement("Complexity"), 0.1f * 0.75f);
+        sm.setWeight(sm.getMeasurement("Unicity"), 0.3f * 0.75f);
         sm.setWeight(sm.getMeasurement("Position"), 0.25f);
 
         // sm.getMeasurement("Tm").setProperty("sd", ""+24.4);
