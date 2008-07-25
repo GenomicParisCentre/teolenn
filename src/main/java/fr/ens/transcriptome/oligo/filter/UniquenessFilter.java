@@ -26,8 +26,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -38,7 +36,8 @@ import java.util.regex.Pattern;
 import fr.ens.transcriptome.oligo.Sequence;
 import fr.ens.transcriptome.oligo.SequenceIterator;
 import fr.ens.transcriptome.oligo.SequenceWriter;
-import fr.ens.transcriptome.oligo.Util;
+import fr.ens.transcriptome.oligo.util.FileUtils;
+import fr.ens.transcriptome.oligo.util.ProcessUtils;
 import fr.ens.transcriptome.oligo.util.StringUtils;
 
 public class UniquenessFilter implements SequenceFilter {
@@ -53,14 +52,14 @@ public class UniquenessFilter implements SequenceFilter {
   private final Map<Integer, Integer> currentChrResult =
       new HashMap<Integer, Integer>();
 
-  private static final Scanner scanner = new Scanner("\t");
+  // private static final Scanner scanner = new Scanner("\t");
 
-  private static final Pattern soapResultPattern =
-  // Pattern
-      // .compile("^(.*):subseq\\((\\d+),(\\d+)\\)\t.*\t.*\t(\\d+)\t.*\t(\\d+)\t([-,+])\t(.*)\t(\\d+)+\t(\\d+)$");
-
-      Pattern
-          .compile("^(.*):subseq\\((\\d+),(\\d+)\\)\t.*\t.*\t(\\d+)\t.*\t(\\d+)\t([-,+])\t(.*)\t(\\d+)+\t(\\d+).*$");
+//  private static final Pattern soapResultPattern =
+//  // Pattern
+//      // .compile("^(.*):subseq\\((\\d+),(\\d+)\\)\t.*\t.*\t(\\d+)\t.*\t(\\d+)\t([-,+])\t(.*)\t(\\d+)+\t(\\d+)$");
+//
+//      Pattern
+//          .compile("^(.*):subseq\\((\\d+),(\\d+)\\)\t.*\t.*\t(\\d+)\t.*\t(\\d+)\t([-,+])\t(.*)\t(\\d+)+\t(\\d+).*$");
 
   private static final Pattern seqNamePattern =
       Pattern.compile("^(.*):subseq\\((\\d+),(\\d+)\\)$");
@@ -72,14 +71,15 @@ public class UniquenessFilter implements SequenceFilter {
     return test(name);
   }
 
-  private final void parseResultFile2(final String chrSequence)
+  private final void parseResultFile(final String chrSequence)
       throws IOException {
 
     if (this.br != null)
       this.br.close();
 
     this.br =
-        Util.createBufferedReader(new File(this.baseDir, chrSequence + ".sop"));
+        FileUtils.createBufferedReader(new File(this.baseDir, chrSequence
+            + ".sop"));
 
     this.currentChrResult.clear();
 
@@ -153,44 +153,6 @@ public class UniquenessFilter implements SequenceFilter {
 
   }
 
-  private final void parseResultFile(final String chrSequence)
-      throws IOException {
-
-    if (this.br != null)
-      this.br.close();
-
-    this.br =
-        Util.createBufferedReader(new File(this.baseDir, chrSequence + ".sop"));
-
-    this.currentChrResult.clear();
-
-    String line = null;
-
-    while ((line = br.readLine()) != null) {
-
-      final Matcher m = soapResultPattern.matcher(line);
-
-      if (!m.matches())
-        throw new RuntimeException("Unable to parse line: " + line);
-
-      final String chr = m.group(1);
-      final int startPos = Integer.parseInt(m.group(2));
-      // final int len = Integer.parseInt(m.group(3));
-      final int nbMatches = Integer.parseInt(m.group(4));
-      final int matchLen = Integer.parseInt(m.group(5));
-      final String matchStrand = m.group(6);
-      final String matchChr = m.group(7);
-      final int matchStart = Integer.parseInt(m.group(8)) - 1;
-      final int matchType = Integer.parseInt(m.group(9));
-
-      if (nbMatches == 1
-          && matchType == 0 && "+".equals(matchStrand) && chr.equals(matchChr)
-          && startPos == matchStart)
-        this.currentChrResult.put(startPos, matchLen);
-    }
-
-  }
-
   private boolean test(final String sequenceName) {
 
     if (sequenceName == null)
@@ -209,7 +171,7 @@ public class UniquenessFilter implements SequenceFilter {
     try {
 
       if (!chr.equals(this.currentChr)) {
-        parseResultFile2(chr);
+        parseResultFile(chr);
         this.currentChr = chr;
       }
 
@@ -260,41 +222,11 @@ public class UniquenessFilter implements SequenceFilter {
             + " -d " + referenceFile.getAbsolutePath() + " "
             + paramFile.getAbsolutePath();
 
-    System.out.println(cmd);
+    ProcessUtils.exec(cmd);
 
-    Process p = Runtime.getRuntime().exec(cmd);
-    // try {
-    // p.waitFor();
-    //
-    // } catch (InterruptedException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-
-    InputStream std = p.getInputStream();
-    BufferedReader stdr = new BufferedReader(new InputStreamReader(std));
-
-    String l = null;
-
-    while ((l = stdr.readLine()) != null) {
-      // System.out.println(l);
-    }
-
-    InputStream err = p.getInputStream();
-    BufferedReader errr = new BufferedReader(new InputStreamReader(err));
-
-    String l2 = null;
-
-    while ((l2 = errr.readLine()) != null)
-      System.out.println(l2);
-
-    System.out.println(cmd);
-    System.out.println("End of subprocess.");
-
-    // paramFile.delete();
+    paramFile.delete();
 
     this.baseDir = oligosFiles[0].getParentFile();
-
   }
 
   private UniquenessFilter() {
