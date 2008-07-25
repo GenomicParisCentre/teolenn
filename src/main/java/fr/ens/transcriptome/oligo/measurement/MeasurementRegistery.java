@@ -73,6 +73,7 @@ public class MeasurementRegistery {
     addMeasurementType("tm", TmMeasurement.class);
     addMeasurementType("%gc", GCPencentMeasurement.class);
     addMeasurementType("complexity", ComplexityMeasurement.class);
+    addMeasurementType("unicity", UnicityMeasurement.class);
   }
 
 }
