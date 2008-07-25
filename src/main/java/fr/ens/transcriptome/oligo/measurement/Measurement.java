@@ -60,14 +60,34 @@ public interface Measurement {
    */
   Object calcMesurement(Sequence sequence);
 
+  /**
+   * Get the score for the measurement.
+   * @param value value
+   * @return the score
+   */
   float getScore(Object value);
 
+  /**
+   * Compute statistics of the measurement.
+   * @return a Properties object with all statistics
+   */
   Properties computeStatistics();
 
+  /**
+   * Set a property of the measurement.
+   * @param key key of the property to set
+   * @param value value of the property to set
+   */
   void setProperty(String key, String value);
 
+  /**
+   * Clear the results and the current statistics.
+   */
   void clear();
 
+  /**
+   * Add last measurements value to the statistics.
+   */
   void addLastMeasurementToStats();
 
 }
