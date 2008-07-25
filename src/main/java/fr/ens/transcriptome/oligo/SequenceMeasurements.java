@@ -35,8 +35,8 @@ public class SequenceMeasurements {
   // measurement
   private int id;
   private Sequence sequence;
-  private List<Measurement> measurements = new ArrayList<Measurement>();
-  private Map<String, Integer> measurementsIndex =
+  private final List<Measurement> measurements = new ArrayList<Measurement>();
+  private final Map<String, Integer> measurementsIndex =
       new HashMap<String, Integer>();
   // private List<Object> measurementValues = new ArrayList<Object>();
   private Object[] measurementValues;
@@ -184,10 +184,18 @@ public class SequenceMeasurements {
    */
   public int getIndexMeasurment(final String name) {
 
+    System.out.println("keys=" + this.measurementsIndex.keySet());
+    System.out.println("name=" + name);
+
     if (name == null)
       return -1;
 
-    return this.measurementsIndex.get(name);
+    final Integer result = this.measurementsIndex.get(name);
+
+    if (result == null)
+      return -1;
+
+    return result;
   }
 
   /**
