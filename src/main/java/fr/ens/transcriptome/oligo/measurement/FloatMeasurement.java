@@ -136,7 +136,7 @@ public abstract class FloatMeasurement implements Measurement {
       subStats();
 
     this.median = getMean(this.listMedian);
-    this.mean = getMean(this.listMedian);
+    this.mean = getMean(this.listMean);
     this.deviation = getMean(this.listDeviation);
 
     final Properties result = new Properties();
