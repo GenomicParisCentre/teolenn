@@ -204,7 +204,7 @@ public class UnicityMeasurement extends FloatMeasurement {
       mupDir.mkdirs();
 
     // Use parallel executions
-    final ProcessUtils.ParalellExec pexec = new ProcessUtils.ParalellExec(2, 3);
+    final ProcessUtils.ParalellExec pexec = new ProcessUtils.ParalellExec(1, 3);
 
     for (int i = 0; i < filesToProcess.length; i++) {
       File f = filesToProcess[i];
