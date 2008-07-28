@@ -111,7 +111,7 @@ public final class ProcessUtils {
     System.out.println("Done in " + (endTime - startTime) + " ms.");
   }
 
-  public static class ParalellExec extends GuidedLoopHandler {
+  public static class ParalellExec extends SelfLoopHandler {
 
     private final List<String> cmds = new ArrayList<String>();
     private final List<File> outputFiles = new ArrayList<File>();
