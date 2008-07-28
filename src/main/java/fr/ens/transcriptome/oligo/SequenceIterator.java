@@ -71,6 +71,7 @@ public class SequenceIterator extends Sequence {
         sequence.append(line.trim());
       }
       br.close();
+      setName(this.nextSequenceName);
       this.nextSequenceName = null;
 
     } catch (IOException e) {
@@ -80,7 +81,7 @@ public class SequenceIterator extends Sequence {
     }
 
     final String result = sequence.toString();
-
+   
     setSequence(result);
 
     return result;
@@ -108,6 +109,25 @@ public class SequenceIterator extends Sequence {
     this.br = FileUtils.createBufferedReader(inputFile);
 
     this.nextSequenceName = extractSequenceName(br.readLine());
+  }
+  
+  public  static void main(String [] args) throws IOException {
+    
+    File f = new File("/import/home2/users/sgdb/jourdren/testseq/finalseq/scaffold_80.oligo");
+    
+   
+    SequenceIterator si = new SequenceIterator(f);
+    
+    
+    while (si.hasNext()) {
+
+      si.next();
+      
+      System.out.println(si.getName());
+      System.out.println(si.getSequence());
+      
+    }
+    
   }
 
 }
