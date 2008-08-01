@@ -58,7 +58,7 @@ public class FloatRangeFilter implements SequenceMeasurementFilter {
 
     float f = (Float) values[index];
 
-    return this.min < f && f <= this.max;
+    return this.min <= f && f <= this.max;
   }
 
   public FloatRangeFilter(final String field, final float min, final float max) {
