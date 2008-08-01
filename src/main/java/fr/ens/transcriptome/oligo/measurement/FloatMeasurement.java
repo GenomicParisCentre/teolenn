@@ -37,13 +37,17 @@ public abstract class FloatMeasurement implements Measurement {
   private float lastValue = Float.NaN;
   private double[] values = new double[MAX_STATS_VALUES];
   private int nValues;
-  private double median, mean, deviation;
+  private double median, mean, stdDev, reference, deviation;
   private int n;
 
   private List<Float> listMedian;
   private List<Float> listMean;
-  private List<Float> listDeviation;
+  private List<Float> listStdDev;
+  private float min = Float.NaN;
+  private float max = Float.NaN;
   private Histogram histo;
+
+  private boolean firstGetScore = true;
 
   protected abstract float calcFloatMeasurement(final Sequence sequence);
 
@@ -65,6 +69,12 @@ public abstract class FloatMeasurement implements Measurement {
 
     this.histo.addValue(this.lastValue);
     n++;
+    this.min =
+        Float.isNaN(this.min) ? this.lastValue : Math.min(this.lastValue,
+            this.min);
+    this.max =
+        Float.isNaN(this.max) ? this.lastValue : Math.max(this.lastValue,
+            this.max);
   }
 
   private void subStats() {
@@ -87,12 +97,12 @@ public abstract class FloatMeasurement implements Measurement {
       this.listMedian = new ArrayList<Float>();
     if (this.listMean == null)
       this.listMean = new ArrayList<Float>();
-    if (this.listDeviation == null)
-      this.listDeviation = new ArrayList<Float>();
+    if (this.listStdDev == null)
+      this.listStdDev = new ArrayList<Float>();
 
     this.listMean.add(mean);
     this.listMedian.add(median);
-    this.listDeviation.add(sd);
+    this.listStdDev.add(sd);
     nValues = 0;
   }
 
@@ -123,11 +133,24 @@ public abstract class FloatMeasurement implements Measurement {
     return result;
   }
 
+  private void beforeFirstGetScore() {
+
+    if (this.deviation == Float.NaN)
+      this.deviation = this.stdDev;
+    if (this.reference == Float.NaN)
+      this.reference = this.median;
+
+    this.firstGetScore = false;
+  }
+
   public float getScore(final Object value) {
 
-    final double tm = ((Float) value).doubleValue();
+    if (this.firstGetScore)
+      beforeFirstGetScore();
 
-    return (float) (1.0 - Math.abs((this.median - tm) / this.deviation));
+    final double val = ((Float) value).doubleValue();
+
+    return (float) (1.0 - Math.abs((this.reference - val) / this.deviation));
   }
 
   public Properties computeStatistics() {
@@ -137,13 +160,15 @@ public abstract class FloatMeasurement implements Measurement {
 
     this.median = getMean(this.listMedian);
     this.mean = getMean(this.listMean);
-    this.deviation = getMean(this.listDeviation);
+    this.stdDev = getMean(this.listStdDev);
 
     final Properties result = new Properties();
     result.setProperty("median", Double.toString(this.median));
     result.setProperty("mean", Double.toString(this.mean));
-    result.setProperty("deviation", Double.toString(this.deviation));
+    result.setProperty("stddev", Double.toString(this.stdDev));
     result.setProperty("n", Integer.toString(this.n));
+    result.setProperty("min", Float.toString(this.min));
+    result.setProperty("max", Float.toString(this.max));
 
     double[] histo = this.histo.getHistogram();
     if (histo != null)
@@ -163,10 +188,21 @@ public abstract class FloatMeasurement implements Measurement {
       this.listMean.clear();
     if (this.listMedian != null)
       this.listMean.clear();
-    if (this.listDeviation != null)
-      this.listDeviation.clear();
+    if (this.listStdDev != null)
+      this.listStdDev.clear();
+
+    this.min = Float.NaN;
+    this.max = Float.NaN;
+
+    this.mean = Float.NaN;
+    this.median = Float.NaN;
+    this.stdDev = Float.NaN;
+    this.reference = Float.NaN;
+    this.deviation = Float.NaN;
 
     n = 0;
+
+    this.firstGetScore = true;
   }
 
   public void setProperty(final String key, final String value) {
@@ -178,8 +214,17 @@ public abstract class FloatMeasurement implements Measurement {
       this.median = Double.parseDouble(value.trim());
     else if ("mean".equals(key.trim().toLowerCase()))
       this.mean = Double.parseDouble(value.trim());
+    else if ("stdDev".equals(key.trim().toLowerCase()))
+      this.stdDev = Double.parseDouble(value.trim());
+    else if ("reference".equals(key.trim().toLowerCase()))
+      this.reference = Double.parseDouble(value.trim());
     else if ("deviation".equals(key.trim().toLowerCase()))
       this.deviation = Double.parseDouble(value.trim());
+
+    System.out.println(getName()
+        + "\tsetProperty " + key + "\t" + value + "\t" + this.median + "\t"
+        + this.mean + "\t" + this.stdDev + "\t" + this.reference + "\t"
+        + this.deviation);
   }
 
   //
