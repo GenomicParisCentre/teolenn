@@ -40,7 +40,7 @@ import fr.ens.transcriptome.oligo.util.FileUtils;
 import fr.ens.transcriptome.oligo.util.ProcessUtils;
 import fr.ens.transcriptome.oligo.util.StringUtils;
 
-public class UniquenessFilter implements SequenceFilter {
+public class RedundancyFilter implements SequenceFilter {
 
   private static final String SOAP_PATH =
       "/export/home2/users/sgdb/jourdren/soap-align/soap";
@@ -210,7 +210,7 @@ public class UniquenessFilter implements SequenceFilter {
   // Constructor
   //
 
-  public UniquenessFilter(final File referenceFile, final File[] oligosFiles)
+  public RedundancyFilter(final File referenceFile, final File[] oligosFiles)
       throws IOException {
 
     File paramFile = File.createTempFile("soap-", ".param");
@@ -229,7 +229,7 @@ public class UniquenessFilter implements SequenceFilter {
     this.baseDir = oligosFiles[0].getParentFile();
   }
 
-  private UniquenessFilter() {
+  private RedundancyFilter() {
 
   }
 
@@ -278,7 +278,7 @@ public class UniquenessFilter implements SequenceFilter {
 
     long start = System.currentTimeMillis();
 
-    UniquenessFilter uf = new UniquenessFilter();
+    RedundancyFilter uf = new RedundancyFilter();
     uf.baseDir = new File("/home/jourdren/tmp/testseq/finaltest");
 
     File outputFile = new File(uf.baseDir, "test.seq");
