@@ -22,6 +22,7 @@
 
 package fr.ens.transcriptome.oligo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -184,9 +185,6 @@ public class SequenceMeasurements {
    */
   public int getIndexMeasurment(final String name) {
 
-    System.out.println("keys=" + this.measurementsIndex.keySet());
-    System.out.println("name=" + name);
-
     if (name == null)
       return -1;
 
@@ -229,6 +227,8 @@ public class SequenceMeasurements {
     this.measurementValues = values;
   }
 
+  private StringBuilder sb = new StringBuilder();
+
   /**
    * Compute the final score of the sequence.
    * @return the final score of the sequence
@@ -241,8 +241,36 @@ public class SequenceMeasurements {
 
     final Object[] values = getArrayMeasurementValues();
 
-    for (Measurement m : this.measurements)
-      result += m.getScore(values[count++]) * this.weights.get(m);
+    sb.append(getId());
+    sb.append("\t");
+
+    for (Measurement m : this.measurements) {
+
+      final Object value = values[count++];
+      final float score = m.getScore(value);
+      final float scoreWithWeigth = score * this.weights.get(m);
+
+      sb.append(value);
+      sb.append("\t");
+      sb.append(score);
+      sb.append("\t");
+      sb.append(scoreWithWeigth);
+      sb.append("\t");
+
+      result += scoreWithWeigth;
+    }
+
+    sb.append(result);
+    sb.append("\n");
+
+    try {
+      ScoresWriter.getSingleton().getWriter().write(sb.toString());
+    } catch (IOException e) {
+
+      throw new RuntimeException(e.getMessage());
+    }
+
+    sb.setLength(0);
 
     return result;
   }
@@ -254,6 +282,24 @@ public class SequenceMeasurements {
   public List<Measurement> getMeasurements() {
 
     return Collections.unmodifiableList(this.measurements);
+  }
+
+  /**
+   * Test if the sum of the weights of the measurements equals to 1.
+   * @return true if the sum of the weights of the measurements equals to 1
+   */
+  public boolean isSumOfWeightEquals1() {
+
+    float sum = 0;
+
+    for (Measurement m : this.measurements) {
+      System.out.println(m.getName() + "\t" + this.weights.get(m));
+      sum += this.weights.get(m);
+    }
+
+    System.out.println("Sum of Weight: " + sum);
+
+    return sum == 1.0f;
   }
 
 }
