@@ -52,6 +52,7 @@ public class UnicityMeasurement extends FloatMeasurement {
   private File baseDir;
   private String currentChr;
   private Map<Integer, Integer> mupDict = new HashMap<Integer, Integer>();
+  private double uniquenessMax;
 
   /* Dictionary to store mup en positions. Here only for speed optimization */
   private final Map<Integer, Integer> mupEnd = new HashMap<Integer, Integer>();
@@ -101,6 +102,29 @@ public class UnicityMeasurement extends FloatMeasurement {
   public String getName() {
 
     return "Unicity";
+  }
+
+  public float getScore(final Object value) {
+
+    final double uniqueness = ((Float) value).doubleValue();
+
+    return (float) (uniqueness / this.uniquenessMax);
+  }
+
+  public void setProperty(final String key, final String value) {
+
+    if (key == null || value == null)
+      return;
+
+    if ("max".equals(key)) {
+      this.uniquenessMax = Double.parseDouble(value);
+      
+      System.out.println(getName()
+          + "\tsetProperty " + key + "\t" + value + "\t" +this.uniquenessMax);
+      
+    }
+    else
+      super.setProperty(key, value);
   }
 
   private void init() throws IOException {
