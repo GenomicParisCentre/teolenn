@@ -39,14 +39,17 @@ public class PositionMeasurement implements Measurement {
 
     String seqName = sequence.getName();
 
-    int startPos = seqName.indexOf(":subseq(");
-    int endPos1 = seqName.indexOf(",", startPos);
-    int endPos2 = seqName.indexOf(")", startPos);
+    final int startPos = seqName.indexOf(":subseq(");
+    final int endPos1 = seqName.indexOf(",", startPos);
 
-    int seqStart = Integer.parseInt(seqName.substring(startPos + 8, endPos1));
-    int lenPos = Integer.parseInt(seqName.substring(endPos1 + 1, endPos2));
+    final int seqStart =
+        Integer.parseInt(seqName.substring(startPos + 8, endPos1));
 
     if (this.first) {
+
+      final int endPos2 = seqName.indexOf(")", startPos);
+      final int lenPos =
+          Integer.parseInt(seqName.substring(endPos1 + 1, endPos2));
 
       this.windowBestPosition =
           (int) Math.ceil(((this.windowSize - lenPos) / 2.0f));
@@ -84,7 +87,7 @@ public class PositionMeasurement implements Measurement {
     if (s == null)
       return null;
 
-    return new String(s);
+    return Float.parseFloat(s);
   }
 
   public void addLastMeasurementToStats() {
@@ -92,7 +95,7 @@ public class PositionMeasurement implements Measurement {
 
   public float getScore(final Object value) {
 
-    return 0;
+    return (Float) value;
   }
 
   public Properties computeStatistics() {
