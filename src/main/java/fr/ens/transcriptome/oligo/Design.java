@@ -33,7 +33,7 @@ import java.util.List;
 import fr.ens.transcriptome.oligo.filter.FloatRangeFilter;
 import fr.ens.transcriptome.oligo.filter.SequenceFilter;
 import fr.ens.transcriptome.oligo.filter.SequenceMeasurementFilter;
-import fr.ens.transcriptome.oligo.filter.UniquenessFilter;
+import fr.ens.transcriptome.oligo.filter.RedundancyFilter;
 import fr.ens.transcriptome.oligo.measurement.ComplexityMeasurement;
 import fr.ens.transcriptome.oligo.measurement.GCPencentMeasurement;
 import fr.ens.transcriptome.oligo.measurement.Measurement;
@@ -46,8 +46,9 @@ import fr.ens.transcriptome.oligo.util.StringUtils;
 
 public class Design {
 
-  private static int WINDOW_SIZE = 141;
+  private static int WINDOW_SIZE = 140; // 141;
   private static int OLIGO_SIZE = 60;
+  private static int UNICITY_MAX_PREFIX_LEN = 30;
   private static String OLIGO_SUFFIX = ".oligo";
   private static String OLIGO_MASKED_SUFFIX = ".masked";
   private static String OLIGO_FILTERED_SUFFIX = ".filtered.oligo";
@@ -135,6 +136,7 @@ public class Design {
       final SequenceIterator si1 = new SequenceIterator(oligoFile);
       final SequenceIterator si2 =
           new SequenceIterator(new File(basename + OLIGO_MASKED_SUFFIX));
+
       final SequenceWriter sw1 =
           new SequenceWriter(new File(basename + OLIGO_FILTERED_SUFFIX));
       final SequenceWriter sw2 =
@@ -142,6 +144,7 @@ public class Design {
 
       final SequenceFilter[] filters =
           sequenceFilters.toArray(new SequenceFilter[0]);
+
       while (si1.hasNext()) {
 
         si1.next();
@@ -202,7 +205,9 @@ public class Design {
       if (pass) {
         sm.addMesurementsToStats();
         smw.writeSequenceMesurement(sm);
-      }
+      } else
+        System.out.println(sm.getId()
+            + "\t" + Arrays.toString(sm.getArrayMeasurementValues()));
 
       last = sm;
     }
@@ -255,48 +260,68 @@ public class Design {
 
     File outputDir = genomeFile.getAbsoluteFile().getParentFile();
 
-    // Create oligo sequences
-    FastaOverlap2.fastaOverlap(genomeFile, outputDir, OLIGO_SUFFIX, OLIGO_SIZE);
+    //
+    // Test params
+    // 
 
-    FastaOverlap2.fastaOverlap(genomeMaskedFile, outputDir,
-        OLIGO_MASKED_SUFFIX, OLIGO_SIZE);
+    boolean filterOnly = false;
+    boolean seqFilter = true;
+    boolean overvriteStatFile = true;
 
-    // Filter sequences
-    File[] oligoFiles = outputDir.listFiles(new FilenameFilter() {
+    if (!filterOnly) {
 
-      public boolean accept(File dir, String name) {
+      // Create oligo sequences
+      FastaOverlap2.fastaOverlap(genomeFile, outputDir, OLIGO_SUFFIX,
+          OLIGO_SIZE);
 
-        return name.endsWith(OLIGO_SUFFIX);
-      }
-    });
+      FastaOverlap2.fastaOverlap(genomeMaskedFile, outputDir,
+          OLIGO_MASKED_SUFFIX, OLIGO_SIZE);
 
-    SequenceFilter uf = new UniquenessFilter(genomeFile, oligoFiles);
-    filterSequencesFiles(oligoFiles, Collections.singletonList(uf));
+      // Filter sequences
+      File[] oligoFiles = outputDir.listFiles(new FilenameFilter() {
 
-    File[] oligoFilteredFiles = outputDir.listFiles(new FilenameFilter() {
+        public boolean accept(File dir, String name) {
 
-      public boolean accept(File dir, String name) {
+          return name.endsWith(OLIGO_SUFFIX);
+        }
+      });
 
-        return name.endsWith(OLIGO_FILTERED_SUFFIX);
-      }
-    });
+      final SequenceFilter uf =
+          seqFilter ? new RedundancyFilter(genomeFile, oligoFiles) : null;
 
-    Arrays.sort(oligoFilteredFiles);
+      filterSequencesFiles(oligoFiles, seqFilter ? Collections
+          .singletonList(uf) : Arrays.asList(new SequenceFilter[] {}));
 
-    // Create the list of measurement to compute
-    final List<Measurement> measurements = new ArrayList<Measurement>();
-    measurements.add(new ScaffoldMeasurement());
-    measurements.add(new OligoStartMeasurement());
-    measurements.add(new PositionMeasurement(WINDOW_SIZE));
-    measurements.add(new TmMeasurement());
-    measurements.add(new GCPencentMeasurement());
-    measurements.add(new ComplexityMeasurement());
-    measurements.add(new UnicityMeasurement(genomeFile, OLIGO_SIZE, 30));
+      File[] oligoFilteredFiles = outputDir.listFiles(new FilenameFilter() {
 
-    // Calc oligos measurements
+        public boolean accept(File dir, String name) {
+
+          return name.endsWith(OLIGO_FILTERED_SUFFIX);
+        }
+      });
+
+      Arrays.sort(oligoFilteredFiles);
+
+      // Create the list of measurement to compute
+      final List<Measurement> measurements = new ArrayList<Measurement>();
+      measurements.add(new ScaffoldMeasurement());
+      measurements.add(new OligoStartMeasurement());
+      measurements.add(new PositionMeasurement(WINDOW_SIZE));
+      measurements.add(new TmMeasurement());
+      measurements.add(new GCPencentMeasurement());
+      measurements.add(new ComplexityMeasurement());
+      measurements.add(new UnicityMeasurement(genomeFile, OLIGO_SIZE,
+          UNICITY_MAX_PREFIX_LEN));
+
+      // Calc oligos measurements
+      File oligoMeasurementsFile = new File(outputDir, "oligo.mes");
+      createMeasurementsFile(oligoFilteredFiles, oligoMeasurementsFile,
+          measurements, null);
+
+    }
+
+    // Duplicate because filterOnly
     File oligoMeasurementsFile = new File(outputDir, "oligo.mes");
-    // createMeasurementsFile(oligoFilteredFiles, oligoMeasurementsFile,
-    // measurements, null);
 
     // Filter oligos measurements
 
@@ -312,7 +337,8 @@ public class Design {
     File statsFile = new File(outputDir, "filtered.stats");
 
     filterMeasurementsFile(oligoMeasurementsFile,
-        filteredOligoMeasurementsFile, statsFile, filters);
+        filteredOligoMeasurementsFile, overvriteStatFile ? statsFile : null,
+        filters);
 
     // Select oligos
 
@@ -329,14 +355,18 @@ public class Design {
         sm.setWeight(sm.getMeasurement("Unicity"), 0.3f * 0.75f);
         sm.setWeight(sm.getMeasurement("Position"), 0.25f);
 
-        // sm.getMeasurement("Tm").setProperty("sd", ""+24.4);
+        sm.getMeasurement("Tm").setProperty("reference", "" + 74.32);
+        sm.getMeasurement("Tm").setProperty("deviation", "" + 24.4);
+        sm.getMeasurement("%GC").setProperty("reference", "" + 0.5333);
+        sm.getMeasurement("%GC").setProperty("deviation", "" + 0.3333);
+
+        sm.getMeasurement("Unicity").setProperty("max", "" + 42);
       }
 
     };
 
-    Select.select2(filteredOligoMeasurementsFile, statsFile, selectedOligos,
+    Select.select(filteredOligoMeasurementsFile, statsFile, selectedOligos,
         wSetter, WINDOW_SIZE);
 
   }
-
 }

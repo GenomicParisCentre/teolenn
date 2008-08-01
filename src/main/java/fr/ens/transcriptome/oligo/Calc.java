@@ -126,7 +126,7 @@ public class Calc {
 
     };
 
-    Select.select2(inputFile, statsFile, outputFile, wSetter, 141);
+    Select.select(inputFile, statsFile, outputFile, wSetter, 141);
 
   }
 

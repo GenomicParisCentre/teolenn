@@ -24,9 +24,9 @@ package fr.ens.transcriptome.oligo;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 
 import fr.ens.transcriptome.oligo.measurement.Measurement;
-import fr.ens.transcriptome.oligo.measurement.ScaffoldMeasurement;
 
 public class Select {
 
@@ -49,48 +49,20 @@ public class Select {
     return result;
   }
 
-  public void select(final SequenceMeasurementReader smr) throws IOException {
-
-    this.windowBestPosition = (int) Math.ceil((windowSize - oligoSize) / 2.0);
-
-    SequenceMeasurements sm = null;
-
-    boolean first = true;
-    int indexStart = -1;
-
-    while ((sm = smr.next(sm)) != null) {
-
-      if (first) {
-
-        indexStart = sm.getIndexMeasurment("Start");
-        first = false;
-      }
-
-      if (indexStart == -1)
-        throw new RuntimeException("Can't find oligoStart field");
-
-      final Object[] values = sm.getArrayMeasurementValues();
-
-      final int oligoStart = (Integer) values[indexStart];
-
-      final float currentPositionScore = positionScore(oligoStart);
-      final float currentOligoScore = sm.getScore();
-
-    }
-  }
-
   public static abstract class WeightsSetter {
 
     public abstract void setWeights(SequenceMeasurements sm);
   };
 
-  public static void select2(final File inputFile, final File statsFile,
+  public static void select(final File inputFile, final File statsFile,
       File outputFile, final WeightsSetter weightsSetters, final int windowSize)
       throws IOException {
 
+    // Open measurement file
     final SequenceMeasurementReader smr =
         new SequenceMeasurementReader(inputFile);
 
+    // Object used to read oligo measurement
     SequenceMeasurements sm = null;
 
     boolean first = true;
@@ -99,12 +71,23 @@ public class Select {
     String currentScafold = null;
     Object[] values = null;
 
+    int infoLastIndexStartPosition = -1;
+    int infoCountWindows = 1;
+    int infoCountSelectedOligos = 0;
+
     int max = windowSize;
 
     float bestScore = MIN_SCORE;
-    SequenceMeasurements smToWrite = new SequenceMeasurements();
 
-    SequenceMeasurementsWriter smw = new SequenceMeasurementsWriter(outputFile);
+    // Create Object used to write selected oligo
+    final SequenceMeasurements smToWrite = new SequenceMeasurements();
+
+    // Open output file
+    final SequenceMeasurementsWriter smw =
+        new SequenceMeasurementsWriter(outputFile);
+
+    new ScoresWriter(new File(outputFile.getParentFile(), "scores.txt"));
+    Writer writer = ScoresWriter.getSingleton().getWriter();
 
     while ((sm = smr.next(sm)) != null) {
 
@@ -114,14 +97,31 @@ public class Select {
         indexStartPosition = sm.getIndexMeasurment("Start");
         values = sm.getArrayMeasurementValues();
 
-        for (Measurement m : sm.getMeasurements())
+        writer.write("id\t");
+
+        // Add measurement field in output file
+        for (Measurement m : sm.getMeasurements()) {
           smToWrite.addMesurement(m);
 
+          writer.write(m.getName() + " value");
+          writer.write("\t");
+          writer.write(m.getName() + " score");
+          writer.write("\t");
+          writer.write(m.getName() + " score*w");
+          writer.write("\t");
+        }
+        writer.write("final score\n");
+
+        // Read stats
         SequenceMesurementsStatReader smsr =
             new SequenceMesurementsStatReader(statsFile, sm);
         smsr.read();
 
+        // Set the weights
         weightsSetters.setWeights(sm);
+
+        if (sm.isSumOfWeightEquals1())
+          System.err.println("WARNING: Sum of weights is not equals to 1.");
 
         first = false;
       }
@@ -141,25 +141,52 @@ public class Select {
       if (!currentScafold.equals(scafold)) {
 
         // Write best
-        if (bestScore > MIN_SCORE)
+        if (bestScore > MIN_SCORE) {
           smw.writeSequenceMesurement(smToWrite);
+
+          infoCountSelectedOligos++;
+        } else
+          System.err.println("Erreur1: " + bestScore);
+
+        // System.out.println("scaffold: "
+        // + currentScafold + "\t" + infoCountWindows + " windows, "
+        // + infoLastIndexStartPosition + " pb.\t("
+        // + (infoLastIndexStartPosition / windowSize) + " theoric windows)");
+
+        System.out.printf("scaffold: %s\t%d windows (%.2f theoric), "
+            + "%d oligos selected, %d pb in scaffold, %d pb windows.\n",
+            currentScafold, infoCountWindows,
+            (float) infoLastIndexStartPosition / (float) windowSize,
+            infoCountSelectedOligos, infoLastIndexStartPosition, windowSize);
+
+        infoCountSelectedOligos = 0;
 
         currentScafold = scafold;
         max = windowSize;
-        while (pos > max)
+        infoCountWindows = 1;
+
+        while (pos > max) {
           max += windowSize;
+          infoCountWindows++;
+        }
 
         bestScore = MIN_SCORE;
       }
 
       if (pos > max) {
         // Write best
-        if (bestScore > MIN_SCORE)
+        if (bestScore > MIN_SCORE) {
           smw.writeSequenceMesurement(smToWrite);
 
+          infoCountSelectedOligos++;
+        } else
+          System.err.println("Erreur2: " + bestScore);
+
         bestScore = MIN_SCORE;
-        while (pos > max)
+        while (pos > max) {
           max += windowSize;
+          infoCountWindows++;
+        }
       }
 
       final float score = sm.getScore();
@@ -171,13 +198,25 @@ public class Select {
         smToWrite.setArrayMeasurementValues(values.clone());
       }
 
+      // if ((pos - infoLastIndexStartPosition) > 1)
+      // System.out.println("last: "
+      // + infoLastIndexStartPosition + "\tpos=" + pos);
+
+      infoLastIndexStartPosition = pos;
     }
 
     // Write best
     if (bestScore > MIN_SCORE)
       smw.writeSequenceMesurement(smToWrite);
 
+    System.out.printf("scaffold: %s\t%d windows (%.2f theoric), "
+        + "%d oligos selected, %d pb in scaffold, %d pb windows.\n",
+        currentScafold, infoCountWindows, (float) infoLastIndexStartPosition
+            / (float) windowSize, infoCountSelectedOligos,
+        infoLastIndexStartPosition, windowSize);
+
     smw.close();
+    writer.close();
   }
 
 }
