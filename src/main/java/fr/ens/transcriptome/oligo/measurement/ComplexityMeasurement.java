@@ -130,6 +130,11 @@ public class ComplexityMeasurement extends FloatMeasurement {
     super.setProperty(key, value);
   }
 
+  public float getScore(final Object value) {
+
+    return (Float) value;
+  }
+
   //
   // Constructor
   //
