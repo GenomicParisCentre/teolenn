@@ -20,10 +20,14 @@
  *
  */
 
-package fr.ens.transcriptome.oligo.filter;
+package fr.ens.transcriptome.oligo.measurement.filter;
 
 import fr.ens.transcriptome.oligo.SequenceMeasurements;
 
+/**
+ * This class define a filter on boolean values.
+ * @author Laurent Jourdren
+ */
 public class BooleanFilter implements SequenceMeasurementFilter {
 
   private String field;
@@ -31,6 +35,11 @@ public class BooleanFilter implements SequenceMeasurementFilter {
 
   private boolean acceptValue;
 
+  /**
+   * Filter a SequenceMeasurements.
+   * @param sm SequenceMeasurements to test
+   * @return true if the test allow to keep SequenceMeasurements values
+   */
   public boolean accept(final SequenceMeasurements sm) {
 
     if (index == -1)
@@ -49,6 +58,11 @@ public class BooleanFilter implements SequenceMeasurementFilter {
   // Constructor
   //
 
+  /**
+   * Public constructor
+   * @param field Field to use
+   * @param acceptValue value to keep
+   */
   public BooleanFilter(final String field, final boolean acceptValue) {
 
     if (field == null)

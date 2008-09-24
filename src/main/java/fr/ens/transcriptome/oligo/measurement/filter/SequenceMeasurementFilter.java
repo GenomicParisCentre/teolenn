@@ -20,12 +20,21 @@
  *
  */
 
-package fr.ens.transcriptome.oligo.filter;
+package fr.ens.transcriptome.oligo.measurement.filter;
 
 import fr.ens.transcriptome.oligo.SequenceMeasurements;
 
+/**
+ * This interface define filters on SequenceMeasurement.
+ * @author Laurent Jourdren
+ */
 public interface SequenceMeasurementFilter {
 
+  /**
+   * Filter a SequenceMeasurements.
+   * @param sm SequenceMeasurements to test
+   * @return true if the test allow to keep SequenceMeasurements values
+   */
   boolean accept(SequenceMeasurements sm);
 
 }

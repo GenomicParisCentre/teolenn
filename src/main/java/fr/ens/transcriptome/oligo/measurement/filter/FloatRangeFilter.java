@@ -20,12 +20,14 @@
  *
  */
 
-package fr.ens.transcriptome.oligo.filter;
-
-import java.util.Arrays;
+package fr.ens.transcriptome.oligo.measurement.filter;
 
 import fr.ens.transcriptome.oligo.SequenceMeasurements;
 
+/**
+ * This class define a filter on a range of float values.
+ * @author Laurent Jourdren
+ */
 public class FloatRangeFilter implements SequenceMeasurementFilter {
 
   private String field;
@@ -34,15 +36,11 @@ public class FloatRangeFilter implements SequenceMeasurementFilter {
   private float min;
   private float max;
 
-  private void findIndex(final SequenceMeasurements sm) {
-
-    String[] names = sm.getArrayMesurementNames();
-    this.index = Arrays.binarySearch(names, field);
-
-    if (this.index == 1)
-      throw new RuntimeException("Field for filter not found");
-  }
-
+  /**
+   * Filter a SequenceMeasurements.
+   * @param sm SequenceMeasurements to test
+   * @return true if the test allow to keep SequenceMeasurements values
+   */
   public boolean accept(final SequenceMeasurements sm) {
 
     if (sm == null)
@@ -50,17 +48,27 @@ public class FloatRangeFilter implements SequenceMeasurementFilter {
 
     if (index == -1)
       index = sm.getIndexMeasurment(this.field);
-      //findIndex(sm);
+    // findIndex(sm);
 
     final Object[] values = sm.getArrayMeasurementValues();
     if (values == null)
       return false;
 
-    float f = (Float) values[index];
+    final float f = (Float) values[index];
 
     return this.min <= f && f <= this.max;
   }
 
+  //
+  // Constructor
+  //
+  
+  /**
+   * Public constructor.
+   * @param field Field to use
+   * @param min minimal value to keep
+   * @param max maximal value to keep
+   */
   public FloatRangeFilter(final String field, final float min, final float max) {
 
     if (min < max) {
