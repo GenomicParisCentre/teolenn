@@ -24,8 +24,18 @@ package fr.ens.transcriptome.oligo.filter;
 
 import fr.ens.transcriptome.oligo.Sequence;
 
+/**
+ * This class define a filter that filters nothing but replace all 'X' of the
+ * sequences by 'N'.
+ * @author Laurent Jourdren
+ */
 public class RemoveXSequenceFilter implements SequenceFilter {
 
+  /**
+   * Tests whether or not the specified sequence should be accepted.
+   * @param sequence Sequence to test
+   * @return allways true
+   */
   public boolean accept(Sequence sequence) {
 
     if (sequence == null)
