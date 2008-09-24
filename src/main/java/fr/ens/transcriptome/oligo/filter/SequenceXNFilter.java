@@ -24,8 +24,17 @@ package fr.ens.transcriptome.oligo.filter;
 
 import fr.ens.transcriptome.oligo.Sequence;
 
+/**
+ * This class define a filter to remove all sequence that containt 'N' or 'X'.
+ * @author Laurent Jourdren
+ */
 public class SequenceXNFilter implements SequenceFilter {
 
+  /**
+   * Tests whether or not the specified sequence should be accepted.
+   * @param sequence Sequence to test
+   * @return true if and only if the specified sequence should be accepted
+   */
   public boolean accept(final Sequence sequence) {
 
     final String s = sequence.getSequence();

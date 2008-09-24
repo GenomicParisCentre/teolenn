@@ -24,9 +24,17 @@ package fr.ens.transcriptome.oligo.filter;
 
 import fr.ens.transcriptome.oligo.Sequence;
 
-
+/**
+ * This interface define a sequence filter.
+ * @author Laurent Jourdren
+ */
 public interface SequenceFilter {
 
+  /**
+   * Tests whether or not the specified sequence should be accepted.
+   * @param sequence Sequence to test
+   * @return true if and only if the specified sequence should be accepted
+   */
   boolean accept(Sequence sequence);
-  
+
 }
