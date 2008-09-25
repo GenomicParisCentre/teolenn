@@ -263,7 +263,7 @@ public class Design {
     // Test params
     // 
 
-    boolean filterOnly = true;
+    boolean filterOnly = false;
     boolean seqFilter = true;
     boolean overvriteStatFile = true;
 
