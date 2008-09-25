@@ -27,21 +27,22 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import fr.ens.transcriptome.oligo.filter.FloatRangeFilter;
-import fr.ens.transcriptome.oligo.filter.SequenceFilter;
-import fr.ens.transcriptome.oligo.filter.SequenceMeasurementFilter;
 import fr.ens.transcriptome.oligo.filter.RedundancyFilter;
+import fr.ens.transcriptome.oligo.filter.SequenceFilter;
+import fr.ens.transcriptome.oligo.filter.SequenceXNFilter;
 import fr.ens.transcriptome.oligo.measurement.ComplexityMeasurement;
 import fr.ens.transcriptome.oligo.measurement.GCPencentMeasurement;
 import fr.ens.transcriptome.oligo.measurement.Measurement;
+import fr.ens.transcriptome.oligo.measurement.OligoSequenceMeasurement;
 import fr.ens.transcriptome.oligo.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.oligo.measurement.PositionMeasurement;
 import fr.ens.transcriptome.oligo.measurement.ScaffoldMeasurement;
 import fr.ens.transcriptome.oligo.measurement.TmMeasurement;
 import fr.ens.transcriptome.oligo.measurement.UnicityMeasurement;
+import fr.ens.transcriptome.oligo.measurement.filter.FloatRangeFilter;
+import fr.ens.transcriptome.oligo.measurement.filter.SequenceMeasurementFilter;
 import fr.ens.transcriptome.oligo.util.StringUtils;
 
 public class Design {
@@ -49,6 +50,7 @@ public class Design {
   private static int WINDOW_SIZE = 140; // 141;
   private static int OLIGO_SIZE = 60;
   private static int UNICITY_MAX_PREFIX_LEN = 30;
+
   private static String OLIGO_SUFFIX = ".oligo";
   private static String OLIGO_MASKED_SUFFIX = ".masked";
   private static String OLIGO_FILTERED_SUFFIX = ".filtered.oligo";
@@ -226,17 +228,14 @@ public class Design {
 
   public static void main(String[] args) throws IOException {
 
+    System.out.println(Globals.APP_NAME + " " + Globals.APP_VERSION + "\n");
+
     try {
       Thread.sleep(0);
     } catch (InterruptedException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-
-    // args =
-    // new String[] {"/home/jourdren/tmp/testseq/finaltest/scaffold_12.fasta",
-    // "/home/jourdren/tmp/testseq/finaltest/scaffold_87.fasta",
-    // "/home/jourdren/tmp/testseq/finaltest/scaffold_86.fasta"};
 
     if (args == null || args.length == 0) {
       System.err.println("No genome file.");
@@ -264,7 +263,7 @@ public class Design {
     // Test params
     // 
 
-    boolean filterOnly = false;
+    boolean filterOnly = true;
     boolean seqFilter = true;
     boolean overvriteStatFile = true;
 
@@ -289,8 +288,8 @@ public class Design {
       final SequenceFilter uf =
           seqFilter ? new RedundancyFilter(genomeFile, oligoFiles) : null;
 
-      filterSequencesFiles(oligoFiles, seqFilter ? Collections
-          .singletonList(uf) : Arrays.asList(new SequenceFilter[] {}));
+      filterSequencesFiles(oligoFiles, seqFilter ? Arrays.asList(uf,
+          new SequenceXNFilter()) : Arrays.asList(new SequenceFilter[] {}));
 
       File[] oligoFilteredFiles = outputDir.listFiles(new FilenameFilter() {
 
@@ -306,6 +305,7 @@ public class Design {
       final List<Measurement> measurements = new ArrayList<Measurement>();
       measurements.add(new ScaffoldMeasurement());
       measurements.add(new OligoStartMeasurement());
+      measurements.add(new OligoSequenceMeasurement());
       measurements.add(new PositionMeasurement(WINDOW_SIZE));
       measurements.add(new TmMeasurement());
       measurements.add(new GCPencentMeasurement());

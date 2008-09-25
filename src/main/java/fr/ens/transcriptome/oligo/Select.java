@@ -32,23 +32,6 @@ public class Select {
 
   private static final float MIN_SCORE = -1 * Float.MAX_VALUE;
 
-  private int windowSize = 141;
-  private int oligoSize = 60;
-  private int windowBestPosition;
-
-  private float positionScore(final int start) {
-
-    final int windowStart =
-        (int) (Math.floor((float) start / (float) this.windowSize)
-            * this.windowSize - 1);
-    final int oligo2Window = start - windowStart;
-
-    final float result =
-        1 - (Math.abs(this.windowBestPosition - oligo2Window) / ((float) this.windowSize - (float) this.windowBestPosition));
-
-    return result;
-  }
-
   public static abstract class WeightsSetter {
 
     public abstract void setWeights(SequenceMeasurements sm);
@@ -86,9 +69,6 @@ public class Select {
     final SequenceMeasurementsWriter smw =
         new SequenceMeasurementsWriter(outputFile);
 
-    new ScoresWriter(new File(outputFile.getParentFile(), "scores.txt"));
-    Writer writer = ScoresWriter.getSingleton().getWriter();
-
     while ((sm = smr.next(sm)) != null) {
 
       if (first) {
@@ -97,20 +77,9 @@ public class Select {
         indexStartPosition = sm.getIndexMeasurment("Start");
         values = sm.getArrayMeasurementValues();
 
-        writer.write("id\t");
-
         // Add measurement field in output file
-        for (Measurement m : sm.getMeasurements()) {
+        for (Measurement m : sm.getMeasurements())
           smToWrite.addMesurement(m);
-
-          writer.write(m.getName() + " value");
-          writer.write("\t");
-          writer.write(m.getName() + " score");
-          writer.write("\t");
-          writer.write(m.getName() + " score*w");
-          writer.write("\t");
-        }
-        writer.write("final score\n");
 
         // Read stats
         SequenceMesurementsStatReader smsr =
@@ -131,17 +100,23 @@ public class Select {
       if (indexStartPosition < 0)
         throw new RuntimeException("No Start field");
 
-      final String scafold = (String) values[indexScaffold];
+      final String scaffold = (String) values[indexScaffold];
       final int pos = Integer.parseInt((String) values[indexStartPosition]);
       final int id = sm.getId();
 
-      if (currentScafold == null)
-        currentScafold = scafold;
+      final boolean debug = "86".equals(scaffold);
 
-      if (!currentScafold.equals(scafold)) {
+      if (currentScafold == null)
+        currentScafold = scaffold;
+
+      if (!currentScafold.equals(scaffold)) {
 
         // Write best
         if (bestScore > MIN_SCORE) {
+          if (debug)
+            System.out.println("*** select "
+                + smToWrite.getId() + " for window " + infoCountWindows
+                + "bestScore=" + bestScore + " ***");
           smw.writeSequenceMesurement(smToWrite);
 
           infoCountSelectedOligos++;
@@ -161,11 +136,11 @@ public class Select {
 
         infoCountSelectedOligos = 0;
 
-        currentScafold = scafold;
+        currentScafold = scaffold;
         max = windowSize;
         infoCountWindows = 1;
 
-        while (pos > max) {
+        while (pos >= max) {
           max += windowSize;
           infoCountWindows++;
         }
@@ -173,9 +148,13 @@ public class Select {
         bestScore = MIN_SCORE;
       }
 
-      if (pos > max) {
+      if (pos >= max) {
         // Write best
         if (bestScore > MIN_SCORE) {
+          if (debug)
+            System.out.println("*** select "
+                + smToWrite.getId() + " for window " + infoCountWindows
+                + "\tbestScore=" + bestScore + " ***");
           smw.writeSequenceMesurement(smToWrite);
 
           infoCountSelectedOligos++;
@@ -183,7 +162,7 @@ public class Select {
           System.err.println("Erreur2: " + bestScore);
 
         bestScore = MIN_SCORE;
-        while (pos > max) {
+        while (pos >= max) {
           max += windowSize;
           infoCountWindows++;
         }
@@ -198,6 +177,11 @@ public class Select {
         smToWrite.setArrayMeasurementValues(values.clone());
       }
 
+      if (debug)
+        System.out.println("window="
+            + infoCountWindows + "\tid=" + id + "\tpos=" + pos + "\tmax=" + max
+            + "\tscore=" + score + "\tbestscore=" + bestScore);
+
       // if ((pos - infoLastIndexStartPosition) > 1)
       // System.out.println("last: "
       // + infoLastIndexStartPosition + "\tpos=" + pos);
@@ -206,8 +190,14 @@ public class Select {
     }
 
     // Write best
-    if (bestScore > MIN_SCORE)
+    if (bestScore > MIN_SCORE) {
+
+      System.out.println("*** select "
+          + smToWrite.getId() + " for window " + infoCountWindows
+          + "\tbestScore=" + bestScore + " ***");
+
       smw.writeSequenceMesurement(smToWrite);
+    }
 
     System.out.printf("scaffold: %s\t%d windows (%.2f theoric), "
         + "%d oligos selected, %d pb in scaffold, %d pb windows.\n",
@@ -216,7 +206,7 @@ public class Select {
         infoLastIndexStartPosition, windowSize);
 
     smw.close();
-    writer.close();
+
   }
 
 }

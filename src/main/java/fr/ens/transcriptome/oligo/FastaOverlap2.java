@@ -74,7 +74,7 @@ public class FastaOverlap2 {
         if (!first) {
 
           writeAllSubSeq(subSeq, os, offset, windowSize, headerOutput, true);
-          //os.close();
+          // os.close();
           offset = 0;
           countInternal = subSeq.length();
         } else
@@ -109,13 +109,13 @@ public class FastaOverlap2 {
     writeAllSubSeq(subSeq, os, offset, windowSize, headerOutput, true);
 
     br.close();
-    //os.close();
+    // os.close();
 
   }
 
   private static final int writeAllSubSeq(final StringBuilder sb,
-      final Writer os, final int offset, final int size,
-      final String header, final boolean flush) throws IOException {
+      final Writer os, final int offset, final int size, final String header,
+      final boolean flush) throws IOException {
 
     final int endFor = sb.length() - size + 1;
     int index = 0;
@@ -126,7 +126,7 @@ public class FastaOverlap2 {
 
       final int end = index + size;
 
-      final String sequence = sb.substring(index, end).toString();
+      final String sequence = sb.substring(index, end);
 
       writeSeq(output, sequence, header, offset + index, size);
 
@@ -176,18 +176,7 @@ public class FastaOverlap2 {
 
     File f = new File(outputDir, prefix + suffix);
 
-    return  FileUtils.createBufferedWriter(f);
-  }
-
-  public static void main(final String[] args) throws IOException {
-
-    File inputFile =
-        new File("/home/jourdren/tmp/testseq/t2/trichoderma.fasta");
-    // File inputFile = new File("/home/jourdren/tmp/testseq/t2/end.fasta");
-
-    File outputDir = new File("/home/jourdren/tmp/testseq/t2");
-
-    fastaOverlap(inputFile, outputDir, ".fa2", 60);
+    return FileUtils.createBufferedWriter(f);
   }
 
 }

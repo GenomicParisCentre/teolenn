@@ -63,10 +63,7 @@ public abstract class StringMeasurement extends SimpleMeasurement {
    */
   public Object parse(final String s) {
 
-    if (s == null)
-      return null;
-
-    return new String(s);
+    return s;
   }
 
 }

@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Utility class for launching external process.
@@ -68,7 +67,8 @@ public final class ProcessUtils {
     while ((l2 = errr.readLine()) != null)
       System.err.println(l2);
 
-    // System.out.println(cmd);
+    stdr.close();
+    errr.close();
 
     final long endTime = System.currentTimeMillis();
 
@@ -105,6 +105,8 @@ public final class ProcessUtils {
 
     while ((l2 = errr.readLine()) != null)
       System.err.println(l2);
+
+    errr.close();
 
     final long endTime = System.currentTimeMillis();
 

@@ -30,9 +30,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.ens.transcriptome.oligo.Globals;
 import fr.ens.transcriptome.oligo.Sequence;
 import fr.ens.transcriptome.oligo.Settings;
 import fr.ens.transcriptome.oligo.util.FileUtils;
@@ -44,6 +46,8 @@ import fr.ens.transcriptome.oligo.util.StringUtils;
  * @author Laurent Jourdren
  */
 public class RedundancyFilter implements SequenceFilter {
+
+  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   private static final String SOAP_ARGS = " -s 12 -v 5 -r 1 -w 1000 -p 3";
 
@@ -212,7 +216,9 @@ public class RedundancyFilter implements SequenceFilter {
     ProcessUtils.exec(cmd);
 
     // remove the parameter file
-    paramFile.delete();
+    if (!paramFile.delete())
+      logger.warning("Can't remove redundancy parameter file: "
+          + paramFile.getAbsolutePath());
 
     // Save the base directory
     this.baseDir = oligosFiles[0].getParentFile();

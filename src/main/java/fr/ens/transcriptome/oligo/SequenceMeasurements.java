@@ -22,7 +22,6 @@
 
 package fr.ens.transcriptome.oligo;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -227,8 +226,6 @@ public class SequenceMeasurements {
     this.measurementValues = values;
   }
 
-  private StringBuilder sb = new StringBuilder();
-
   /**
    * Compute the final score of the sequence.
    * @return the final score of the sequence
@@ -241,36 +238,14 @@ public class SequenceMeasurements {
 
     final Object[] values = getArrayMeasurementValues();
 
-    sb.append(getId());
-    sb.append("\t");
-
     for (Measurement m : this.measurements) {
 
       final Object value = values[count++];
       final float score = m.getScore(value);
       final float scoreWithWeigth = score * this.weights.get(m);
 
-      sb.append(value);
-      sb.append("\t");
-      sb.append(score);
-      sb.append("\t");
-      sb.append(scoreWithWeigth);
-      sb.append("\t");
-
       result += scoreWithWeigth;
     }
-
-    sb.append(result);
-    sb.append("\n");
-
-    try {
-      ScoresWriter.getSingleton().getWriter().write(sb.toString());
-    } catch (IOException e) {
-
-      throw new RuntimeException(e.getMessage());
-    }
-
-    sb.setLength(0);
 
     return result;
   }
@@ -292,12 +267,8 @@ public class SequenceMeasurements {
 
     float sum = 0;
 
-    for (Measurement m : this.measurements) {
-      System.out.println(m.getName() + "\t" + this.weights.get(m));
+    for (Measurement m : this.measurements)
       sum += this.weights.get(m);
-    }
-
-    System.out.println("Sum of Weight: " + sum);
 
     return sum == 1.0f;
   }

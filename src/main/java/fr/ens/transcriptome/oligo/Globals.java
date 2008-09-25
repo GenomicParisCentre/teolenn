@@ -100,7 +100,7 @@ public class Globals {
     return manifestProperties.getProperty(propertyKey);
   }
 
-  private static void readManifest() {
+  private static synchronized void readManifest() {
 
     if (manifestProperties != null)
       return;

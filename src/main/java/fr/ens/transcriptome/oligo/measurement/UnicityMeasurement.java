@@ -155,7 +155,9 @@ public final class UnicityMeasurement extends FloatMeasurement {
     File idxDir = new File(this.baseDir, IDX_DIR);
 
     if (!idxDir.isDirectory())
-      idxDir.mkdirs();
+      if (!idxDir.mkdirs())
+        throw new IOException("Can't create directory for index directory: "
+            + idxDir.getAbsolutePath());
 
     // Generating indices
 
@@ -193,7 +195,9 @@ public final class UnicityMeasurement extends FloatMeasurement {
     File fmidxDir = new File(this.baseDir, FMIDX_DIR);
 
     if (!fmidxDir.isDirectory())
-      fmidxDir.mkdirs();
+      if (!fmidxDir.mkdirs())
+        throw new IOException("Can't create directory for fm index: "
+            + fmidxDir.getAbsolutePath());
 
     String BASENAME = "scaffold";
 
@@ -249,7 +253,9 @@ public final class UnicityMeasurement extends FloatMeasurement {
     File fmidxDir = new File(this.baseDir, FMIDX_DIR);
 
     if (!mupDir.isDirectory())
-      mupDir.mkdirs();
+      if (!mupDir.mkdirs())
+        throw new IOException("Can't create directory for mup directory: "
+            + mupDir.getAbsolutePath());
 
     // Use parallel executions
     final ProcessUtils.ParalellExec pexec = new ProcessUtils.ParalellExec(1, 3);
