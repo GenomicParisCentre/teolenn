@@ -22,41 +22,48 @@
 
 package fr.ens.transcriptome.oligo.measurement;
 
-import fr.ens.transcriptome.oligo.Sequence;
+import java.util.Properties;
 
 /**
- * This class define a measurement that returns the sequences of sequences
- * objects.
+ * This class define an abstract class for simple measurements.
  * @author Laurent Jourdren
  */
-public final class OligoSequenceMeasurement extends StringMeasurement {
+public abstract class SimpleMeasurement implements Measurement {
 
   /**
-   * Calc the measurement of a sequence.
-   * @param sequence the sequence to use for the measurement
-   * @return an String Object
+   * Get the score for the measurement.
+   * @param value value
+   * @return the score
    */
-  protected String calcStringMeasurement(final Sequence sequence) {
+  public float getScore(final Object value) {
 
-    return sequence.getSequence();
+    return 0;
   }
 
   /**
-   * Get the description of the measurement.
-   * @return the description of the measurement
+   * Compute statistics of the measurement.
+   * @return a Properties object with all statistics
    */
-  public String getDescription() {
+  public Properties computeStatistics() {
 
-    return "Get the sequence of the sequence";
+    return null;
+  }
+
+  public void clear() {
   }
 
   /**
-   * Get the name of the measurement.
-   * @return the name of the measurement
+   * Set a property of the measurement.
+   * @param key key of the property to set
+   * @param value value of the property to set
    */
-  public String getName() {
+  public void setProperty(final String key, final String value) {
+  }
 
-    return "OligoSequence";
+  /**
+   * Add last measurements value to the statistics.
+   */
+  public void addLastMeasurementToStats() {
   }
 
 }

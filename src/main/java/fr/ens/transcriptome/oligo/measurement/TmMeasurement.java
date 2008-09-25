@@ -25,27 +25,47 @@ package fr.ens.transcriptome.oligo.measurement;
 import fr.ens.transcriptome.oligo.MeltingTemp;
 import fr.ens.transcriptome.oligo.Sequence;
 
+/**
+ * This class define a measurement that returns the Tm of the sequences.
+ * @author Laurent Jourdren
+ */
 public class TmMeasurement extends FloatMeasurement {
 
+  /**
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return a float value
+   */
   public float calcFloatMeasurement(Sequence sequence) {
 
     return MeltingTemp.tmstalucDNA(sequence.getSequence(), 50, 50);
   }
 
-  public String getDescription() {
-
-    return "Calc Tm of sequence";
-  }
-
+  /**
+   * Get the name of the measurement.
+   * @return the name of the measurement
+   */
   public String getName() {
 
     return "Tm";
+  }
+
+  /**
+   * Get the description of the measurement.
+   * @return the description of the measurement
+   */
+  public String getDescription() {
+
+    return "Calc Tm of sequence";
   }
 
   //
   // Constructor
   //
 
+  /**
+   * Public constructor.
+   */
   public TmMeasurement() {
 
     super(0, 100);

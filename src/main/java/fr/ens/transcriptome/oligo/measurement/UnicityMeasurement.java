@@ -33,14 +33,17 @@ import java.util.regex.Pattern;
 
 import fr.ens.transcriptome.oligo.FastaExplode;
 import fr.ens.transcriptome.oligo.Sequence;
+import fr.ens.transcriptome.oligo.Settings;
 import fr.ens.transcriptome.oligo.util.FileUtils;
 import fr.ens.transcriptome.oligo.util.ProcessUtils;
 import fr.ens.transcriptome.oligo.util.StringUtils;
 
-public class UnicityMeasurement extends FloatMeasurement {
+/**
+ * This class define a measurement that compute the unicity of a sequence.
+ * @author Laurent Jourdren
+ */
+public final class UnicityMeasurement extends FloatMeasurement {
 
-  private static final String GT_PATH =
-      "/export/home2/users/sgdb/jourdren/ArrayDesignTmp/src/genometools-1.0.2/bin/gt";
   private static final String SEQ_GZ_WITHOUT_X_EXTENSION = ".seqX.fa.gz";
   private static final String MUP_EXTENSION = ".mup";
   private static final String MUP_DIR = "mup";
@@ -62,7 +65,11 @@ public class UnicityMeasurement extends FloatMeasurement {
   private static final Pattern seqNamePattern =
       Pattern.compile("^(.*):subseq\\((\\d+),(\\d+)\\)$");
 
-  @Override
+  /**
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return a float value
+   */
   protected float calcFloatMeasurement(final Sequence sequence) {
 
     final String sequenceName = sequence.getName();
@@ -75,7 +82,6 @@ public class UnicityMeasurement extends FloatMeasurement {
 
     final String chr = m.group(1);
     final int startPos = Integer.parseInt(m.group(2));
-    // final int len = Integer.parseInt(m.group(3));
 
     try {
 
@@ -92,18 +98,29 @@ public class UnicityMeasurement extends FloatMeasurement {
     return uscoreCalculation(startPos); // this.mup_dict.get(startPos);
   }
 
-  @Override
-  public String getDescription() {
-
-    return "Unicity Measurement";
-  }
-
-  @Override
+  /**
+   * Get the name of the measurement.
+   * @return the name of the measurement
+   */
   public String getName() {
 
     return "Unicity";
   }
 
+  /**
+   * Get the description of the measurement.
+   * @return the description of the measurement
+   */
+  public String getDescription() {
+
+    return "Unicity Measurement";
+  }
+
+  /**
+   * Get the score for the measurement.
+   * @param value value
+   * @return the score
+   */
   public float getScore(final Object value) {
 
     final double uniqueness = ((Float) value).doubleValue();
@@ -111,6 +128,11 @@ public class UnicityMeasurement extends FloatMeasurement {
     return (float) (uniqueness / this.uniquenessMax);
   }
 
+  /**
+   * Set a property of the measurement.
+   * @param key key of the property to set
+   * @param value value of the property to set
+   */
   public void setProperty(final String key, final String value) {
 
     if (key == null || value == null)
@@ -118,19 +140,17 @@ public class UnicityMeasurement extends FloatMeasurement {
 
     if ("max".equals(key)) {
       this.uniquenessMax = Double.parseDouble(value);
-      
-      System.out.println(getName()
-          + "\tsetProperty " + key + "\t" + value + "\t" +this.uniquenessMax);
-      
-    }
-    else
+
+    } else
       super.setProperty(key, value);
   }
 
-  private void init() throws IOException {
-  }
-
-  private void build_fmindex(File[] params) throws IOException {
+  /**
+   * Build fmindex.
+   * @param params parameters files
+   * @throws IOException if an error occurs while running gt
+   */
+  private void build_fmindex(final File[] params) throws IOException {
 
     File idxDir = new File(this.baseDir, IDX_DIR);
 
@@ -156,12 +176,11 @@ public class UnicityMeasurement extends FloatMeasurement {
         String o = idxOri[j];
 
         String cmd =
-            GT_PATH
+            Settings.getGenomeToolsPath()
                 + " suffixerator -db " + f + " -dir " + o + " -indexname "
                 + idxDir.getAbsolutePath() + File.separator + idxName + "." + o
                 + " -dna -pl -suf -tis -lcp -bwt";
 
-        // ProcessUtils.exec(cmd);
         pexec.addTask(cmd);
       }
 
@@ -171,8 +190,6 @@ public class UnicityMeasurement extends FloatMeasurement {
 
     // Generating FMINDEX
 
-    // File FMIDXDIR = new File(params[0].getAbsoluteFile().getParent(),
-    // "fmidx");
     File fmidxDir = new File(this.baseDir, FMIDX_DIR);
 
     if (!fmidxDir.isDirectory())
@@ -201,23 +218,30 @@ public class UnicityMeasurement extends FloatMeasurement {
 
     }
 
-    String index = sb.toString();
+    final String index = sb.toString();
 
-    String cmd2 =
-        GT_PATH
+    final String cmd2 =
+        Settings.getGenomeToolsPath()
             + " mkfmindex -fmout " + fmidxFile
             + " -size small -noindexpos -ii " + index;
 
     ProcessUtils.exec(cmd2);
 
-    String cmd3 =
-        GT_PATH
+    final String cmd3 =
+        Settings.getGenomeToolsPath()
             + " suffixerator -plain -tis -indexname " + fmidxFile + " -smap "
             + fmidxFile + ".al1 -db " + fmidxFile + ".bwt";
 
     ProcessUtils.exec(cmd3);
   }
 
+  /**
+   * Build unique sub.
+   * @param filesToProcess Files to process
+   * @param basename basename
+   * @param maxPrefixLength maximal prefix length
+   * @throws IOException if an exception occurs while executing gt
+   */
   private void run_uniquesub(File[] filesToProcess, String basename,
       int maxPrefixLength) throws IOException {
 
@@ -234,7 +258,7 @@ public class UnicityMeasurement extends FloatMeasurement {
       File f = filesToProcess[i];
 
       final String cmd =
-          GT_PATH
+          Settings.getGenomeToolsPath()
               + " uniquesub -output querypos sequence -max " + maxPrefixLength
               + " -fmi " + fmidxDir.getAbsolutePath() + File.separator
               + basename + " -query " + f.getAbsolutePath();
@@ -245,10 +269,6 @@ public class UnicityMeasurement extends FloatMeasurement {
       // Execute the external process
       // ProcessUtils.execWriteOutput(cmd, new File(mupDir, outname));
       pexec.addTask(cmd, new File(mupDir, outname));
-
-      // gt uniquesub -output querypos sequence -max 15
-      // -fmi /tmp/ArrayDesign/fmidx/scaffold -query seqX/scaffold.86.fa.gz
-      // | gzip -c > /tmp/ArrayDesign/mupChr/scaffold.86.mup.gz
     }
 
     pexec.execTasks();
@@ -256,8 +276,9 @@ public class UnicityMeasurement extends FloatMeasurement {
 
   /**
    * Function that calculate uniqueness
+   * @param sequenceStart sequence start position
    */
-  private float uscoreCalculation(int sequenceStart) {
+  private float uscoreCalculation(final int sequenceStart) {
 
     // Oligo end position calculation
     final int sequenceEnd = sequenceStart + this.oligoLength - 1;
@@ -287,6 +308,11 @@ public class UnicityMeasurement extends FloatMeasurement {
     return mupEnd.size();
   }
 
+  /**
+   * Parse a resuly file.
+   * @param scaffold scaffold witch result file must be parsed
+   * @throws IOException if an error occurs while reading result file
+   */
   private void parseResultFile(final String scaffold) throws IOException {
 
     final File mupDir = new File(this.baseDir, MUP_DIR);
@@ -381,45 +407,6 @@ public class UnicityMeasurement extends FloatMeasurement {
     // Build unique sub
     run_uniquesub(files, StringUtils.removeNonAlphaAtEndOfString(FileUtils
         .getPrefix(files)), maxPrefixLength);
-  }
-
-  //
-  // Main method
-  //
-
-  public static final void main(final String[] args) throws IOException {
-
-    File f = new File("trichoderma.fasta");
-
-    UnicityMeasurement um = new UnicityMeasurement(f, 60);
-
-    // System.out.println(um.calcFloatMeasurement(new Sequence(
-    // "scaffold_1:subseq(0,60)",
-    // "TATATAAAAACCTTTACTACTTTTACTATTATTATTACCTTATTATATAGTTATAATTAA")));
-    // System.out.println(um.calcFloatMeasurement(new Sequence(
-    // "scaffold_1:subseq(20,60)",
-    // "TTTTACTATTATTATTACCTTATTATATAGTTATAATTAACTTCCTTTTAGCACTACTAT")));
-    // System.out.println(um.calcFloatMeasurement(new Sequence(
-    // "scaffold_1:subseq(3756929,60)",
-    // "ATTATTTTAAGTTTTTTTTATTATTAATTCTTTTAAAGGTAAAAGCTTAAATATTCTATA")));
-
-    // for (int i = 0; i < 2099; i++)
-    //
-    // System.out.println("87_"
-    // + i
-    // + "\t"
-    // + um.calcFloatMeasurement(new Sequence("scaffold_87:subseq("
-    // + i + ",60)",
-    // "CTAACCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCC")));
-
-    // System.out.println(um.calcFloatMeasurement(new Sequence(
-    // "scaffold_87:subseq(20,60)",
-    // "ACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTTGCCTATCTCTGG")));
-
-    // System.out.println(um.calcFloatMeasurement(new Sequence(
-    // "scaffold_87:subseq(20,60)",
-    // "ACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTTGCCTATCTCTGG")));
-
   }
 
 }

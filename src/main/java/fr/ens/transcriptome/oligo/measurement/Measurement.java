@@ -26,6 +26,10 @@ import java.util.Properties;
 
 import fr.ens.transcriptome.oligo.Sequence;
 
+/**
+ * This interface define a measurement.
+ * @author Laurent Jourdren
+ */
 public interface Measurement {
 
   /**
@@ -54,7 +58,7 @@ public interface Measurement {
   Object parse(String s);
 
   /**
-   * Calc the measurement of a sequence .
+   * Calc the measurement of a sequence.
    * @param sequence the sequence to use for the measurement
    * @return an object as result
    */

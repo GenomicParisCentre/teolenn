@@ -25,10 +25,20 @@ package fr.ens.transcriptome.oligo.measurement;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class define a registery that contains the list of available
+ * measurements.
+ * @author Laurent Jourdren
+ */
 public class MeasurementRegistery {
 
   private static Map<String, Class> registery = new HashMap<String, Class>();
 
+  /**
+   * Add a measurement
+   * @param name name of the measurement
+   * @param clazz Class of the measurement
+   */
   public static void addMeasurementType(final String name, final Class clazz) {
 
     if (name == null || clazz == null)
@@ -37,6 +47,12 @@ public class MeasurementRegistery {
     registery.put(name.toLowerCase(), clazz);
   }
 
+  /**
+   * Get a new instance of a measurement from its name.
+   * @param name The name of the measurement to get
+   * @return a new instance of a measurement or null if the requested
+   *         measurement doesn't exists
+   */
   public static Measurement getMeasurement(final String name) {
 
     if (name == null)
@@ -74,6 +90,8 @@ public class MeasurementRegistery {
     addMeasurementType("%gc", GCPencentMeasurement.class);
     addMeasurementType("complexity", ComplexityMeasurement.class);
     addMeasurementType("unicity", UnicityMeasurement.class);
+    addMeasurementType("oligosequence", OligoSequenceMeasurement.class);
+
   }
 
 }

@@ -30,6 +30,11 @@ import fr.ens.transcriptome.oligo.Sequence;
 import fr.ens.transcriptome.oligo.util.Histogram;
 import fr.ens.transcriptome.oligo.util.MathUtils;
 
+/**
+ * This abstract class define a float measurement. It contains all the code
+ * (e.g. the statistics) shared by this type of measurement.
+ * @author Laurent Jourdren
+ */
 public abstract class FloatMeasurement implements Measurement {
 
   private static final int MAX_STATS_VALUES = 20000;
@@ -49,8 +54,18 @@ public abstract class FloatMeasurement implements Measurement {
 
   private boolean firstGetScore = true;
 
+  /**
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return a float value
+   */
   protected abstract float calcFloatMeasurement(final Sequence sequence);
 
+  /**
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return an object as result
+   */
   public Object calcMesurement(final Sequence sequence) {
 
     final Float result = calcFloatMeasurement(sequence);
@@ -60,6 +75,9 @@ public abstract class FloatMeasurement implements Measurement {
     return result;
   }
 
+  /**
+   * Add last measurements value to the statistics.
+   */
   public void addLastMeasurementToStats() {
 
     this.values[nValues++] = this.lastValue;
@@ -113,15 +131,20 @@ public abstract class FloatMeasurement implements Measurement {
     return (float) MathUtils.mean(array);
   }
 
-  public abstract String getDescription();
-
-  public abstract String getName();
-
+  /**
+   * Get the type of the result of calcMeasurement.
+   * @return the type of the measurement
+   */
   public Object getType() {
 
     return Float.class;
   }
 
+  /**
+   * Parse a string to an object return as calcMeasurement.
+   * @param s String to parse
+   * @return an object
+   */
   public Object parse(final String s) {
 
     if (s == null)
@@ -135,14 +158,19 @@ public abstract class FloatMeasurement implements Measurement {
 
   private void beforeFirstGetScore() {
 
-    if (this.deviation == Float.NaN)
+    if (Double.isNaN(this.deviation))
       this.deviation = this.stdDev;
-    if (this.reference == Float.NaN)
+    if (Double.isNaN(this.reference))
       this.reference = this.median;
 
     this.firstGetScore = false;
   }
 
+  /**
+   * Get the score for the measurement.
+   * @param value value
+   * @return the score
+   */
   public float getScore(final Object value) {
 
     if (this.firstGetScore)
@@ -153,6 +181,10 @@ public abstract class FloatMeasurement implements Measurement {
     return (float) (1.0 - Math.abs((this.reference - val) / this.deviation));
   }
 
+  /**
+   * Compute statistics of the measurement.
+   * @return a Properties object with all statistics
+   */
   public Properties computeStatistics() {
 
     if (this.listMean == null || this.listMean.size() == 0)
@@ -179,6 +211,9 @@ public abstract class FloatMeasurement implements Measurement {
     return result;
   }
 
+  /**
+   * Clear the results and the current statistics.
+   */
   public void clear() {
 
     if (values != null)
@@ -205,6 +240,11 @@ public abstract class FloatMeasurement implements Measurement {
     this.firstGetScore = true;
   }
 
+  /**
+   * Set a property of the measurement.
+   * @param key key of the property to set
+   * @param value value of the property to set
+   */
   public void setProperty(final String key, final String value) {
 
     if (key == null || value == null)
@@ -220,17 +260,17 @@ public abstract class FloatMeasurement implements Measurement {
       this.reference = Double.parseDouble(value.trim());
     else if ("deviation".equals(key.trim().toLowerCase()))
       this.deviation = Double.parseDouble(value.trim());
-
-    System.out.println(getName()
-        + "\tsetProperty " + key + "\t" + value + "\t" + this.median + "\t"
-        + this.mean + "\t" + this.stdDev + "\t" + this.reference + "\t"
-        + this.deviation);
   }
 
   //
   // Constructor
   //
 
+  /**
+   * Public constructor.
+   * @param minValueHisto minimal value of the histogram
+   * @param maxValueHisto maximal value of the histogram
+   */
   public FloatMeasurement(final double minValueHisto, final double maxValueHisto) {
 
     this.histo = new Histogram(minValueHisto, maxValueHisto, 10);

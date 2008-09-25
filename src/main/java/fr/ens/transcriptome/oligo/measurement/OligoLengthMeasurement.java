@@ -22,13 +22,20 @@
 
 package fr.ens.transcriptome.oligo.measurement;
 
-import java.util.Properties;
-
 import fr.ens.transcriptome.oligo.Sequence;
 
-public class OligoLengthMeasurement implements Measurement {
+/**
+ * This class define a measurement that give the length of sequences.
+ * @author Laurent Jourdren
+ */
+public final class OligoLengthMeasurement extends IntegerMeasurement {
 
-  public Object calcMesurement(Sequence sequence) {
+  /**
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return an int value
+   */
+  protected int calcIntMeasurement(final Sequence sequence) {
 
     String seqName = sequence.getName();
 
@@ -39,48 +46,22 @@ public class OligoLengthMeasurement implements Measurement {
     return Integer.parseInt(seqName.substring(startPos2 + 1, endPos));
   }
 
-  public void addLastMeasurementToStats() {
-  }
-
-  public String getDescription() {
-
-    return "Get the length of the sequence";
-  }
-
+  /**
+   * Get the name of the measurement.
+   * @return the name of the measurement
+   */
   public String getName() {
 
     return "Length";
   }
 
-  public Object getType() {
+  /**
+   * Get the description of the measurement.
+   * @return the description of the measurement
+   */
+  public String getDescription() {
 
-    return Integer.class;
-  }
-
-  public Object parse(final String s) {
-
-    if (s == null)
-      return null;
-
-    return new String(s);
-  }
-
-  public float getScore(final Object value) {
-
-    return 0;
-  }
-
-  public Properties computeStatistics() {
-
-    return null;
-  }
-
-  public void clear() {
-
-  }
-
-  public void setProperty(final String key, final String value) {
-
+    return "Get the length of the sequence";
   }
 
 }

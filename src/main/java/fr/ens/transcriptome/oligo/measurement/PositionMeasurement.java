@@ -22,17 +22,24 @@
 
 package fr.ens.transcriptome.oligo.measurement;
 
-import java.util.Properties;
-
 import fr.ens.transcriptome.oligo.Sequence;
 
-public class PositionMeasurement implements Measurement {
+/**
+ * This class define a measurement that returns
+ * @author Laurent Jourdren
+ */
+public final class PositionMeasurement extends SimpleMeasurement {
 
   private int windowSize = -1;
   private int windowBestPosition;
   private boolean first = true;
 
-  public Object calcMesurement(Sequence sequence) {
+  /**
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return an object as result
+   */
+  public Object calcMesurement(final Sequence sequence) {
 
     if (this.windowSize == -1)
       throw new RuntimeException("Window size is undefined.");
@@ -53,6 +60,7 @@ public class PositionMeasurement implements Measurement {
 
       this.windowBestPosition =
           (int) Math.ceil(((this.windowSize - lenPos) / 2.0f));
+
       this.first = false;
     }
 
@@ -67,21 +75,38 @@ public class PositionMeasurement implements Measurement {
     return result;
   }
 
-  public String getDescription() {
-
-    return "Get a position score for the sequence";
-  }
-
+  /**
+   * Get the name of the measurement.
+   * @return the name of the measurement
+   */
   public String getName() {
 
     return "Position";
   }
 
+  /**
+   * Get the description of the measurement.
+   * @return the description of the measurement
+   */
+  public String getDescription() {
+
+    return "Get a position score for the sequence";
+  }
+
+  /**
+   * Get the type of the result of calcMeasurement.
+   * @return the type of the measurement
+   */
   public Object getType() {
 
     return Float.class;
   }
 
+  /**
+   * Parse a string to an object return as calcMeasurement.
+   * @param s String to parse
+   * @return an object
+   */
   public Object parse(final String s) {
 
     if (s == null)
@@ -90,35 +115,38 @@ public class PositionMeasurement implements Measurement {
     return Float.parseFloat(s);
   }
 
-  public void addLastMeasurementToStats() {
-  }
-
+  /**
+   * Get the score for the measurement.
+   * @param value value
+   * @return the score
+   */
   public float getScore(final Object value) {
 
     return (Float) value;
   }
 
-  public Properties computeStatistics() {
-
-    return null;
-  }
-
+  /**
+   * Clear the results and the current statistics.
+   */
   public void clear() {
 
     this.first = false;
-  }
-
-  public void setProperty(final String key, final String value) {
-
   }
 
   //
   // Constructors
   //
 
+  /**
+   * Public constructor.
+   */
   public PositionMeasurement() {
   }
 
+  /**
+   * Public constructor.
+   * @param windowSize The size of the window
+   */
   public PositionMeasurement(final int windowSize) {
 
     this.windowSize = windowSize;

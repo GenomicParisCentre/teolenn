@@ -25,37 +25,26 @@ package fr.ens.transcriptome.oligo.measurement;
 import fr.ens.transcriptome.oligo.Sequence;
 
 /**
- * This class define a measurement that compute the %GC of sequences.
+ * This class define an integer measurement.
  * @author Laurent Jourdren
  */
-public final class GCPencentMeasurement extends FloatMeasurement {
+public abstract class IntegerMeasurement extends SimpleMeasurement {
 
   /**
    * Calc the measurement of a sequence.
    * @param sequence the sequence to use for the measurement
-   * @return a float value
+   * @return an int value
    */
-  public float calcFloatMeasurement(final Sequence sequence) {
-
-    return sequence.getGCPercent();
-  }
+  protected abstract int calcIntMeasurement(final Sequence sequence);
 
   /**
-   * Get the description of the measurement.
-   * @return the description of the measurement
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return an object as result
    */
-  public String getDescription() {
+  public Object calcMesurement(final Sequence sequence) {
 
-    return "Calc %GC of a sequence";
-  }
-
-  /**
-   * Get the name of the measurement.
-   * @return the name of the measurement
-   */
-  public String getName() {
-
-    return "%GC";
+    return calcIntMeasurement(sequence);
   }
 
   /**
@@ -64,19 +53,20 @@ public final class GCPencentMeasurement extends FloatMeasurement {
    */
   public Object getType() {
 
-    return Float.class;
+    return Integer.class;
   }
 
-  //
-  // Constructor
-  //
-
   /**
-   * Public constructor.
+   * Parse a string to an object return as calcMeasurement.
+   * @param s String to parse
+   * @return an object
    */
-  public GCPencentMeasurement() {
+  public Object parse(final String s) {
 
-    super(0, 1);
+    if (s == null)
+      return null;
+
+    return Integer.parseInt(s);
   }
 
 }

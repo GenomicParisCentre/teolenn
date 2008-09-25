@@ -22,13 +22,21 @@
 
 package fr.ens.transcriptome.oligo.measurement;
 
-import java.util.Properties;
-
 import fr.ens.transcriptome.oligo.Sequence;
 
-public class OligoStartMeasurement implements Measurement {
+/**
+ * This class define a measurent that returns the position start of the
+ * sequences.
+ * @author Laurent Jourdren
+ */
+public final class OligoStartMeasurement extends IntegerMeasurement {
 
-  public Object calcMesurement(Sequence sequence) {
+  /**
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return an int value
+   */
+  protected int calcIntMeasurement(final Sequence sequence) {
 
     String seqName = sequence.getName();
 
@@ -38,48 +46,22 @@ public class OligoStartMeasurement implements Measurement {
     return Integer.parseInt(seqName.substring(startPos + 8, endPos));
   }
 
+  /**
+   * Get the description of the measurement.
+   * @return the description of the measurement
+   */
   public String getDescription() {
 
     return "Get the start position of the sequence";
   }
 
+  /**
+   * Get the name of the measurement.
+   * @return the name of the measurement
+   */
   public String getName() {
 
     return "Start";
-  }
-
-  public Object getType() {
-
-    return Integer.class;
-  }
-
-  public Object parse(final String s) {
-
-    if (s == null)
-      return null;
-
-    return new String(s);
-  }
-
-  public void addLastMeasurementToStats() {
-  }
-
-  public float getScore(final Object value) {
-
-    return 0;
-  }
-
-  public Properties computeStatistics() {
-
-    return null;
-  }
-
-  public void clear() {
-
-  }
-
-  public void setProperty(final String key, final String value) {
-
   }
 
 }

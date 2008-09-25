@@ -22,61 +22,42 @@
 
 package fr.ens.transcriptome.oligo.measurement;
 
-import java.util.Properties;
-
 import fr.ens.transcriptome.oligo.Sequence;
 
-public class ScaffoldMeasurement implements Measurement {
+/**
+ * This class define a measurement that returns the scaffolds of sequences.
+ * @author Laurent Jourdren
+ */
+public final class ScaffoldMeasurement extends StringMeasurement {
 
-  public Object calcMesurement(Sequence sequence) {
+  /**
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return an String Object
+   */
+  protected String calcStringMeasurement(final Sequence sequence) {
 
     String seqName = sequence.getName();
 
     return seqName.substring(seqName.indexOf("_") + 1, seqName.indexOf(":"));
   }
 
+  /**
+   * Get the description of the measurement.
+   * @return the description of the measurement
+   */
   public String getDescription() {
 
     return "Get the scaffold of the sequence";
   }
 
+  /**
+   * Get the name of the measurement.
+   * @return the name of the measurement
+   */
   public String getName() {
 
     return "Scaffold";
-  }
-
-  public Object getType() {
-
-    return String.class;
-  }
-
-  public Object parse(final String s) {
-
-    if (s == null)
-      return null;
-
-    return new String(s);
-  }
-
-  public void addLastMeasurementToStats() {
-  }
-
-  public float getScore(final Object value) {
-
-    return 0;
-  }
-
-  public Properties computeStatistics() {
-
-    return null;
-  }
-
-  public void clear() {
-
-  }
-
-  public void setProperty(final String key, final String value) {
-
   }
 
 }

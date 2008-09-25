@@ -30,12 +30,22 @@ import fr.ens.transcriptome.oligo.Sequence;
 import fr.ens.transcriptome.oligo.SequenceIterator;
 import fr.ens.transcriptome.oligo.util.StringUtils;
 
+/**
+ * This class define the complexity measurement.
+ * @author Laurent Jourdren
+ */
 public class ComplexityMeasurement extends FloatMeasurement {
 
   private SequenceIterator si;
   private static final Pattern subseqPattern = Pattern.compile("subseq");
 
-  private static final int countChar(String s, char c) {
+  /**
+   * Count the number of a specified char in a string
+   * @param s String to test
+   * @param c Char to count
+   * @return the number of specified char in a string
+   */
+  private static final int countChar(final String s, final char c) {
 
     if (s == null)
       return 0;
@@ -50,6 +60,11 @@ public class ComplexityMeasurement extends FloatMeasurement {
     return count;
   }
 
+  /**
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return a float value
+   */
   public float calcFloatMeasurement(final Sequence sequence) {
 
     if (!si.hasNext())
@@ -80,6 +95,12 @@ public class ComplexityMeasurement extends FloatMeasurement {
     return result;
   }
 
+  /**
+   * Test if two sequences have the same scaffold and position.
+   * @param seqA Sequence A to test
+   * @param seqB Sequence B to test
+   * @return true if the two sequences have the same scaffold and position
+   */
   private boolean isSameSequencePosition(final Sequence seqA,
       final Sequence seqB) {
 
@@ -95,28 +116,42 @@ public class ComplexityMeasurement extends FloatMeasurement {
     return splitA[splitA.length - 1].equals(splitB[splitB.length - 1]);
   }
 
+  /**
+   * Get the description of the measurement.
+   * @return the description of the measurement
+   */
   public String getDescription() {
 
     return "Complexity measurement";
   }
 
+  /**
+   * Get the name of the measurement.
+   * @return the name of the measurement
+   */
   public String getName() {
 
     return "Complexity";
   }
 
-  @Override
+  /**
+   * Set a property of the measurement.
+   * @param key key of the property to set
+   * @param value value of the property to set
+   */
   public void setProperty(final String key, final String value) {
 
     if (key == null || value == null)
       return;
 
+    // Get the current oligo file
     if ("currentOligoFile".equals(key)) {
 
       try {
 
         File f = new File(StringUtils.basename(value) + ".filtered.masked");
 
+        // Set the oligo masked file to read
         this.si = new SequenceIterator(f);
 
       } catch (IOException e) {
@@ -130,6 +165,11 @@ public class ComplexityMeasurement extends FloatMeasurement {
     super.setProperty(key, value);
   }
 
+  /**
+   * Get the score for the measurement.
+   * @param value value
+   * @return the score
+   */
   public float getScore(final Object value) {
 
     return (Float) value;
@@ -139,6 +179,9 @@ public class ComplexityMeasurement extends FloatMeasurement {
   // Constructor
   //
 
+  /**
+   * Public constructor.
+   */
   public ComplexityMeasurement() {
 
     super(0, 1);

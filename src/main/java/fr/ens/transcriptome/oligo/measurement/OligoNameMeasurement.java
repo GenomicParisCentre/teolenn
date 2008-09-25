@@ -22,59 +22,40 @@
 
 package fr.ens.transcriptome.oligo.measurement;
 
-import java.util.Properties;
-
 import fr.ens.transcriptome.oligo.Sequence;
 
-public class OligoNameMeasurement implements Measurement {
+/**
+ * This measurement define a measurement that return the name of the sequences.
+ * @author Laurent Jourdren
+ */
+public final class OligoNameMeasurement extends StringMeasurement {
 
-  public Object calcMesurement(Sequence sequence) {
+  /**
+   * Calc the measurement of a sequence.
+   * @param sequence the sequence to use for the measurement
+   * @return an String Object
+   */
+  protected String calcStringMeasurement(final Sequence sequence) {
 
     return sequence.getName();
   }
 
+  /**
+   * Get the description of the measurement.
+   * @return the description of the measurement
+   */
   public String getDescription() {
 
     return "Get the name of the sequence";
   }
 
+  /**
+   * Get the name of the measurement.
+   * @return the name of the measurement
+   */
   public String getName() {
 
     return "Name";
-  }
-
-  public Object getType() {
-
-    return String.class;
-  }
-
-  public Object parse(final String s) {
-
-    if (s == null)
-      return null;
-
-    return new String(s);
-  }
-
-  public void addLastMeasurementToStats() {
-  }
-
-  public float getScore(final Object value) {
-
-    return 0;
-  }
-
-  public Properties computeStatistics() {
-
-    return null;
-  }
-
-  public void setProperty(final String key, final String value) {
-
-  }
-
-  public void clear() {
-
   }
 
 }
