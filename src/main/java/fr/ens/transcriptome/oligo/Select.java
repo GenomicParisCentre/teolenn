@@ -24,7 +24,6 @@ package fr.ens.transcriptome.oligo;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 
 import fr.ens.transcriptome.oligo.measurement.Measurement;
 
@@ -101,7 +100,8 @@ public class Select {
         throw new RuntimeException("No Start field");
 
       final String scaffold = (String) values[indexScaffold];
-      final int pos = Integer.parseInt((String) values[indexStartPosition]);
+      final int pos = (Integer) values[indexStartPosition];
+      
       final int id = sm.getId();
 
       final boolean debug = "86".equals(scaffold);

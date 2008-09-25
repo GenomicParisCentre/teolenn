@@ -30,7 +30,12 @@ import java.io.Writer;
 
 import fr.ens.transcriptome.oligo.util.FileUtils;
 
-public class FastaOverlap2 {
+/**
+ * This class define a method that create all the oligo of a specified size in a
+ * fasta file.
+ * @author Laurent Jourdren
+ */
+public class FastaOverlap {
 
   private static final int FASTA_MAX_LEN = 70;
   private static final int WRITE_BUFFER_LEN = 1000000;
@@ -74,7 +79,7 @@ public class FastaOverlap2 {
         if (!first) {
 
           writeAllSubSeq(subSeq, os, offset, windowSize, headerOutput, true);
-          // os.close();
+
           offset = 0;
           countInternal = subSeq.length();
         } else
@@ -109,8 +114,6 @@ public class FastaOverlap2 {
     writeAllSubSeq(subSeq, os, offset, windowSize, headerOutput, true);
 
     br.close();
-    // os.close();
-
   }
 
   private static final int writeAllSubSeq(final StringBuilder sb,

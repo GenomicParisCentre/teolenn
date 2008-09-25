@@ -32,6 +32,10 @@ import java.util.regex.Pattern;
 import fr.ens.transcriptome.oligo.measurement.Measurement;
 import fr.ens.transcriptome.oligo.util.FileUtils;
 
+/**
+ * This class define a reader for statistics of sequences measurements.
+ * @author Laurent Jourdren
+ */
 public class SequenceMesurementsStatReader {
 
   private BufferedReader br;
@@ -39,6 +43,11 @@ public class SequenceMesurementsStatReader {
 
   private static final Pattern tabPattern = Pattern.compile("\t");
 
+  /**
+   * Read statistics.
+   * @return the SequenceMeasurements arguments of the constructor
+   * @throws IOException if an error occurs while reading data
+   */
   public SequenceMeasurements read() throws IOException {
 
     final SequenceMeasurements sm = this.sm;
@@ -84,8 +93,13 @@ public class SequenceMesurementsStatReader {
   // Constructor
   //
 
-  public SequenceMesurementsStatReader(File file, SequenceMeasurements sm)
-      throws IOException {
+  /**
+   * Public constructor.
+   * @param file File to read
+   * @param sm a SequenceMeasurement from data used to generate statistics
+   */
+  public SequenceMesurementsStatReader(final File file,
+      final SequenceMeasurements sm) throws IOException {
 
     if (file == null)
       throw new NullPointerException("File is null");

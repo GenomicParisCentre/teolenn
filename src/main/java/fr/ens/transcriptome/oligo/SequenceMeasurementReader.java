@@ -61,11 +61,22 @@ public class SequenceMeasurementReader {
 
   }
 
+  /**
+   * Get the next sequence measurement.
+   * @return the next sequence measurement
+   * @throws IOException if an error occurs while reading measurements
+   */
   public SequenceMeasurements next() throws IOException {
 
     return next(null);
   }
 
+  /**
+   * Get the next sequence measurement. This version of the next method allow to
+   * reuse previous sequence measurement object to save time and memory.
+   * @return the next sequence measurement
+   * @throws IOException if an error occurs while reading measurements
+   */
   public SequenceMeasurements next(final SequenceMeasurements sm)
       throws IOException {
 
@@ -101,6 +112,10 @@ public class SequenceMeasurementReader {
   // Constructor
   //
 
+  /**
+   * Public constructor.
+   * @param file Sequence measurement file to parse
+   */
   public SequenceMeasurementReader(final File file) throws IOException {
 
     if (file == null)

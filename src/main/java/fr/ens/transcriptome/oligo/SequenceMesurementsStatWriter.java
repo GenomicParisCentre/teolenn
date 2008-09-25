@@ -37,10 +37,18 @@ import java.util.Set;
 import fr.ens.transcriptome.oligo.measurement.Measurement;
 import fr.ens.transcriptome.oligo.util.FileUtils;
 
+/**
+ * This class define a writer for statistics of sequences measurements.
+ * @author Laurent Jourdren
+ */
 public class SequenceMesurementsStatWriter {
 
   private Writer writer;
 
+  /**
+   * Write statistics.
+   * @throws IOException if an error occurs while reading data
+   */
   public void write(final SequenceMeasurements sm) throws IOException {
 
     if (sm == null)
@@ -97,7 +105,15 @@ public class SequenceMesurementsStatWriter {
     writer.close();
   }
 
-  public SequenceMesurementsStatWriter(File file) throws IOException {
+  //
+  // Constructor
+  //
+
+  /**
+   * Public constructor.
+   * @param file file to write
+   */
+  public SequenceMesurementsStatWriter(final File file) throws IOException {
 
     if (file == null)
       throw new NullPointerException("File is null");

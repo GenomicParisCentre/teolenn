@@ -28,12 +28,21 @@ import java.io.Writer;
 
 import fr.ens.transcriptome.oligo.util.FileUtils;
 
+/**
+ * This class allow to write sequence in an output file.
+ * @author Laurent Jourdren
+ */
 public class SequenceWriter {
 
   private static final int FASTA_MAX_LEN = 70;
   private Writer writer;
   private final StringBuffer sb = new StringBuffer();
 
+  /**
+   * Write a sequence in the output file.
+   * @param sequence Sequence to write
+   * @throws IOException if an error occurs while writing data
+   */
   public void write(final Sequence sequence) throws IOException {
 
     this.sb.append(">");
@@ -59,6 +68,10 @@ public class SequenceWriter {
     this.sb.setLength(0);
   }
 
+  /**
+   * Close the file.
+   * @throws IOException if an error occurs while closing the file
+   */
   public void close() throws IOException {
 
     this.writer.close();
@@ -68,9 +81,13 @@ public class SequenceWriter {
   // Constructor
   //
 
-  public SequenceWriter(File outputFile) throws IOException {
+  /**
+   * Public constructor.
+   * @param outputFile The output file
+   */
+  public SequenceWriter(final File outputFile) throws IOException {
 
-    this.writer =  FileUtils.createBufferedWriter(outputFile);
+    this.writer = FileUtils.createBufferedWriter(outputFile);
   }
 
 }

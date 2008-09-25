@@ -270,10 +270,10 @@ public class Design {
     if (!filterOnly) {
 
       // Create oligo sequences
-      FastaOverlap2.fastaOverlap(genomeFile, outputDir, OLIGO_SUFFIX,
+      FastaOverlap.fastaOverlap(genomeFile, outputDir, OLIGO_SUFFIX,
           OLIGO_SIZE);
 
-      FastaOverlap2.fastaOverlap(genomeMaskedFile, outputDir,
+      FastaOverlap.fastaOverlap(genomeMaskedFile, outputDir,
           OLIGO_MASKED_SUFFIX, OLIGO_SIZE);
 
       // Filter sequences

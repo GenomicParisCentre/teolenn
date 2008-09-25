@@ -30,19 +30,19 @@ import java.util.Map;
 
 import fr.ens.transcriptome.oligo.measurement.Measurement;
 
+/**
+ * This class define a sequence measurement.
+ * @author Laurent Jourdren
+ */
 public class SequenceMeasurements {
 
-  // measurement
   private int id;
   private Sequence sequence;
   private final List<Measurement> measurements = new ArrayList<Measurement>();
   private final Map<String, Integer> measurementsIndex =
       new HashMap<String, Integer>();
-  // private List<Object> measurementValues = new ArrayList<Object>();
   private Object[] measurementValues;
-
   private Measurement[] arrayMeasurements;
-
   private Map<Measurement, Float> weights = new HashMap<Measurement, Float>();
 
   //

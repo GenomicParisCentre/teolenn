@@ -29,10 +29,11 @@ import java.io.Writer;
 
 import fr.ens.transcriptome.oligo.util.FileUtils;
 
+/**
+ * This class define a sequence measurement writer.
+ * @author Laurent Jourdren
+ */
 public class SequenceMeasurementsWriter {
-
-  // private static final int BUFFER_SIZE = 500000;
-  // private static final int BUFFER_MAX_BEFORE_WRITING = BUFFER_SIZE - 10000;
 
   private static final int WRITE_BUFFER_LEN = 1000000;
 
@@ -63,6 +64,11 @@ public class SequenceMeasurementsWriter {
     this.headerDone = true;
   }
 
+  /**
+   * Write a sequence measurement to the file.
+   * @param sm Sequence measurement to write
+   * @throws IOException if an error occurs while writing data
+   */
   public void writeSequenceMesurement(final SequenceMeasurements sm)
       throws IOException {
 
@@ -89,6 +95,10 @@ public class SequenceMeasurementsWriter {
     }
   }
 
+  /**
+   * Close the writer.
+   * @throws IOException if an error occurs while closing the writer
+   */
   public void close() throws IOException {
 
     writer.append(buffer.toString());
@@ -100,6 +110,10 @@ public class SequenceMeasurementsWriter {
   // Constructor
   //
 
+  /**
+   * Public constructor.
+   * @param file file to write
+   */
   public SequenceMeasurementsWriter(final File file)
       throws FileNotFoundException {
 
