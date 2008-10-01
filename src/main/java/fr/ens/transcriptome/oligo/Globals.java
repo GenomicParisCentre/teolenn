@@ -64,19 +64,19 @@ public class Globals {
 
     String s = getManifestProperty("Specification-Version");
 
-    return s != null ? s : "UNKNOWN VERSION";
+    return s != null ? s : "UNKNOWN_VERSION";
   }
 
   private static String getBuiltNumber() {
 
     String s = getManifestProperty("Implementation-Version");
 
-    return s != null ? s : "UNKNOWN BUILT";
+    return s != null ? s : "UNKNOWN_BUILT";
   }
 
   private static String getBuiltDate() {
 
-    final String unknown = "UNKNOWN DATE";
+    final String unknown = "UNKNOWN_DATE";
 
     String s = getManifestProperty("Built-Date");
 
