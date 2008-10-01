@@ -30,12 +30,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
+import fr.ens.transcriptome.oligo.Globals;
 
 /**
  * Utility class for launching external process.
  * @author Laurent Jourdren
  */
 public final class ProcessUtils {
+
+  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   /**
    * Execute a command with the OS.
@@ -44,7 +49,7 @@ public final class ProcessUtils {
    */
   public static void exec(final String cmd) throws IOException {
 
-    System.out.println("cmd: " + cmd);
+    logger.fine("execute: " + cmd);
 
     final long startTime = System.currentTimeMillis();
 
@@ -72,7 +77,7 @@ public final class ProcessUtils {
 
     final long endTime = System.currentTimeMillis();
 
-    System.out.println("Done in " + (endTime - startTime) + " ms.");
+    logger.fine("Done in " + (endTime - startTime) + " ms.");
   }
 
   /**
@@ -84,7 +89,7 @@ public final class ProcessUtils {
   public static void execWriteOutput(String cmd, File outputFile)
       throws IOException {
 
-    System.out.println("cmd: " + cmd);
+    logger.fine("execute: " + cmd);
 
     final long startTime = System.currentTimeMillis();
 
@@ -110,7 +115,7 @@ public final class ProcessUtils {
 
     final long endTime = System.currentTimeMillis();
 
-    System.out.println("Done in " + (endTime - startTime) + " ms.");
+    logger.fine("Done in " + (endTime - startTime) + " ms.");
   }
 
   public static class ParalellExec extends SelfLoopHandler {
