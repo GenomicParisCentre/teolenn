@@ -118,7 +118,7 @@ public class SequenceMeasurements {
       return;
 
     this.measurements.add(m);
-    measurementsIndex.put(m.getName(), measurementsIndex.size());
+    measurementsIndex.put(m.getName().toLowerCase(), measurementsIndex.size());
     this.arrayMeasurements = null;
 
     setWeight(m, weight);
@@ -187,7 +187,7 @@ public class SequenceMeasurements {
     if (name == null)
       return -1;
 
-    final Integer result = this.measurementsIndex.get(name);
+    final Integer result = this.measurementsIndex.get(name.toLowerCase());
 
     if (result == null)
       return -1;
