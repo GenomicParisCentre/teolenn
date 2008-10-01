@@ -42,4 +42,28 @@ public class SequenceXNFilter implements SequenceFilter {
     return !(s.indexOf('N') != -1 || s.indexOf('X') != -1);
   }
 
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(final String key, final String value) {
+  }
+
+  /**
+   * Run the initialization phase of the parameter.
+   */
+  public void init() {
+  }
+
+  //
+  // Constructor
+  //
+
+  /**
+   * Public constructor.
+   */
+  public SequenceXNFilter() {
+  }
+
 }

@@ -22,6 +22,8 @@
 
 package fr.ens.transcriptome.oligo.filter;
 
+import java.io.IOException;
+
 import fr.ens.transcriptome.oligo.Sequence;
 
 /**
@@ -36,5 +38,18 @@ public interface SequenceFilter {
    * @return true if and only if the specified sequence should be accepted
    */
   boolean accept(Sequence sequence);
+
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  void setInitParameter(String key, String value);
+
+  /**
+   * Run the initialization phase of the parameter.
+   * @throws IOException if an error occurs while the initialization phase
+   */
+  void init() throws IOException;
 
 }

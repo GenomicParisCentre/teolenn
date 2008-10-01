@@ -25,6 +25,7 @@ package fr.ens.transcriptome.oligo.filter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +38,7 @@ import java.util.regex.Pattern;
 import fr.ens.transcriptome.oligo.Globals;
 import fr.ens.transcriptome.oligo.Sequence;
 import fr.ens.transcriptome.oligo.Settings;
+import fr.ens.transcriptome.oligo.util.BinariesInstaller;
 import fr.ens.transcriptome.oligo.util.FileUtils;
 import fr.ens.transcriptome.oligo.util.ProcessUtils;
 import fr.ens.transcriptome.oligo.util.StringUtils;
@@ -50,6 +52,10 @@ public class RedundancyFilter implements SequenceFilter {
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   private static final String SOAP_ARGS = " -s 12 -v 5 -r 1 -w 1000 -p 3";
+
+  // Parameters
+  private File referenceFile;
+  private File[] oligosFiles;
 
   private File baseDir;
   private BufferedReader br;
@@ -190,26 +196,50 @@ public class RedundancyFilter implements SequenceFilter {
     fw.close();
   }
 
-  //
-  // Constructor
-  //
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(final String key, final String value) {
+
+    if ("_genomefile".equals(key))
+      this.referenceFile = new File(value);
+
+    if ("_outputdir".equals(key))
+      this.baseDir = new File(value);
+
+    if ("_extensionfilter".equals(key)) {
+
+      this.oligosFiles = this.baseDir.listFiles(new FilenameFilter() {
+
+        public boolean accept(File dir, String name) {
+
+          return name.endsWith(value);
+        }
+      });
+    }
+
+  }
 
   /**
-   * Public constructor.
-   * @param referenceFile Full genome
-   * @param oligo files to handle
+   * Run the initialization phase of the parameter.
+   * @throws IOException
    */
-  public RedundancyFilter(final File referenceFile, final File[] oligosFiles)
-      throws IOException {
+  public void init() throws IOException {
+
+    // Install soap if needed
+    if (Settings.getSoapPath() == null)
+      Settings.setSoapPath(BinariesInstaller.install("soap"));
 
     // Create the parameter file
     File paramFile = File.createTempFile("soap-", ".param");
-    createParameterFile(paramFile, oligosFiles);
+    createParameterFile(paramFile, this.oligosFiles);
 
     // Define the commande line
     final String cmd =
         Settings.getSoapPath()
-            + " -d " + referenceFile.getAbsolutePath() + " "
+            + " -d " + this.referenceFile.getAbsolutePath() + " "
             + paramFile.getAbsolutePath();
 
     // Execute Soap
@@ -221,7 +251,30 @@ public class RedundancyFilter implements SequenceFilter {
           + paramFile.getAbsolutePath());
 
     // Save the base directory
-    this.baseDir = oligosFiles[0].getParentFile();
+    // this.baseDir = this.oligosFiles[0].getParentFile();
+
+  }
+
+  //
+  // Constructor
+  //
+
+  /**
+   * Public constructor.
+   */
+  public RedundancyFilter() {
+  }
+
+  /**
+   * Public constructor.
+   * @param referenceFile Full genome
+   * @param oligo files to handle
+   */
+  public RedundancyFilter(final File referenceFile, final File[] oligosFiles)
+      throws IOException {
+
+    this.referenceFile = referenceFile;
+    this.oligosFiles = oligosFiles;
   }
 
 }

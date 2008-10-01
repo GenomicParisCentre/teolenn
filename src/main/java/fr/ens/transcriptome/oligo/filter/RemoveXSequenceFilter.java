@@ -48,4 +48,28 @@ public class RemoveXSequenceFilter implements SequenceFilter {
     return true;
   }
 
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(final String key, final String value) {
+  }
+
+  /**
+   * Run the initialization phase of the parameter.
+   */
+  public void init() {
+  }
+  
+  //
+  // Constructor
+  //
+
+  /**
+   * Public constructor.
+   */
+  public RemoveXSequenceFilter() {
+  }
+  
 }
