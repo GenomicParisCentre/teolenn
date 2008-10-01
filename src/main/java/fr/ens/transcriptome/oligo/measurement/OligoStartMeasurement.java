@@ -31,6 +31,9 @@ import fr.ens.transcriptome.oligo.Sequence;
  */
 public final class OligoStartMeasurement extends IntegerMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "Start";
+
   /**
    * Calc the measurement of a sequence.
    * @param sequence the sequence to use for the measurement
@@ -61,7 +64,7 @@ public final class OligoStartMeasurement extends IntegerMeasurement {
    */
   public String getName() {
 
-    return "Start";
+    return MEASUREMENT_NAME;
   }
 
 }

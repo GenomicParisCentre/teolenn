@@ -30,6 +30,9 @@ import fr.ens.transcriptome.oligo.Sequence;
  */
 public final class ScaffoldMeasurement extends StringMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "Scaffold";
+
   /**
    * Calc the measurement of a sequence.
    * @param sequence the sequence to use for the measurement
@@ -57,7 +60,7 @@ public final class ScaffoldMeasurement extends StringMeasurement {
    */
   public String getName() {
 
-    return "Scaffold";
+    return MEASUREMENT_NAME;
   }
 
 }

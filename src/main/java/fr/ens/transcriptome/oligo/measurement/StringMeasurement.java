@@ -22,6 +22,8 @@
 
 package fr.ens.transcriptome.oligo.measurement;
 
+import java.io.IOException;
+
 import fr.ens.transcriptome.oligo.Sequence;
 
 /**
@@ -64,6 +66,20 @@ public abstract class StringMeasurement extends SimpleMeasurement {
   public Object parse(final String s) {
 
     return s;
+  }
+
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(final String key, final String value) {
+  }
+
+  /**
+   * Run the initialization phase of the parameter.
+   */
+  public void init() {
   }
 
 }

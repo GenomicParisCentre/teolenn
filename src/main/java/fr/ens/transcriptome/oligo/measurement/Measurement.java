@@ -22,6 +22,7 @@
 
 package fr.ens.transcriptome.oligo.measurement;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import fr.ens.transcriptome.oligo.Sequence;
@@ -93,5 +94,18 @@ public interface Measurement {
    * Add last measurements value to the statistics.
    */
   void addLastMeasurementToStats();
+  
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  void setInitParameter(String key, String value);
+
+  /**
+   * Run the initialization phase of the parameter.
+   * @throws IOException if an error occurs while the initialization phase
+   */
+  void init() throws IOException;
 
 }

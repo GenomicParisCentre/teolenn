@@ -22,6 +22,7 @@
 
 package fr.ens.transcriptome.oligo.measurement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -260,6 +261,32 @@ public abstract class FloatMeasurement implements Measurement {
       this.reference = Double.parseDouble(value.trim());
     else if ("deviation".equals(key.trim().toLowerCase()))
       this.deviation = Double.parseDouble(value.trim());
+  }
+
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(final String key, final String value) {
+  }
+
+  /**
+   * Run the initialization phase of the parameter.
+   * @throws IOException if an error occurs while the initialization phase
+   */
+  public void init() throws IOException {
+  }
+
+  /**
+   * Reset the values of the histogram.
+   * @param minValueHisto
+   * @param maxValueHisto
+   */
+  protected void resetHistogram(final double minValueHisto,
+      final double maxValueHisto) {
+
+    this.histo = new Histogram(minValueHisto, maxValueHisto, 10);
   }
 
   //

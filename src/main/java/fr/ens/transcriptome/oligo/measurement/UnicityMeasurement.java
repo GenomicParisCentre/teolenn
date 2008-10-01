@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 import fr.ens.transcriptome.oligo.FastaExplode;
 import fr.ens.transcriptome.oligo.Sequence;
 import fr.ens.transcriptome.oligo.Settings;
+import fr.ens.transcriptome.oligo.util.BinariesInstaller;
 import fr.ens.transcriptome.oligo.util.FileUtils;
 import fr.ens.transcriptome.oligo.util.ProcessUtils;
 import fr.ens.transcriptome.oligo.util.StringUtils;
@@ -52,7 +53,10 @@ public final class UnicityMeasurement extends FloatMeasurement {
 
   private int oligoLength = 60;
 
+  private File genomeFile;
   private File baseDir;
+  private int maxPrefixLength;
+
   private String currentChr;
   private Map<Integer, Integer> mupDict = new HashMap<Integer, Integer>();
   private double uniquenessMax;
@@ -355,6 +359,55 @@ public final class UnicityMeasurement extends FloatMeasurement {
 
   }
 
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(final String key, final String value) {
+
+    if ("oligolength".equals(key))
+      this.oligoLength = Integer.parseInt(value);
+    else if ("_genomefile".equals(key))
+      this.genomeFile = new File(value);
+    else if ("_outputdir".equals(key))
+      this.baseDir = new File(value);
+    else if ("maxprefixlength".equals(key))
+      this.maxPrefixLength = Integer.parseInt(value);
+  }
+
+  /**
+   * Run the initialization phase of the parameter.
+   * @throws IOException
+   */
+  public void init() throws IOException {
+
+    // Install genometools if needed
+    if (Settings.getGenomeToolsPath() == null)
+      Settings.setGenomeToolsPath(BinariesInstaller.install("gt"));
+
+    // Reset Histogram
+    this.resetHistogram(0, this.oligoLength);
+
+    // Create sequence files without X
+    FastaExplode.fastaExplode(genomeFile, this.baseDir, "",
+        SEQ_GZ_WITHOUT_X_EXTENSION, true, true);
+
+    // Get the list of sequences files created
+    final File[] files =
+        FileUtils
+            .listFilesByExtension(this.baseDir, SEQ_GZ_WITHOUT_X_EXTENSION);
+
+    Arrays.sort(files);
+
+    // Build fmindex
+    build_fmindex(files);
+
+    // Build unique sub
+    run_uniquesub(files, StringUtils.removeNonAlphaAtEndOfString(FileUtils
+        .getPrefix(files)), this.maxPrefixLength);
+  }
+
   //
   // Constructor
   //
@@ -393,26 +446,10 @@ public final class UnicityMeasurement extends FloatMeasurement {
 
     // Set the oligo length
     this.oligoLength = oligoLength;
-
+    this.genomeFile = genomeFile;
     this.baseDir = genomeFile.getAbsoluteFile().getParentFile();
 
-    // Create sequence files without X
-    FastaExplode.fastaExplode(genomeFile, this.baseDir, "",
-        SEQ_GZ_WITHOUT_X_EXTENSION, true, true);
-
-    // Get the list of sequences files created
-    final File[] files =
-        FileUtils
-            .listFilesByExtension(this.baseDir, SEQ_GZ_WITHOUT_X_EXTENSION);
-
-    Arrays.sort(files);
-
-    // Build fmindex
-    build_fmindex(files);
-
-    // Build unique sub
-    run_uniquesub(files, StringUtils.removeNonAlphaAtEndOfString(FileUtils
-        .getPrefix(files)), maxPrefixLength);
+    init();
   }
 
 }

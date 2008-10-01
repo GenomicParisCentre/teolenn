@@ -133,6 +133,23 @@ public final class PositionMeasurement extends SimpleMeasurement {
     this.first = false;
   }
 
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(final String key, final String value) {
+
+    if ("_windowsize".equals(key))
+      this.windowSize = Integer.parseInt(value);
+  }
+
+  /**
+   * Run the initialization phase of the parameter.
+   */
+  public void init() {
+  }
+
   //
   // Constructors
   //

@@ -24,6 +24,9 @@ package fr.ens.transcriptome.oligo.measurement;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+
+import fr.ens.transcriptome.oligo.Globals;
 
 /**
  * This class define a registery that contains the list of available
@@ -31,6 +34,8 @@ import java.util.Map;
  * @author Laurent Jourdren
  */
 public class MeasurementRegistery {
+
+  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   private static Map<String, Class> registery = new HashMap<String, Class>();
 
@@ -44,7 +49,58 @@ public class MeasurementRegistery {
     if (name == null || clazz == null)
       return;
 
-    registery.put(name.toLowerCase(), clazz);
+    if (testClassType(clazz))
+      registery.put(name.toLowerCase(), clazz);
+    else
+      logger.warning("Addon " + name + " is not a measurement class");
+  }
+
+  /**
+   * Add a measurement
+   * @param name name of the measurement
+   * @param className Name of of the measurement
+   */
+  public static void addMeasurementType(final String name,
+      final String className) {
+
+    if (name == null || "".equals(name) || className == null)
+      return;
+
+    try {
+      Class clazz = MeasurementRegistery.class.forName(className);
+
+      addMeasurementType(name, clazz);
+
+      logger.info("Add external measurement: " + name);
+
+    } catch (ClassNotFoundException e) {
+
+      logger.severe("Cannot find "
+          + className + " for " + name + " measurement addon");
+      throw new RuntimeException("Cannot find "
+          + className + " for " + name + " measurement addon");
+
+    }
+  }
+
+  private static boolean testClassType(final Class clazz) {
+
+    System.out.println("coucou");
+
+    if (clazz == null)
+      return false;
+
+    try {
+      return clazz.newInstance() instanceof Measurement;
+    } catch (InstantiationException e) {
+      logger.severe("Can't create instance of "
+          + clazz.getName()
+          + ". Maybe your class doesn't have a void constructor.");
+    } catch (IllegalAccessException e) {
+      logger.severe("Can't access to " + clazz.getName());
+    }
+
+    return false;
   }
 
   /**
