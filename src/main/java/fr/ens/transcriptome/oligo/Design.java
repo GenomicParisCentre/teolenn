@@ -42,19 +42,125 @@ import fr.ens.transcriptome.oligo.measurement.ScaffoldMeasurement;
 import fr.ens.transcriptome.oligo.measurement.TmMeasurement;
 import fr.ens.transcriptome.oligo.measurement.UnicityMeasurement;
 import fr.ens.transcriptome.oligo.measurement.filter.FloatRangeFilter;
-import fr.ens.transcriptome.oligo.measurement.filter.SequenceMeasurementFilter;
+import fr.ens.transcriptome.oligo.measurement.filter.MeasurementFilter;
+import fr.ens.transcriptome.oligo.util.FileUtils;
 import fr.ens.transcriptome.oligo.util.StringUtils;
 
 public class Design {
 
-  private static int WINDOW_SIZE = 140; // 141;
-  private static int OLIGO_SIZE = 60;
+  private static int WINDOW_SIZE_DEFAULT = 140; // 141;
+  private static int OLIGO_SIZE_DEFAULT = 60;
   private static int UNICITY_MAX_PREFIX_LEN = 30;
 
-  private static String OLIGO_SUFFIX = ".oligo";
-  private static String OLIGO_MASKED_SUFFIX = ".masked";
-  private static String OLIGO_FILTERED_SUFFIX = ".filtered.oligo";
-  private static String OLIGO_MASKED_FILTERED_SUFFIX = ".filtered.masked";
+  public static String OLIGO_SUFFIX = ".oligo";
+  public static String OLIGO_MASKED_SUFFIX = ".masked";
+  public static String OLIGO_FILTERED_SUFFIX = ".filtered.oligo";
+  public static String OLIGO_MASKED_FILTERED_SUFFIX = ".filtered.masked";
+
+  private static final String OLIGO_MEASUREMENTS_FILE = "oligo.mes";
+  private static final String OLIGO_MEASUREMENTS_FILTERED_FILE = "filtered.mes";
+  private static final String OLIGO_MEASUREMENTS_FILTERED_STATS_FILE =
+      "filtered.stats";
+  private static final String SELECTED_FILE = "select.mes";
+
+  private int windowSize = WINDOW_SIZE_DEFAULT;
+  private int oligoLength = OLIGO_SIZE_DEFAULT;
+
+  private File genomeFile;
+  private File genomeMaskedFile;
+  private File outputDir;
+
+  //
+  // Getters
+  //
+
+  /**
+   * Get the window size of the design.
+   * @return the window size
+   */
+  public int getWindowSize() {
+    return windowSize;
+  }
+
+  /**
+   * Set the oligo length for the design
+   * @return the oligo length
+   */
+  public int getOligoLength() {
+    return oligoLength;
+  }
+
+  /**
+   * Get the genome file.
+   * @return the genome file
+   */
+  public File getGenomeFile() {
+    return genomeFile;
+  }
+
+  /**
+   * Get the genome masked file
+   * @return the genome masked file
+   */
+  public File getGenomeMaskedFile() {
+    return genomeMaskedFile;
+  }
+
+  /**
+   * Set the output directory
+   * @return the output directory
+   */
+  public File getOutputDir() {
+    return outputDir;
+  }
+
+  //
+  // Setters
+  //
+
+  /**
+   * Set the window size.
+   * @param windowSize the window size to set
+   */
+  public void setWindowSize(final int windowSize) {
+    this.windowSize = windowSize;
+  }
+
+  /**
+   * Set the olgo length
+   * @param oligoLength The oligo length
+   */
+  public void setOligoLength(final int oligoLength) {
+    this.oligoLength = oligoLength;
+  }
+
+  /**
+   * Set the genome file
+   * @param genomeFile Genome file to set
+   */
+  public void setGenomeFile(final File genomeFile) {
+    this.genomeFile = genomeFile;
+  }
+
+  /**
+   * Set the genome masked file
+   * @param genomeMaskedFile the genome masked file
+   */
+  public void setGenomeMaskedFile(final File genomeMaskedFile) {
+    this.genomeMaskedFile = genomeMaskedFile;
+  }
+
+  /**
+   * Set the output directory
+   * @param outputDir The output directory
+   */
+  public void setOutputDir(final File outputDir) {
+    this.outputDir = outputDir;
+  }
+
+  //
+  // Other methods
+  //
 
   /**
    * Create a measurement file.
@@ -183,7 +289,7 @@ public class Design {
    */
   public static final void filterMeasurementsFile(final File measurementsFile,
       final File filteredMeasurementsFile, final File statsFile,
-      final List<SequenceMeasurementFilter> filters) throws IOException {
+      final List<MeasurementFilter> filters) throws IOException {
 
     final SequenceMeasurementReader smr =
         new SequenceMeasurementReader(measurementsFile);
@@ -198,7 +304,7 @@ public class Design {
 
       boolean pass = true;
 
-      for (SequenceMeasurementFilter filter : filters)
+      for (MeasurementFilter filter : filters)
         if (!filter.accept(sm)) {
           pass = false;
           break;
@@ -226,7 +332,108 @@ public class Design {
 
   }
 
+  /**
+   * In this phase, create all the oligos.
+   * @throws IOException if an error occurs while creating all oligos
+   */
+  public void phase1CreateAllOligos() throws IOException {
+
+    FastaOverlap.fastaOverlap(this.genomeFile, outputDir, Design.OLIGO_SUFFIX,
+        this.oligoLength);
+
+    FastaOverlap.fastaOverlap(this.genomeMaskedFile, outputDir,
+        Design.OLIGO_MASKED_SUFFIX, this.oligoLength);
+  }
+
+  /**
+   * In this phase, remove from the generated oligos all the invalid oligos.
+   * @param listSequenceFilters list of sequence filters to apply
+   * @throws IOException if an error occus while filtering
+   */
+  public void phase2FilterAllOligos(
+      final List<SequenceFilter> listSequenceFilters) throws IOException {
+
+    // Get the list of oligos files to process
+    final File[] oligoFiles =
+        FileUtils.listFilesByExtension(this.outputDir, Design.OLIGO_SUFFIX);
+    Arrays.sort(oligoFiles);
+
+    Design.filterSequencesFiles(oligoFiles, listSequenceFilters);
+  }
+
+  /**
+   * In this phase, compute all the measurements of the oligos.
+   * @param listMeasurements list of measurements to compute
+   * @throws IOException if an error occus while filtering
+   */
+  public void phase3CalcMeasurements(final List<Measurement> listMeasurements)
+      throws IOException {
+
+    // Get the list of filtered oligos files to process
+    final File[] oligoFilteredFiles =
+        FileUtils.listFilesByExtension(this.outputDir,
+            Design.OLIGO_FILTERED_SUFFIX);
+    Arrays.sort(oligoFilteredFiles);
+
+    // Calc oligos measurements
+    File oligoMeasurementsFile = new File(outputDir, OLIGO_MEASUREMENTS_FILE);
+    Design.createMeasurementsFile(oligoFilteredFiles, oligoMeasurementsFile,
+        listMeasurements, null);
+  }
+
+  /**
+   * In this phase, filter the measurements of the oligos.
+   * @param listMeasurementFilters list of filter to apply
+   * @param overvriteStatFile if stat file of filtered oligo must be override
+   * @throws IOException if an error occurs while filtering
+   */
+  public void phase4FilterMeasurements(
+      final List<MeasurementFilter> listMeasurementFilters,
+      final boolean overvriteStatFile) throws IOException {
+
+    final File filteredOligoMeasurementsFile =
+        new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_FILE);
+    final File statsFile =
+        new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_STATS_FILE);
+
+    Design.filterMeasurementsFile(new File(OLIGO_MEASUREMENTS_FILE),
+        filteredOligoMeasurementsFile, overvriteStatFile ? statsFile : null,
+        listMeasurementFilters);
+  }
+
+  /**
+   * In this phase, select the oligos.
+   * @param wSetter weight of selection
+   * @throws IOException if an error occurs while selecting
+   */
+  public void phase5Select(final Select.WeightsSetter wSetter)
+      throws IOException {
+
+    final File filteredOligoMeasurementsFile =
+        new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_FILE);
+    final File statsFile =
+        new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_STATS_FILE);
+    final File selectedOligos = new File(this.outputDir, SELECTED_FILE);
+
+    Select.select(filteredOligoMeasurementsFile, statsFile, selectedOligos,
+        wSetter, this.windowSize);
+  }
+
+  //
+  // Main method
+  //
+
   public static void main(String[] args) throws IOException {
+
+    new Design().run(args);
+
+  }
+
+  //
+  // Developpement method
+  //
+
+  public void run(String[] args) throws IOException {
 
     System.out.println(Globals.APP_NAME + " " + Globals.APP_VERSION + "\n");
 
@@ -271,10 +478,10 @@ public class Design {
 
       // Create oligo sequences
       FastaOverlap.fastaOverlap(genomeFile, outputDir, OLIGO_SUFFIX,
-          OLIGO_SIZE);
+          this.oligoLength);
 
       FastaOverlap.fastaOverlap(genomeMaskedFile, outputDir,
-          OLIGO_MASKED_SUFFIX, OLIGO_SIZE);
+          OLIGO_MASKED_SUFFIX, this.oligoLength);
 
       // Filter sequences
       File[] oligoFiles = outputDir.listFiles(new FilenameFilter() {
@@ -306,11 +513,11 @@ public class Design {
       measurements.add(new ScaffoldMeasurement());
       measurements.add(new OligoStartMeasurement());
       measurements.add(new OligoSequenceMeasurement());
-      measurements.add(new PositionMeasurement(WINDOW_SIZE));
+      measurements.add(new PositionMeasurement(this.windowSize));
       measurements.add(new TmMeasurement());
       measurements.add(new GCPencentMeasurement());
       measurements.add(new ComplexityMeasurement());
-      measurements.add(new UnicityMeasurement(genomeFile, OLIGO_SIZE,
+      measurements.add(new UnicityMeasurement(genomeFile, this.oligoLength,
           UNICITY_MAX_PREFIX_LEN));
 
       // Calc oligos measurements
@@ -326,12 +533,11 @@ public class Design {
     // Filter oligos measurements
 
     // Define a list of filters
-    List<SequenceMeasurementFilter> filters =
-        new ArrayList<SequenceMeasurementFilter>();
+    List<MeasurementFilter> filters = new ArrayList<MeasurementFilter>();
     filters.add(new FloatRangeFilter("%GC", 0, 1));
     filters.add(new FloatRangeFilter("Tm", 0, 100));
     filters.add(new FloatRangeFilter("Complexity", 0, 1));
-    filters.add(new FloatRangeFilter("Unicity", 0, OLIGO_SIZE));
+    filters.add(new FloatRangeFilter("Unicity", 0, this.oligoLength));
 
     File filteredOligoMeasurementsFile = new File(outputDir, "filtered.mes");
     File statsFile = new File(outputDir, "filtered.stats");
@@ -366,7 +572,8 @@ public class Design {
     };
 
     Select.select(filteredOligoMeasurementsFile, statsFile, selectedOligos,
-        wSetter, WINDOW_SIZE);
+        wSetter, this.windowSize);
 
   }
+
 }
