@@ -47,8 +47,8 @@ public class Settings {
 
   static {
 
-    setGenomeToolsPath(GT_PATH);
-    setSoapPath(SOAP_PATH);
+//    setGenomeToolsPath(GT_PATH);
+//    setSoapPath(SOAP_PATH);
   }
 
   /**
