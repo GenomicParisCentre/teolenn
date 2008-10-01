@@ -22,13 +22,20 @@
 
 package fr.ens.transcriptome.oligo.measurement.filter;
 
+import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.util.logging.Logger;
+
+import fr.ens.transcriptome.oligo.Globals;
 import fr.ens.transcriptome.oligo.SequenceMeasurements;
 
 /**
  * This class define a filter on a range of float values.
  * @author Laurent Jourdren
  */
-public class FloatRangeFilter implements SequenceMeasurementFilter {
+public class FloatRangeFilter implements MeasurementFilter {
+
+  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   private String field;
   private int index = -1;
@@ -46,9 +53,16 @@ public class FloatRangeFilter implements SequenceMeasurementFilter {
     if (sm == null)
       return false;
 
-    if (index == -1)
-      index = sm.getIndexMeasurment(this.field);
-    // findIndex(sm);
+    if (index == -1) {
+      index = sm.getIndexMeasurment(this.field.toLowerCase());
+
+      // Throw an exception if the measure is unknown
+      if (index == -1) {
+        logger.severe("Unknown measurement: " + this.field);
+        throw new RuntimeException("In floatrange, unknown measurement: "
+            + this.field);
+      }
+    }
 
     final Object[] values = sm.getArrayMeasurementValues();
     if (values == null)
@@ -59,10 +73,52 @@ public class FloatRangeFilter implements SequenceMeasurementFilter {
     return this.min <= f && f <= this.max;
   }
 
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(final String key, final String value) {
+
+    if ("measurement".equals(key) && value != null)
+      this.field = value;
+    else if ("min".equals(key) && value != null)
+      this.min = Float.parseFloat(value);
+    else if ("max".equals(key) && value != null)
+      this.max = Float.parseFloat(value);
+
+  }
+
+  /**
+   * Run the initialization phase of the parameter.
+   * @throws IOException if an error occurs while the initialization phase
+   */
+  public void init() throws IOException {
+
+    if (this.field == null)
+      throw new InvalidParameterException("field value is unknown");
+
+    if (min > max) {
+
+      final float tmp = this.min;
+
+      this.min = this.max;
+      this.max = tmp;
+    }
+
+  }
+
   //
   // Constructor
   //
-  
+
+  /**
+   * Public constructor. Needed for instanciation using
+   * MeasurementFilterRegistery.
+   */
+  public FloatRangeFilter() {
+  }
+
   /**
    * Public constructor.
    * @param field Field to use

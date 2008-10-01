@@ -22,13 +22,17 @@
 
 package fr.ens.transcriptome.oligo.measurement.filter;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.InvalidParameterException;
+
 import fr.ens.transcriptome.oligo.SequenceMeasurements;
 
 /**
  * This class define a filter on boolean values.
  * @author Laurent Jourdren
  */
-public class BooleanFilter implements SequenceMeasurementFilter {
+public class BooleanFilter implements MeasurementFilter {
 
   private String field;
   private int index = -1;
@@ -54,9 +58,40 @@ public class BooleanFilter implements SequenceMeasurementFilter {
     return b == this.acceptValue;
   }
 
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(final String key, final String value) {
+
+    if ("measurement".equals(key) && value != null)
+      this.field = value;
+    if ("acceptValue".equals(key) && value != null)
+      this.acceptValue = Boolean.parseBoolean(value);
+
+  }
+
+  /**
+   * Run the initialization phase of the parameter.
+   * @throws IOException if an error occurs while the initialization phase
+   */
+  public void init() throws IOException {
+
+    if (this.field == null)
+      throw new InvalidParameterException("field value is unknown");
+  }
+
   //
   // Constructor
   //
+
+  /**
+   * Public constructor. Needed for instancition using
+   * MeasurementFilterRegistery.
+   */
+  public BooleanFilter() {
+  }
 
   /**
    * Public constructor

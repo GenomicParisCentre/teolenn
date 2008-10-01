@@ -22,13 +22,15 @@
 
 package fr.ens.transcriptome.oligo.measurement.filter;
 
+import java.io.IOException;
+
 import fr.ens.transcriptome.oligo.SequenceMeasurements;
 
 /**
  * This interface define filters on SequenceMeasurement.
  * @author Laurent Jourdren
  */
-public interface SequenceMeasurementFilter {
+public interface MeasurementFilter {
 
   /**
    * Filter a SequenceMeasurements.
@@ -36,5 +38,18 @@ public interface SequenceMeasurementFilter {
    * @return true if the test allow to keep SequenceMeasurements values
    */
   boolean accept(SequenceMeasurements sm);
+
+  /**
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  void setInitParameter(String key, String value);
+
+  /**
+   * Run the initialization phase of the parameter.
+   * @throws IOException if an error occurs while the initialization phase
+   */
+  void init() throws IOException;
 
 }
