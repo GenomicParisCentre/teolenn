@@ -83,6 +83,9 @@ public class FileUtils {
     if (file == null)
       return null;
 
+    if (file.isFile())
+      file.delete();
+    
     final FileOutputStream outFile = new FileOutputStream(file);
     final FileChannel outChannel = outFile.getChannel();
 
