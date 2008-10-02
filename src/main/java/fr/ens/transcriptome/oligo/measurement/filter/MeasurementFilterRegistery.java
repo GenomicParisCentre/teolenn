@@ -83,8 +83,6 @@ public class MeasurementFilterRegistery {
 
   private static boolean testClassType(final Class clazz) {
 
-    System.out.println("coucou");
-
     if (clazz == null)
       return false;
 
