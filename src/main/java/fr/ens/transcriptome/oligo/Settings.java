@@ -43,13 +43,21 @@ public class Settings {
 
   private static final String SOAP_PATH =
       "/export/home2/users/sgdb/jourdren/soap-align/soap";
-      //"/export/home2/users/sgdb/lecrom/soap_soft/soap";
+  // "/export/home2/users/sgdb/lecrom/soap_soft/soap";
 
   static {
 
-//    setGenomeToolsPath(GT_PATH);
-//    setSoapPath(SOAP_PATH);
+    // setGenomeToolsPath(GT_PATH);
+    // setSoapPath(SOAP_PATH);
+    setStandardOutputForExecutable(Globals.STD_OUTPUT_DEFAULT);
+
+    Runtime runtime = Runtime.getRuntime();
+    setMaxthreads(runtime.availableProcessors());
   }
+
+  //
+  // Getters
+  //
 
   /**
    * Get the path of the Soap application.
@@ -58,15 +66,6 @@ public class Settings {
   public static String getSoapPath() {
 
     return properties.getProperty("soap.path");
-  }
-
-  /**
-   * Set the path of the soap application.
-   * @param soapPath The path of the soap application
-   */
-  public static void setSoapPath(final String soapPath) {
-
-    properties.setProperty("soap.path", soapPath);
   }
 
   /**
@@ -79,6 +78,37 @@ public class Settings {
   }
 
   /**
+   * Get if the output of executable must be shown to the user.
+   * @return true if the output of executable must be shown to the user
+   */
+  public static boolean isStandardOutputForExecutable() {
+
+    return Boolean.parseBoolean(properties.getProperty("std.output"));
+  }
+
+  /**
+   * Get the maximal number of threads
+   * @return the maximal number of threads
+   */
+  public static int getMaxThreads() {
+
+    return Integer.parseInt(properties.getProperty("max.threads"));
+  }
+
+  //
+  // Setters
+  //
+
+  /**
+   * Set the path of the soap application.
+   * @param soapPath The path of the soap application
+   */
+  public static void setSoapPath(final String soapPath) {
+
+    properties.setProperty("soap.path", soapPath);
+  }
+
+  /**
    * Set the genome tools application path.
    * @param gtPath the genome tools application path
    */
@@ -86,6 +116,30 @@ public class Settings {
 
     properties.setProperty("gt.path", gtPath);
   }
+
+  /**
+   * Set if the output of executable must be shown to the user.
+   * @param stdOutput if the output of executable must be shown to the user
+   */
+  public static void setStandardOutputForExecutable(final boolean stdOutput) {
+
+    properties.setProperty("std.output", Boolean.toString(stdOutput));
+  }
+
+  /**
+   * Set the maximal number of threads to use.
+   * @param maxThreads the maximal number of threads to use
+   */
+  public static void setMaxthreads(final int maxThreads) {
+
+    if (maxThreads < 1)
+      return;
+    properties.setProperty("max.threads", Integer.toString(maxThreads));
+  }
+
+  //
+  // Other methods
+  //
 
   /**
    * Get the configuration file path.
@@ -134,7 +188,11 @@ public class Settings {
    */
   public static void loadSettings() throws IOException {
 
-    loadSettings(new File(getConfigurationFilePath()));
+    final File confFile = new File(getConfigurationFilePath());
+    if (!confFile.exists())
+      logger.config("No configuration file found.");
+    else
+      loadSettings();
   }
 
   /**

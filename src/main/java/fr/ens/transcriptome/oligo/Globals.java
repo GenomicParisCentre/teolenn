@@ -52,7 +52,7 @@ public class Globals {
   public static final String APP_BUILD_DATE = getBuiltDate();
 
   /** The log level of the application. */
-  public static final Level LOG_LEVEL = Level.OFF;
+  public static final Level LOG_LEVEL = Level.INFO; // Level.OFF;
 
   private static final String WEBSITE_URL_DEFAULT =
       "http://transcriptome.ens.fr/alloligos";
@@ -60,6 +60,28 @@ public class Globals {
   /** Corsen Website url. */
   public static final String WEBSITE_URL = getWebSiteURL();
 
+  private static final String COPYRIGHT_DATE = "2008";
+
+  /** Licence text. */
+  public static final String LICENCE_TXT =
+      "This program is developed under the GNU General Public Licence version 2 or later.";
+
+  /** About string, plain text version. */
+  public static final String ABOUT_TXT =
+      Globals.APP_NAME
+          + " version " + Globals.APP_VERSION + " (" + Globals.APP_BUILD_NUMBER
+          + ")" + " is a software to compute design of oligonucleotides "
+          + "particles.\n" + "This version has been built on "
+          + APP_BUILD_DATE + ".\n\n" + "Authors:\n"
+          + "  Laurent Jourdren <jourdren@biologie.ens.fr>\n"
+          + "  Stéphane Le Crom <lecrom@biologie.ens.fr>\n"
+
+          + "Copyright " + COPYRIGHT_DATE
+          + " École Normale Supérieure microarray platform.\n"
+          + LICENCE_TXT + "\n";
+
+  public static final boolean STD_OUTPUT_DEFAULT = false;
+  
   private static String getVersion() {
 
     String s = getManifestProperty("Specification-Version");

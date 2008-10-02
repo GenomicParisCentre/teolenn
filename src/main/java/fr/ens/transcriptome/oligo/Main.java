@@ -34,6 +34,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -48,7 +56,7 @@ import fr.ens.transcriptome.oligo.measurement.ScaffoldMeasurement;
 import fr.ens.transcriptome.oligo.measurement.filter.MeasurementFilter;
 import fr.ens.transcriptome.oligo.measurement.filter.MeasurementFilterRegistery;
 
-public class CLI {
+public class Main {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
@@ -484,15 +492,135 @@ public class CLI {
     return result;
   }
 
+  /**
+   * Show version of the application.
+   */
+  private static void version() {
+
+    System.out.println(Globals.APP_NAME
+        + " version " + Globals.APP_VERSION + " (" + Globals.APP_BUILD_NUMBER
+        + ")");
+    System.exit(0);
+  }
+
+  /**
+   * Show licence information about this application.
+   */
+  private static void about() {
+
+    System.out.println(Globals.ABOUT_TXT);
+    System.exit(0);
+  }
+
+  /**
+   * Show information about this application.
+   */
+  private static void licence() {
+
+    System.out.println(Globals.LICENCE_TXT);
+    System.exit(0);
+  }
+
+  private static void help(final Options options) {
+
+    // Show help message
+    HelpFormatter formatter = new HelpFormatter();
+    formatter.printHelp(Globals.APP_NAME
+        + " design_file [genome_file genome_masked_file output_dir]", options);
+
+    System.exit(0);
+  }
+
+  /**
+   * Create options for command line
+   * @return an Options object
+   */
+  private static Options makeOptions() {
+
+    // create Options object
+    final Options options = new Options();
+
+    // add t option
+    options.addOption("version", false, "show version of the software");
+    options
+        .addOption("about", false, "display information about this software");
+    options.addOption("h", "help", false, "display this help");
+    options.addOption("licence", false,
+        "display information about the licence of this software");
+    options.addOption("v", "verbose", false, "display external tools output");
+
+    options.addOption(OptionBuilder.withArgName("number").hasArg()
+        .withDescription("number of threads to use").create("threads"));
+
+    options.addOption(OptionBuilder.withArgName("file").hasArg()
+        .withDescription("configuration file to use").create("conf"));
+
+    return options;
+  }
+
   //
   // Main method
   //
 
   public static void main(String[] args) throws IOException, DocumentException {
 
-    CLI cli = new CLI();
-    cli.readDesign(new File(args[0]), null, null, null);
+    final Options options = makeOptions();
+    final CommandLineParser parser = new GnuParser();
+
+    try {
+      // parse the command line arguments
+      CommandLine line = parser.parse(options, args);
+
+      if (args.length < 1 || line.hasOption("help"))
+        help(options);
+
+      if (line.hasOption("about"))
+        about();
+
+      if (line.hasOption("version"))
+        version();
+
+      if (line.hasOption("licence"))
+        licence();
+
+      // Load configuration if exists
+      if (line.hasOption("conf")) {
+        Settings.loadSettings(new File(line.getOptionValue("conf")));
+      } else
+        Settings.loadSettings();
+
+      if (line.hasOption("threads"))
+        try {
+          Settings.setMaxthreads(Integer.parseInt(line
+              .getOptionValue("threads")));
+        } catch (NumberFormatException e) {
+          logger.warning("Invalid threads number");
+        }
+
+      if (line.hasOption("verbose"))
+        Settings.setStandardOutputForExecutable(true);
+
+    } catch (ParseException e) {
+      System.err.println(e.getMessage());
+      System.exit(1);
+    }
+
+    // Set log level
+    logger.setLevel(Globals.LOG_LEVEL);
+
+    final File designFile = new File(args[0]);
+    final File genomeFile = args.length > 1 ? new File(args[1]) : null;
+    final File genomeMaskedFile = args.length > 2 ? new File(args[2]) : null;
+    final File outputDir = args.length > 3 ? new File(args[3]) : null;
+
+    Main cli = new Main();
+
+    try {
+      cli.readDesign(designFile, genomeFile, genomeMaskedFile, outputDir);
+    } catch (Exception e) {
+      System.err.println(e.getMessage());
+      System.exit(1);
+    }
 
   }
-
 }

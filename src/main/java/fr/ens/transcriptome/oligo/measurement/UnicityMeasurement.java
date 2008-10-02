@@ -175,7 +175,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
 
       // Use parallel executions
       final ProcessUtils.ParalellExec pexec =
-          new ProcessUtils.ParalellExec(2, 3);
+          new ProcessUtils.ParalellExec(2, Settings.getMaxThreads());
 
       for (int j = 0; j < idxOri.length; j++) {
 
@@ -233,14 +233,14 @@ public final class UnicityMeasurement extends FloatMeasurement {
             + " mkfmindex -fmout " + fmidxFile
             + " -size small -noindexpos -ii " + index;
 
-    ProcessUtils.exec(cmd2);
+    ProcessUtils.exec(cmd2, Settings.isStandardOutputForExecutable());
 
     final String cmd3 =
         Settings.getGenomeToolsPath()
             + " suffixerator -plain -tis -indexname " + fmidxFile + " -smap "
             + fmidxFile + ".al1 -db " + fmidxFile + ".bwt";
 
-    ProcessUtils.exec(cmd3);
+    ProcessUtils.exec(cmd3, Settings.isStandardOutputForExecutable());
   }
 
   /**
@@ -262,7 +262,8 @@ public final class UnicityMeasurement extends FloatMeasurement {
             + mupDir.getAbsolutePath());
 
     // Use parallel executions
-    final ProcessUtils.ParalellExec pexec = new ProcessUtils.ParalellExec(1, 3);
+    final ProcessUtils.ParalellExec pexec =
+        new ProcessUtils.ParalellExec(1, Settings.getMaxThreads());
 
     for (int i = 0; i < filesToProcess.length; i++) {
       File f = filesToProcess[i];

@@ -51,7 +51,7 @@ public class RedundancyFilter implements SequenceFilter {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
-  private static final String SOAP_ARGS = " -s 12 -v 5 -r 1 -w 1000 -p 3";
+  private static final String SOAP_ARGS = " -s 12 -v 5 -r 1 -w 1000 -p ";
 
   // Parameters
   private File referenceFile;
@@ -188,7 +188,7 @@ public class RedundancyFilter implements SequenceFilter {
       fw.append(oligoFile);
       fw.append(" -o ");
       fw.append(StringUtils.basename(oligoFile) + ".sop");
-      fw.append(SOAP_ARGS);
+      fw.append(SOAP_ARGS + Settings.getMaxThreads());
       fw.append("\n");
 
     }
@@ -243,7 +243,7 @@ public class RedundancyFilter implements SequenceFilter {
             + paramFile.getAbsolutePath();
 
     // Execute Soap
-    ProcessUtils.exec(cmd);
+    ProcessUtils.exec(cmd, Settings.isStandardOutputForExecutable());
 
     // remove the parameter file
     if (!paramFile.delete())
