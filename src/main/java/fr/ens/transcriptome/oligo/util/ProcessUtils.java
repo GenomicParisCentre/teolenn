@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.oligo.Globals;
+import fr.ens.transcriptome.oligo.Settings;
 
 /**
  * Utility class for launching external process.
@@ -45,9 +46,12 @@ public final class ProcessUtils {
   /**
    * Execute a command with the OS.
    * @param cmd Command to execute
+   * @param stdOutput don't show the result of the command on the standard
+   *            output
    * @throws IOException if an error occurs while running the process
    */
-  public static void exec(final String cmd) throws IOException {
+  public static void exec(final String cmd, final boolean stdOutput)
+      throws IOException {
 
     logger.fine("execute: " + cmd);
 
@@ -61,7 +65,8 @@ public final class ProcessUtils {
     String l = null;
 
     while ((l = stdr.readLine()) != null) {
-      System.out.println(l);
+      if (stdOutput)
+        System.out.println(l);
     }
 
     InputStream err = p.getInputStream();
@@ -165,10 +170,10 @@ public final class ProcessUtils {
 
         try {
 
-          System.out.println("PExec: (" + Thread.currentThread() + ") " + cmd);
+          logger.fine("PExec: (" + Thread.currentThread() + ") " + cmd);
 
           if (outputFile == null)
-            exec(cmd);
+            exec(cmd, Settings.isStandardOutputForExecutable());
           else
             execWriteOutput(cmd, outputFile);
 
