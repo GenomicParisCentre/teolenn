@@ -25,7 +25,9 @@ package fr.ens.transcriptome.oligo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 /**
  * Globals constants of the application.
@@ -54,6 +56,13 @@ public class Globals {
   /** The log level of the application. */
   public static final Level LOG_LEVEL = Level.INFO; // Level.OFF;
 
+  /** Format of the log. */
+  public static final Formatter LOG_FORMATTER = new Formatter() {
+    public String format(final LogRecord record) {
+      return record.getLevel() + "\t" + record.getMessage() + "\n";
+    }
+  };
+
   private static final String WEBSITE_URL_DEFAULT =
       "http://transcriptome.ens.fr/alloligos";
 
@@ -71,17 +80,17 @@ public class Globals {
       Globals.APP_NAME
           + " version " + Globals.APP_VERSION + " (" + Globals.APP_BUILD_NUMBER
           + ")" + " is a software to compute design of oligonucleotides "
-          + "particles.\n" + "This version has been built on "
-          + APP_BUILD_DATE + ".\n\n" + "Authors:\n"
+          + "particles.\n" + "This version has been built on " + APP_BUILD_DATE
+          + ".\n\n" + "Authors:\n"
           + "  Laurent Jourdren <jourdren@biologie.ens.fr>\n"
           + "  Stéphane Le Crom <lecrom@biologie.ens.fr>\n"
 
           + "Copyright " + COPYRIGHT_DATE
-          + " École Normale Supérieure microarray platform.\n"
-          + LICENCE_TXT + "\n";
+          + " École Normale Supérieure microarray platform.\n" + LICENCE_TXT
+          + "\n";
 
   public static final boolean STD_OUTPUT_DEFAULT = false;
-  
+
   private static String getVersion() {
 
     String s = getManifestProperty("Specification-Version");

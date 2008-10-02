@@ -32,13 +32,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -56,6 +58,10 @@ import fr.ens.transcriptome.oligo.measurement.ScaffoldMeasurement;
 import fr.ens.transcriptome.oligo.measurement.filter.MeasurementFilter;
 import fr.ens.transcriptome.oligo.measurement.filter.MeasurementFilterRegistery;
 
+/**
+ * This is the main class of the application.
+ * @author Laurent Jourdren
+ */
 public class Main {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
@@ -137,14 +143,14 @@ public class Main {
               + this.design.getOutputDir()));
 
     design.phase1CreateAllOligos();
-    design.phase2FilterAllOligos(verifySequenceFilters(designElement));
-    design.phase3CalcMeasurements(verifyMeasurements(designElement));
-    design.phase4FilterMeasurements(verifyMeasurementFilters(designElement),
+    design.phase2FilterAllOligos(parseSequenceFilters(designElement));
+    design.phase3CalcMeasurements(parseMeasurements(designElement));
+    design.phase4FilterMeasurements(parseMeasurementFilters(designElement),
         true);
-    design.phase5Select(verifySelect(designElement));
+    design.phase5Select(parseSelectWeights(designElement));
   }
 
-  private List<SequenceFilter> verifySequenceFilters(final Element rootElement)
+  private List<SequenceFilter> parseSequenceFilters(final Element rootElement)
       throws IOException {
 
     List<SequenceFilter> list = new ArrayList<SequenceFilter>();
@@ -215,7 +221,7 @@ public class Main {
     return list;
   }
 
-  private List<Measurement> verifyMeasurements(final Element rootElement)
+  private List<Measurement> parseMeasurements(final Element rootElement)
       throws IOException {
 
     final List<Measurement> list = new ArrayList<Measurement>();
@@ -297,7 +303,7 @@ public class Main {
     return list;
   }
 
-  private List<MeasurementFilter> verifyMeasurementFilters(
+  private List<MeasurementFilter> parseMeasurementFilters(
       final Element rootElement) throws IOException {
 
     final List<MeasurementFilter> list = new ArrayList<MeasurementFilter>();
@@ -368,7 +374,7 @@ public class Main {
     return list;
   }
 
-  private Select.WeightsSetter verifySelect(final Element rootElement)
+  private Select.WeightsSetter parseSelectWeights(final Element rootElement)
       throws IOException {
 
     // Map of weights
@@ -521,12 +527,16 @@ public class Main {
     System.exit(0);
   }
 
+  /**
+   * Show command line help.
+   * @param options Options of the software
+   */
   private static void help(final Options options) {
 
     // Show help message
     HelpFormatter formatter = new HelpFormatter();
     formatter.printHelp(Globals.APP_NAME
-        + " design_file [genome_file genome_masked_file output_dir]", options);
+        + " [options] design [genome [genome_masked [output_dir]]]", options);
 
     System.exit(0);
   }
@@ -555,23 +565,33 @@ public class Main {
     options.addOption(OptionBuilder.withArgName("file").hasArg()
         .withDescription("configuration file to use").create("conf"));
 
+    options.addOption(OptionBuilder.withArgName("file").hasArg()
+        .withDescription("external log file").create("log"));
+
+    options.addOption(OptionBuilder.withArgName("level").hasArg()
+        .withDescription("log level").create("loglevel"));
+
     return options;
   }
 
-  //
-  // Main method
-  //
-
-  public static void main(String[] args) throws IOException, DocumentException {
+  /**
+   * Parse the options of the command line
+   * @param args command line arguments
+   * @return the number of optional arguments
+   */
+  private static int parseCommandLine(final String args[]) {
 
     final Options options = makeOptions();
     final CommandLineParser parser = new GnuParser();
 
+    int argsOptions = 0;
+
     try {
+
       // parse the command line arguments
       CommandLine line = parser.parse(options, args);
 
-      if (args.length < 1 || line.hasOption("help"))
+      if (line.hasOption("help"))
         help(options);
 
       if (line.hasOption("about"))
@@ -584,34 +604,116 @@ public class Main {
         licence();
 
       // Load configuration if exists
-      if (line.hasOption("conf")) {
-        Settings.loadSettings(new File(line.getOptionValue("conf")));
-      } else
-        Settings.loadSettings();
+      try {
+        if (line.hasOption("conf")) {
+          Settings.loadSettings(new File(line.getOptionValue("conf")));
+          argsOptions += 2;
+        } else
+          Settings.loadSettings();
+      } catch (IOException e) {
+        logger.severe("Error while reading configuration file.");
+        System.exit(1);
+      }
 
+      // Set the number of threads
       if (line.hasOption("threads"))
         try {
+          argsOptions += 2;
           Settings.setMaxthreads(Integer.parseInt(line
               .getOptionValue("threads")));
         } catch (NumberFormatException e) {
           logger.warning("Invalid threads number");
         }
 
-      if (line.hasOption("verbose"))
+      // Set the verbose mode for extenal tools
+      if (line.hasOption("verbose")) {
         Settings.setStandardOutputForExecutable(true);
+        argsOptions++;
+      }
+
+      // Set Log file
+      if (line.hasOption("log")) {
+
+        argsOptions += 2;
+        try {
+          Handler fh = new FileHandler(line.getOptionValue("log"));
+          fh.setFormatter(Globals.LOG_FORMATTER);
+          logger.setUseParentHandlers(false);
+
+          // Handler[] handlers = logger.getHandlers();
+          // System.out.println(Arrays.toString(handlers));
+          // for (int i = 0; i < handlers.length; i++) {
+          // logger.removeHandler(handlers[i]);
+          // }
+
+          logger.addHandler(fh);
+        } catch (IOException e) {
+          logger.severe("Error while creating log file: " + e.getMessage());
+          System.exit(1);
+        }
+      }
+
+      // Set log level
+      if (line.hasOption("loglevel")) {
+
+        argsOptions += 2;
+        try {
+          logger.setLevel(Level.parse(line.getOptionValue("loglevel")
+              .toUpperCase()));
+        } catch (IllegalArgumentException e) {
+
+          logger
+              .warning("Unknown log level ("
+                  + line.getOptionValue("loglevel")
+                  + "). Accepted values are [SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST].");
+
+        }
+      }
 
     } catch (ParseException e) {
       System.err.println(e.getMessage());
       System.exit(1);
+    } catch (SecurityException e) {
+      logger.severe(e.getMessage());
+      System.exit(1);
     }
+
+    // If there is no arguments after the option, show help
+    if (argsOptions == args.length) {
+      System.err.println("No inputs files.");
+      System.err.println("type: "
+          + Globals.APP_NAME_LOWER_CASE + " -h for more informations.");
+      System.exit(1);
+    }
+
+    return argsOptions;
+  }
+
+  //
+  // Main method
+  //
+
+  /**
+   * Main method.
+   * @param args command line arguments
+   */
+  public static void main(final String[] args) throws IOException,
+      DocumentException {
 
     // Set log level
     logger.setLevel(Globals.LOG_LEVEL);
+    logger.getParent().getHandlers()[0].setFormatter(Globals.LOG_FORMATTER);
 
-    final File designFile = new File(args[0]);
-    final File genomeFile = args.length > 1 ? new File(args[1]) : null;
-    final File genomeMaskedFile = args.length > 2 ? new File(args[2]) : null;
-    final File outputDir = args.length > 3 ? new File(args[3]) : null;
+    // Parse the command line
+    final int argsOptions = parseCommandLine(args);
+
+    final File designFile = new File(args[argsOptions + 0]);
+    final File genomeFile =
+        args.length > argsOptions + 1 ? new File(args[argsOptions + 1]) : null;
+    final File genomeMaskedFile =
+        args.length > argsOptions + 2 ? new File(args[argsOptions + 2]) : null;
+    final File outputDir =
+        args.length > argsOptions + 3 ? new File(args[argsOptions + 3]) : null;
 
     Main cli = new Main();
 
