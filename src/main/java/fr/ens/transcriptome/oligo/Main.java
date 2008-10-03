@@ -163,6 +163,7 @@ public class Main {
     if (!d.isSkipPhase2())
       d.phase2FilterAllOligos(parseSequenceFilters(designElement));
 
+    // Don't skip this step, Add ons measurement need to be registered
     d.phase3CalcMeasurements(parseMeasurements(designElement));
 
     if (!d.isSkipPhase4())
@@ -233,16 +234,14 @@ public class Main {
     final int windowSize = this.design.getWindowSize();
     final int oligoSize = this.design.getOligoLength();
 
-    // Initialize the sequence filters
+    // Set the initialization parameter of the sequence filters
     for (SequenceFilter sq : list) {
       sq.setInitParameter("_genomefile", genomeFile.getAbsolutePath());
       sq.setInitParameter("_genomemaskedfile", genomeFile.getAbsolutePath());
       sq.setInitParameter("_outputdir", outputDir.getAbsolutePath());
       sq.setInitParameter("_windowsize", Integer.toString(windowSize));
       sq.setInitParameter("_oligolength", Integer.toString(oligoSize));
-
       sq.setInitParameter("_extensionfilter", Design.OLIGO_SUFFIX);
-      sq.init();
     }
 
     return list;
@@ -323,16 +322,14 @@ public class Main {
     final int windowSize = this.design.getWindowSize();
     final int oligoSize = this.design.getOligoLength();
 
-    // Initialize the measurements
-    if (!this.design.isSkipMeasurementsComputation())
-      for (Measurement m : list) {
-        m.setInitParameter("_genomefile", genomeFile.getAbsolutePath());
-        m.setInitParameter("_genomemaskedfile", genomeFile.getAbsolutePath());
-        m.setInitParameter("_outputdir", outputDir.getAbsolutePath());
-        m.setInitParameter("_windowsize", Integer.toString(windowSize));
-        m.setInitParameter("_oligolength", Integer.toString(oligoSize));
-        m.init();
-      }
+    // Set the initialization parameters of the measurements
+    for (Measurement m : list) {
+      m.setInitParameter("_genomefile", genomeFile.getAbsolutePath());
+      m.setInitParameter("_genomemaskedfile", genomeFile.getAbsolutePath());
+      m.setInitParameter("_outputdir", outputDir.getAbsolutePath());
+      m.setInitParameter("_windowsize", Integer.toString(windowSize));
+      m.setInitParameter("_oligolength", Integer.toString(oligoSize));
+    }
 
     return list;
   }
@@ -401,14 +398,13 @@ public class Main {
     final int windowSize = this.design.getWindowSize();
     final int oligoSize = this.design.getOligoLength();
 
-    // Initialize the measurements
-    for (MeasurementFilter m : list) {
-      m.setInitParameter("_genomefile", genomeFile.getAbsolutePath());
-      m.setInitParameter("_genomemaskedfile", genomeFile.getAbsolutePath());
-      m.setInitParameter("_outputdir", outputDir.getAbsolutePath());
-      m.setInitParameter("_windowsize", Integer.toString(windowSize));
-      m.setInitParameter("_oligolength", Integer.toString(oligoSize));
-      m.init();
+    // Set the initialization parameters of the measurements filters
+    for (MeasurementFilter mf : list) {
+      mf.setInitParameter("_genomefile", genomeFile.getAbsolutePath());
+      mf.setInitParameter("_genomemaskedfile", genomeFile.getAbsolutePath());
+      mf.setInitParameter("_outputdir", outputDir.getAbsolutePath());
+      mf.setInitParameter("_windowsize", Integer.toString(windowSize));
+      mf.setInitParameter("_oligolength", Integer.toString(oligoSize));
     }
 
     return list;

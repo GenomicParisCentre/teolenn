@@ -479,6 +479,10 @@ public class Design {
 
     logStartPhase("filter oligos");
 
+    // Init all the filters
+    for (SequenceFilter sf : listSequenceFilters)
+      sf.init();
+
     // Get the list of oligos files to process
     final File[] oligoFiles =
         FileUtils.listFilesByExtension(this.outputDir, Design.OLIGO_SUFFIX);
@@ -501,6 +505,10 @@ public class Design {
       return;
 
     logStartPhase("calc measurements");
+
+    // Initialize the measurements
+    for (Measurement m : listMeasurements)
+      m.init();
 
     // Get the list of filtered oligos files to process
     final File[] oligoFilteredFiles =
@@ -538,6 +546,10 @@ public class Design {
       return;
 
     logStartPhase("filter measurements");
+
+    // Initialize the measurement filters
+    for (MeasurementFilter mf : listMeasurementFilters)
+      mf.init();
 
     final File filteredOligoMeasurementsFile =
         new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_FILE);
