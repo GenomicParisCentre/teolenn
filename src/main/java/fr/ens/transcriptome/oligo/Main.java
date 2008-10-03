@@ -142,14 +142,41 @@ public class Main {
           + (this.design.getOutputDir() == null ? "." : ": "
               + this.design.getOutputDir()));
 
-    design.phase1CreateAllOligos();
-    design.phase2FilterAllOligos(parseSequenceFilters(designElement));
-    design.phase3CalcMeasurements(parseMeasurements(designElement));
-    design.phase4FilterMeasurements(parseMeasurementFilters(designElement),
-        true);
-    design.phase5Select(parseSelectWeights(designElement));
+    isSkipElementEnable(designElement, "sequencefilters");
+
+    final Design d = design;
+
+    // Test if phases must be skipped
+    d.setSkipSequenceFilters(isSkipElementEnable(designElement,
+        "sequencefilters"));
+    d.setSkipMeasurementsComputation(isSkipElementEnable(designElement,
+        "measurements"));
+    d.setSkipMeasurementsFilters(isSkipElementEnable(designElement,
+        "measurementfilters"));
+
+    // Start the computation
+    d.phase0();
+
+    if (!d.isSkipPhase1())
+      d.phase1CreateAllOligos();
+
+    if (!d.isSkipPhase2())
+      d.phase2FilterAllOligos(parseSequenceFilters(designElement));
+
+    d.phase3CalcMeasurements(parseMeasurements(designElement));
+
+    if (!d.isSkipPhase4())
+      d.phase4FilterMeasurements(parseMeasurementFilters(designElement), true);
+
+    d.phase5Select(parseSelectWeights(designElement));
   }
 
+  /**
+   * Parse the "sequencefilters" element of the DOM.
+   * @param rootElement root element of the document
+   * @return a list of SequenceFilter objects
+   * @throws IOException if an error occurs while parsing
+   */
   private List<SequenceFilter> parseSequenceFilters(final Element rootElement)
       throws IOException {
 
@@ -221,6 +248,12 @@ public class Main {
     return list;
   }
 
+  /**
+   * Parse the "measurements" element of the DOM.
+   * @param rootElement root element of the document
+   * @return a list of Measurement objects
+   * @throws IOException if an error occurs while parsing
+   */
   private List<Measurement> parseMeasurements(final Element rootElement)
       throws IOException {
 
@@ -291,18 +324,25 @@ public class Main {
     final int oligoSize = this.design.getOligoLength();
 
     // Initialize the measurements
-    for (Measurement m : list) {
-      m.setInitParameter("_genomefile", genomeFile.getAbsolutePath());
-      m.setInitParameter("_genomemaskedfile", genomeFile.getAbsolutePath());
-      m.setInitParameter("_outputdir", outputDir.getAbsolutePath());
-      m.setInitParameter("_windowsize", Integer.toString(windowSize));
-      m.setInitParameter("_oligolength", Integer.toString(oligoSize));
-      m.init();
-    }
+    if (!this.design.isSkipMeasurementsComputation())
+      for (Measurement m : list) {
+        m.setInitParameter("_genomefile", genomeFile.getAbsolutePath());
+        m.setInitParameter("_genomemaskedfile", genomeFile.getAbsolutePath());
+        m.setInitParameter("_outputdir", outputDir.getAbsolutePath());
+        m.setInitParameter("_windowsize", Integer.toString(windowSize));
+        m.setInitParameter("_oligolength", Integer.toString(oligoSize));
+        m.init();
+      }
 
     return list;
   }
 
+  /**
+   * Parse the "measurementfilters" element of the DOM.
+   * @param rootElement root element of the document
+   * @return a list of MeasurementFilter objects
+   * @throws IOException if an error occurs while parsing
+   */
   private List<MeasurementFilter> parseMeasurementFilters(
       final Element rootElement) throws IOException {
 
@@ -374,6 +414,12 @@ public class Main {
     return list;
   }
 
+  /**
+   * Parse the "select" element of the DOM.
+   * @param rootElement root element of the document
+   * @return a list of weights objects
+   * @throws IOException if an error occurs while parsing
+   */
   private Select.WeightsSetter parseSelectWeights(final Element rootElement)
       throws IOException {
 
@@ -443,13 +489,8 @@ public class Main {
                 (String) e2.getValue());
 
           }
-
         }
-
-        // TODO Auto-generated method stub
-
       }
-
     };
 
   }
@@ -499,6 +540,26 @@ public class Main {
   }
 
   /**
+   * Test if the phase of the element must be skipped.
+   * @param rootElement DOM root element
+   * @param elementName Name of the tag to test
+   * @return true if the phase of the element must be skipped
+   */
+  private final boolean isSkipElementEnable(final Element rootElement,
+      final String elementName) {
+
+    boolean result = false;
+
+    for (Iterator i = rootElement.elementIterator(elementName); i.hasNext();) {
+      final Element e = (Element) i.next();
+
+      result = Boolean.parseBoolean(e.attributeValue("skip").trim());
+    }
+
+    return result;
+  }
+
+  /**
    * Show version of the application.
    */
   private static void version() {
@@ -535,7 +596,7 @@ public class Main {
 
     // Show help message
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp(Globals.APP_NAME
+    formatter.printHelp(Globals.APP_NAME_LOWER_CASE
         + " [options] design [genome [genome_masked [output_dir]]]", options);
 
     System.exit(0);

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import fr.ens.transcriptome.oligo.filter.RedundancyFilter;
 import fr.ens.transcriptome.oligo.filter.SequenceFilter;
@@ -47,6 +48,8 @@ import fr.ens.transcriptome.oligo.util.FileUtils;
 import fr.ens.transcriptome.oligo.util.StringUtils;
 
 public class Design {
+
+  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   private static int WINDOW_SIZE_DEFAULT = 140; // 141;
   private static int OLIGO_SIZE_DEFAULT = 60;
@@ -69,6 +72,13 @@ public class Design {
   private File genomeFile;
   private File genomeMaskedFile;
   private File outputDir;
+
+  private boolean skipSequenceFilters;
+  private boolean skipMeasurementsComputation;
+  private boolean skipMeasurementsFilters;
+
+  private long startTimeCurrentPhase;
+  private long startTimeDesign;
 
   //
   // Getters
@@ -107,11 +117,35 @@ public class Design {
   }
 
   /**
-   * Set the output directory
+   * Get the output directory
    * @return the output directory
    */
   public File getOutputDir() {
     return outputDir;
+  }
+
+  /**
+   * Get if the sequences filters phase must be skipped.
+   * @return true if the sequences filters phase must be skipped.
+   */
+  public boolean isSkipSequenceFilters() {
+    return skipSequenceFilters;
+  }
+
+  /**
+   * Get if the measurements computation phase must be skipped.
+   * @return true if the measurement computation phase must be skipped.
+   */
+  public boolean isSkipMeasurementsComputation() {
+    return skipMeasurementsComputation;
+  }
+
+  /**
+   * Get if the measurements filters phase must be skipped.
+   * @return true if the measurement computation phase must be skipped.
+   */
+  public boolean isSkipMeasurementsFilters() {
+    return skipMeasurementsFilters;
   }
 
   //
@@ -156,6 +190,33 @@ public class Design {
    */
   public void setOutputDir(final File outputDir) {
     this.outputDir = outputDir;
+  }
+
+  /**
+   * Set if the sequences filters phase must be skipped.
+   * @param skipSequenceFilters if the sequences filters phase must be skipped.
+   */
+  public void setSkipSequenceFilters(final boolean skipSequenceFilters) {
+    this.skipSequenceFilters = skipSequenceFilters;
+  }
+
+  /**
+   * Set if the measurement computation phase must be skipped.
+   * @param skipMeasurementsComputation if the measurement computation phase
+   *            must be skipped.
+   */
+  public void setSkipMeasurementsComputation(
+      final boolean skipMeasurementsComputation) {
+    this.skipMeasurementsComputation = skipMeasurementsComputation;
+  }
+
+  /**
+   * Set if the measurement filter phase must be skipped.
+   * @param skipMeasurementsFilters if the measurement filter phase must be
+   *            skipped.
+   */
+  public void setSkipMeasurementsFilters(final boolean skipMeasurementsFilters) {
+    this.skipMeasurementsFilters = skipMeasurementsFilters;
   }
 
   //
@@ -333,16 +394,76 @@ public class Design {
   }
 
   /**
+   * Add log entry for start phase.
+   * @param phaseName Name of current the phase
+   */
+  private void logStartPhase(final String phaseName) {
+
+    this.startTimeCurrentPhase = System.currentTimeMillis();
+    logger.info("Start " + phaseName + " phase.");
+  }
+
+  /**
+   * Add log entry for end phase.
+   * @param phaseName Name of current the phase
+   */
+  private void logEndPhase(final String phaseName) {
+
+    final long endTimePhase = System.currentTimeMillis();
+
+    logger.info("Process phase "
+        + phaseName
+        + " in "
+        + StringUtils.toTimeHumanReadable(endTimePhase
+            - this.startTimeCurrentPhase) + " ms.");
+  }
+
+  public boolean isSkipPhase1() {
+
+    return isSkipMeasurementsComputation();
+  }
+
+  public boolean isSkipPhase2() {
+
+    return isSkipMeasurementsComputation() || isSkipSequenceFilters();
+  }
+
+  public boolean isSkipPhase3() {
+
+    return isSkipMeasurementsComputation();
+  }
+
+  public boolean isSkipPhase4() {
+
+    return isSkipMeasurementsFilters();
+  }
+
+  /**
+   * In this the initialization phase of the design.
+   */
+  public void phase0() throws IOException {
+
+    this.startTimeDesign = System.currentTimeMillis();
+  }
+
+  /**
    * In this phase, create all the oligos.
    * @throws IOException if an error occurs while creating all oligos
    */
   public void phase1CreateAllOligos() throws IOException {
+
+    if (isSkipPhase1())
+      return;
+
+    logStartPhase("create oligos");
 
     FastaOverlap.fastaOverlap(this.genomeFile, outputDir, Design.OLIGO_SUFFIX,
         this.oligoLength);
 
     FastaOverlap.fastaOverlap(this.genomeMaskedFile, outputDir,
         Design.OLIGO_MASKED_SUFFIX, this.oligoLength);
+
+    logEndPhase("create oligos");
   }
 
   /**
@@ -353,12 +474,19 @@ public class Design {
   public void phase2FilterAllOligos(
       final List<SequenceFilter> listSequenceFilters) throws IOException {
 
+    if (isSkipPhase2())
+      return;
+
+    logStartPhase("filter oligos");
+
     // Get the list of oligos files to process
     final File[] oligoFiles =
         FileUtils.listFilesByExtension(this.outputDir, Design.OLIGO_SUFFIX);
     Arrays.sort(oligoFiles);
 
     Design.filterSequencesFiles(oligoFiles, listSequenceFilters);
+
+    logEndPhase("filter oligos");
   }
 
   /**
@@ -369,16 +497,31 @@ public class Design {
   public void phase3CalcMeasurements(final List<Measurement> listMeasurements)
       throws IOException {
 
+    if (isSkipPhase3())
+      return;
+
+    logStartPhase("calc measurements");
+
     // Get the list of filtered oligos files to process
     final File[] oligoFilteredFiles =
-        FileUtils.listFilesByExtension(this.outputDir,
-            Design.OLIGO_FILTERED_SUFFIX);
+        FileUtils.listFilesByExtension(this.outputDir, isSkipSequenceFilters()
+            ? Design.OLIGO_SUFFIX : Design.OLIGO_FILTERED_SUFFIX);
     Arrays.sort(oligoFilteredFiles);
+
+    // Test if input files exists
+    if (oligoFilteredFiles == null || oligoFilteredFiles.length == 0) {
+
+      logger.severe("No file found for oligo measurement computation.");
+      throw new RuntimeException(
+          "No file found for oligo measurement computation.");
+    }
 
     // Calc oligos measurements
     File oligoMeasurementsFile = new File(outputDir, OLIGO_MEASUREMENTS_FILE);
     Design.createMeasurementsFile(oligoFilteredFiles, oligoMeasurementsFile,
         listMeasurements, null);
+
+    logEndPhase("calc measurements");
   }
 
   /**
@@ -391,6 +534,11 @@ public class Design {
       final List<MeasurementFilter> listMeasurementFilters,
       final boolean overvriteStatFile) throws IOException {
 
+    if (isSkipPhase4())
+      return;
+
+    logStartPhase("filter measurements");
+
     final File filteredOligoMeasurementsFile =
         new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_FILE);
     final File statsFile =
@@ -399,6 +547,8 @@ public class Design {
     Design.filterMeasurementsFile(new File(OLIGO_MEASUREMENTS_FILE),
         filteredOligoMeasurementsFile, overvriteStatFile ? statsFile : null,
         listMeasurementFilters);
+
+    logEndPhase("filter measurements");
   }
 
   /**
@@ -409,14 +559,28 @@ public class Design {
   public void phase5Select(final Select.WeightsSetter wSetter)
       throws IOException {
 
+    logStartPhase("select");
+
     final File filteredOligoMeasurementsFile =
         new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_FILE);
     final File statsFile =
         new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_STATS_FILE);
     final File selectedOligos = new File(this.outputDir, SELECTED_FILE);
 
+    if (!statsFile.exists()) {
+
+      logger.severe("No stats file found.");
+      throw new RuntimeException("No stats file found.");
+    }
+
     Select.select(filteredOligoMeasurementsFile, statsFile, selectedOligos,
         wSetter, this.windowSize);
+
+    logEndPhase("select");
+    final long endTimeDesign = System.currentTimeMillis();
+    logger.info("Process the design in "
+        + StringUtils.toTimeHumanReadable(endTimeDesign - this.startTimeDesign)
+        + " ms.");
   }
 
   //

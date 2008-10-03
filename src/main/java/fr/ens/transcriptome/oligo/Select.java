@@ -27,18 +27,104 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.oligo.measurement.Measurement;
+import fr.ens.transcriptome.oligo.measurement.SimpleMeasurement;
 
+/**
+ * This class implements the algorithm used for oligo selection
+ * @author Laurent Jourdren
+ */
 public class Select {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   private static final float MIN_SCORE = -1 * Float.MAX_VALUE;
 
+  /**
+   * This abstract class allow the user to set weights and other parameters
+   * before selection.
+   * @author Laurent Jourdren
+   */
   public static abstract class WeightsSetter {
 
-    public abstract void setWeights(SequenceMeasurements sm);
+    /**
+     * Define the weigths to use for selection
+     * @param sm SequenceMeasurement that contains all the measurements to use
+     *            by the selection algorithm.
+     */
+    public abstract void setWeights(final SequenceMeasurements sm);
   };
 
+  private static class GlobalScoreMeasurement extends SimpleMeasurement {
+
+    /**
+     * Calc the measurement of a sequence.
+     * @param sequence the sequence to use for the measurement
+     * @return an object as result
+     */
+    public Object calcMesurement(final Sequence sequence) {
+      return null;
+    }
+
+    /**
+     * Get the description of the measurement.
+     * @return the description of the measurement
+     */
+    public String getDescription() {
+      return "Global Score";
+    }
+
+    /**
+     * Get the name of the measurement.
+     * @return the name of the measurement
+     */
+    public String getName() {
+      return "GlobalScore";
+    }
+
+    /**
+     * Get the type of the result of calcMeasurement.
+     * @return the type of the measurement
+     */
+    public Object getType() {
+      return Float.class;
+    }
+
+    /**
+     * Run the initialization phase of the parameter.
+     * @throws IOException if an error occurs while the initialization phase
+     */
+    public void init() throws IOException {
+    }
+
+    /**
+     * Parse a string to an object return as calcMeasurement.
+     * @param s String to parse
+     * @return an object
+     */
+    public Object parse(String s) {
+      return null;
+    }
+
+    /**
+     * Set a parameter for the filter.
+     * @param key key for the parameter
+     * @param value value of the parameter
+     */
+    public void setInitParameter(String key, String value) {
+    }
+
+  }
+
+  /**
+   * Proceed to the oligo selection.
+   * @param inputFile measurements input file
+   * @param statsFile stats file for the measurements input file
+   * @param outputFile output file to generate with the selected oligos
+   * @param weightsSetters Weight to apply on measurements
+   * @param windowSize size of the window
+   * @throws IOException if an error occurs while reading/writing input/output
+   *             files
+   */
   public static void select(final File inputFile, final File statsFile,
       File outputFile, final WeightsSetter weightsSetters, final int windowSize)
       throws IOException {
@@ -55,6 +141,7 @@ public class Select {
     int indexStartPosition = -1;
     String currentScafold = null;
     Object[] values = null;
+    int valuesLength = 0;
 
     int infoLastIndexStartPosition = -1;
     int infoCountWindows = 1;
@@ -78,10 +165,14 @@ public class Select {
         indexScaffold = sm.getIndexMeasurment("scaffold");
         indexStartPosition = sm.getIndexMeasurment("start");
         values = sm.getArrayMeasurementValues();
+        valuesLength = values.length;
 
         // Add measurement field in output file
         for (Measurement m : sm.getMeasurements())
           smToWrite.addMesurement(m);
+
+        // Add Global score to the output file
+        smToWrite.addMesurement(new GlobalScoreMeasurement());
 
         // Read stats
         SequenceMesurementsStatReader smsr =
@@ -177,7 +268,13 @@ public class Select {
 
         bestScore = score;
         smToWrite.setId(id);
-        smToWrite.setArrayMeasurementValues(values.clone());
+
+        // Add the global score
+        final Object[] valuesToWrite = new Object[valuesLength + 1];
+        System.arraycopy(values, 0, valuesToWrite, 0, valuesLength);
+        valuesToWrite[valuesLength] = score;
+        
+        smToWrite.setArrayMeasurementValues(valuesToWrite);
       }
 
       // if (debug)
