@@ -29,6 +29,10 @@ import java.util.logging.Logger;
 import fr.ens.transcriptome.oligo.Globals;
 import fr.ens.transcriptome.oligo.measurement.MeasurementRegistery;
 
+/**
+ * This class define a registery for sequence filters.
+ * @author Laurent Jourdren
+ */
 public class SequenceFilterRegistery {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
