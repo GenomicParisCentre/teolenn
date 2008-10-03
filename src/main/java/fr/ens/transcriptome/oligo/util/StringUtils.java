@@ -24,7 +24,12 @@ package fr.ens.transcriptome.oligo.util;
 
 public final class StringUtils {
 
-  public static String basename(String filename) {
+  /**
+   * Get the basename of the filename.
+   * @param filename The filename
+   * @return the basename of the file
+   */
+  public static String basename(final String filename) {
 
     if (filename == null)
       return null;
@@ -34,6 +39,11 @@ public final class StringUtils {
     return filename.substring(0, pos);
   }
 
+  /**
+   * Get the extension of a filename.
+   * @param filename The filename
+   * @return the exstension of the filename
+   */
   public static String extension(String filename) {
 
     if (filename == null)
@@ -44,6 +54,11 @@ public final class StringUtils {
     return filename.substring(pos, filename.length());
   }
 
+  /**
+   * Remove non alpha char at the end of String.
+   * @param s String to handle
+   * @return the string without the last non end of string
+   */
   public static final String removeNonAlphaAtEndOfString(final String s) {
 
     if (s == null)
@@ -58,6 +73,22 @@ public final class StringUtils {
       return s.substring(0, len - 1);
 
     return s;
+  }
+
+  /**
+   * Convert a number of milliseconds into a human reading string.
+   * @param time time in ms
+   * @return a the time in ms
+   */
+  public static final String toTimeHumanReadable(final long time) {
+
+    long min = time / (60 * 1000);
+    long minRest = time % (60 * 1000);
+    long sec = minRest / 1000;
+
+    long mili = minRest % 1000;
+
+    return String.format("%02d:%02d.%03d", min, sec, mili);
   }
 
 }
