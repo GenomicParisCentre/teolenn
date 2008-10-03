@@ -147,9 +147,13 @@ public class ComplexityMeasurement extends FloatMeasurement {
     // Get the current oligo file
     if ("currentOligoFile".equals(key)) {
 
-      try {
+      final String ext =
+          ".filtered.oligo".equals(StringUtils.extension(value))
+              ? ".filtered" : "";
 
-        File f = new File(StringUtils.basename(value) + ".filtered.masked");
+      final File f = new File(StringUtils.basename(value) + ext + ".masked");
+
+      try {
 
         // Set the oligo masked file to read
         this.si = new SequenceIterator(f);
@@ -157,7 +161,7 @@ public class ComplexityMeasurement extends FloatMeasurement {
       } catch (IOException e) {
 
         throw new RuntimeException(
-            "Unable to open oligo masked  sequence file: " + value);
+            "Unable to open oligo masked  sequence file: " + f.getName());
       }
 
     }
