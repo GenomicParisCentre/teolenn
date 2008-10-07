@@ -449,6 +449,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
     this.oligoLength = oligoLength;
     this.genomeFile = genomeFile;
     this.baseDir = genomeFile.getAbsoluteFile().getParentFile();
+    this.maxPrefixLength = maxPrefixLength;
 
     init();
   }
