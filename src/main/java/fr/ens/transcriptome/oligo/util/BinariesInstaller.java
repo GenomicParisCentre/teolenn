@@ -97,7 +97,7 @@ public class BinariesInstaller {
     final String arch = System.getProperty("os.arch");
 
     logger
-        .info("Try to install \"" + file + "\" for " + os + " (" + arch + ")");
+        .fine("Try to install \"" + file + "\" for " + os + " (" + arch + ")");
 
     final boolean linux = isLinux();
     final boolean macos = isMacOsX();
@@ -126,7 +126,7 @@ public class BinariesInstaller {
     // install the file
     install(inputPath, file, outputPath);
 
-    logger.info("Successful installation of " + file + " in " + outputPath);
+    logger.fine("Successful installation of " + file + " in " + outputPath);
     return outputPath + "/" + file;
   }
 
