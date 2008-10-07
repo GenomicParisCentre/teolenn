@@ -219,9 +219,11 @@ public class Main {
         if (f == null)
           logger.warning("Unknown sequence filter: " + filterName);
         else {
-          for (Object key : properties.keySet())
+
+          for (Map.Entry<Object, Object> entry : properties.entrySet())
             // Set the initialization parameters for the sequence filter
-            f.setInitParameter((String) key, (String) properties.get(key));
+            f.setInitParameter((String) entry.getKey(), (String) entry
+                .getValue());
 
           list.add(f);
         }
@@ -308,8 +310,9 @@ public class Main {
         else {
 
           // Set the initialization parameters for the measurement
-          for (Object key : properties.keySet())
-            m.setInitParameter((String) key, (String) properties.get(key));
+          for (Map.Entry<Object, Object> entry : properties.entrySet())
+            m.setInitParameter((String) entry.getKey(), (String) entry
+                .getValue());
 
           list.add(m);
         }
@@ -384,8 +387,9 @@ public class Main {
         else {
 
           // Set the initialization parameters for the measurement filters
-          for (Object key : properties.keySet())
-            mf.setInitParameter((String) key, (String) properties.get(key));
+          for (Map.Entry<Object, Object> entry : properties.entrySet())
+            mf.setInitParameter((String) entry.getKey(), (String) entry
+                .getValue());
 
           list.add(mf);
         }

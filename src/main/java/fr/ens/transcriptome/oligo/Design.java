@@ -36,16 +36,16 @@ import fr.ens.transcriptome.oligo.util.StringUtils;
 
 public class Design {
 
-  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
+  private static final Logger logger = Logger.getLogger(Globals.APP_NAME);
 
-  private static int WINDOW_SIZE_DEFAULT = 140; // 141;
-  private static int OLIGO_SIZE_DEFAULT = 60;
-  private static int UNICITY_MAX_PREFIX_LEN = 30;
+  private static final int WINDOW_SIZE_DEFAULT = 140; // 141;
+  private static final int OLIGO_SIZE_DEFAULT = 60;
+  //private static final int UNICITY_MAX_PREFIX_LEN = 30;
 
-  public static String OLIGO_SUFFIX = ".oligo";
-  public static String OLIGO_MASKED_SUFFIX = ".masked";
-  public static String OLIGO_FILTERED_SUFFIX = ".filtered.oligo";
-  public static String OLIGO_MASKED_FILTERED_SUFFIX = ".filtered.masked";
+  public static final String OLIGO_SUFFIX = ".oligo";
+  public static final String OLIGO_MASKED_SUFFIX = ".masked";
+  public static final String OLIGO_FILTERED_SUFFIX = ".filtered.oligo";
+  public static final String OLIGO_MASKED_FILTERED_SUFFIX = ".filtered.masked";
 
   private static final String OLIGO_MEASUREMENTS_FILE = "oligo.mes";
   private static final String OLIGO_MEASUREMENTS_FILTERED_FILE = "filtered.mes";
