@@ -41,7 +41,7 @@ import fr.ens.transcriptome.oligo.util.FileUtils;
  * This class define a writer for statistics of sequences measurements.
  * @author Laurent Jourdren
  */
-public class SequenceMesurementsStatWriter {
+public class SequenceMeasurementsStatWriter {
 
   private Writer writer;
 
@@ -113,7 +113,7 @@ public class SequenceMesurementsStatWriter {
    * Public constructor.
    * @param file file to write
    */
-  public SequenceMesurementsStatWriter(final File file) throws IOException {
+  public SequenceMeasurementsStatWriter(final File file) throws IOException {
 
     if (file == null)
       throw new NullPointerException("File is null");

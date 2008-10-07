@@ -615,6 +615,7 @@ public class Main {
     options.addOption("licence", false,
         "display information about the licence of this software");
     options.addOption("v", "verbose", false, "display external tools output");
+    options.addOption("silent", false, "don't show log on console");
 
     options.addOption(OptionBuilder.withArgName("number").hasArg()
         .withDescription("number of threads to use").create("threads"));
@@ -697,18 +698,16 @@ public class Main {
           fh.setFormatter(Globals.LOG_FORMATTER);
           logger.setUseParentHandlers(false);
 
-          // Handler[] handlers = logger.getHandlers();
-          // System.out.println(Arrays.toString(handlers));
-          // for (int i = 0; i < handlers.length; i++) {
-          // logger.removeHandler(handlers[i]);
-          // }
-
           logger.addHandler(fh);
         } catch (IOException e) {
           logger.severe("Error while creating log file: " + e.getMessage());
           System.exit(1);
         }
       }
+
+      // Set the silent option
+      if (line.hasOption("silent"))
+        logger.setUseParentHandlers(false);
 
       // Set log level
       if (line.hasOption("loglevel")) {

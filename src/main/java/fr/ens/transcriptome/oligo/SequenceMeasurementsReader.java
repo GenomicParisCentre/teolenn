@@ -35,7 +35,7 @@ import fr.ens.transcriptome.oligo.util.FileUtils;
  * This class implements a reader for SequenceMeasurement.
  * @author Laurent Jourdren
  */
-public class SequenceMeasurementReader {
+public class SequenceMeasurementsReader {
 
   private BufferedReader br;
   private Measurement[] ms;
@@ -116,7 +116,7 @@ public class SequenceMeasurementReader {
    * Public constructor.
    * @param file Sequence measurement file to parse
    */
-  public SequenceMeasurementReader(final File file) throws IOException {
+  public SequenceMeasurementsReader(final File file) throws IOException {
 
     if (file == null)
       throw new NullPointerException("File is null");

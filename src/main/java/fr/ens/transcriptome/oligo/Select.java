@@ -130,8 +130,8 @@ public class Select {
       throws IOException {
 
     // Open measurement file
-    final SequenceMeasurementReader smr =
-        new SequenceMeasurementReader(inputFile);
+    final SequenceMeasurementsReader smr =
+        new SequenceMeasurementsReader(inputFile);
 
     // Object used to read oligo measurement
     SequenceMeasurements sm = null;
@@ -175,8 +175,8 @@ public class Select {
         smToWrite.addMesurement(new GlobalScoreMeasurement());
 
         // Read stats
-        SequenceMesurementsStatReader smsr =
-            new SequenceMesurementsStatReader(statsFile, sm);
+        SequenceMeasurementsStatReader smsr =
+            new SequenceMeasurementsStatReader(statsFile, sm);
         smsr.read();
 
         // Set the weights
@@ -207,20 +207,11 @@ public class Select {
 
         // Write best
         if (bestScore > MIN_SCORE) {
-          // if (debug)
-          // System.out.println("*** select "
-          // + smToWrite.getId() + " for window " + infoCountWindows
-          // + "bestScore=" + bestScore + " ***");
           smw.writeSequenceMesurement(smToWrite);
 
           infoCountSelectedOligos++;
         } else
           logger.severe("Bad case while selecting (1): " + bestScore);
-
-        // System.out.println("scaffold: "
-        // + currentScafold + "\t" + infoCountWindows + " windows, "
-        // + infoLastIndexStartPosition + " pb.\t("
-        // + (infoLastIndexStartPosition / windowSize) + " theoric windows)");
 
         logger.fine(String.format("scaffold: %s\t%d windows (%.2f theoric), "
             + "%d oligos selected, %d pb in scaffold, %d pb windows.",
@@ -245,10 +236,7 @@ public class Select {
       if (pos >= max) {
         // Write best
         if (bestScore > MIN_SCORE) {
-          // if (debug)
-          // System.out.println("*** select "
-          // + smToWrite.getId() + " for window " + infoCountWindows
-          // + "\tbestScore=" + bestScore + " ***");
+
           smw.writeSequenceMesurement(smToWrite);
 
           infoCountSelectedOligos++;
@@ -273,18 +261,9 @@ public class Select {
         final Object[] valuesToWrite = new Object[valuesLength + 1];
         System.arraycopy(values, 0, valuesToWrite, 0, valuesLength);
         valuesToWrite[valuesLength] = score;
-        
+
         smToWrite.setArrayMeasurementValues(valuesToWrite);
       }
-
-      // if (debug)
-      // System.out.println("window="
-      // + infoCountWindows + "\tid=" + id + "\tpos=" + pos + "\tmax=" + max
-      // + "\tscore=" + score + "\tbestscore=" + bestScore);
-
-      // if ((pos - infoLastIndexStartPosition) > 1)
-      // System.out.println("last: "
-      // + infoLastIndexStartPosition + "\tpos=" + pos);
 
       infoLastIndexStartPosition = pos;
     }

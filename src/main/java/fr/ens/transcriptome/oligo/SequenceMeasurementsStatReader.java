@@ -36,7 +36,7 @@ import fr.ens.transcriptome.oligo.util.FileUtils;
  * This class define a reader for statistics of sequences measurements.
  * @author Laurent Jourdren
  */
-public class SequenceMesurementsStatReader {
+public class SequenceMeasurementsStatReader {
 
   private BufferedReader br;
   private SequenceMeasurements sm;
@@ -98,7 +98,7 @@ public class SequenceMesurementsStatReader {
    * @param file File to read
    * @param sm a SequenceMeasurement from data used to generate statistics
    */
-  public SequenceMesurementsStatReader(final File file,
+  public SequenceMeasurementsStatReader(final File file,
       final SequenceMeasurements sm) throws IOException {
 
     if (file == null)

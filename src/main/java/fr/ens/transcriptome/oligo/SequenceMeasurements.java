@@ -208,6 +208,22 @@ public class SequenceMeasurements {
   }
 
   /**
+   * Get the weight of a measurement.
+   * @param m Measurement to query
+   * @return the weight of a measurement or NaN if the measurement doesn't
+   *         exists.
+   */
+  public float getWeight(final Measurement m) {
+
+    final Float result = this.weights.get(m);
+
+    if (result == null)
+      return Float.NaN;
+
+    return result;
+  }
+
+  /**
    * Set the weight of a measurement.
    * @param m Measurement
    * @param weight weight to set
