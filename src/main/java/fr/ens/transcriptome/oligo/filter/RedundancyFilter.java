@@ -274,6 +274,7 @@ public class RedundancyFilter implements SequenceFilter {
       throws IOException {
 
     this.referenceFile = referenceFile;
+    this.baseDir = referenceFile.getParentFile();
     this.oligosFiles = oligosFiles;
   }
 
