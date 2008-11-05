@@ -45,11 +45,13 @@ public class BinariesInstaller {
       return;
     }
 
-    InputStream is =
-        BinariesInstaller.class.getResourceAsStream(inputPath + "/" + file);
+    final String resourcePath = inputPath.toLowerCase() + "/" + file;
+    final InputStream is =
+        BinariesInstaller.class.getResourceAsStream(resourcePath);
 
     if (is == null)
-      throw new FileNotFoundException("Unable to find the correct resource");
+      throw new FileNotFoundException("Unable to find the correct resource ("
+          + resourcePath + ")");
 
     final File outputDir = new File(outputPath);
 
@@ -71,7 +73,7 @@ public class BinariesInstaller {
     is.close();
     fos.close();
 
-    outputFile.setExecutable(true);
+    FileUtils.setExecutable(outputFile, true);
   }
 
   /**
@@ -104,15 +106,15 @@ public class BinariesInstaller {
 
     if (!(linux || macos))
       throw new FileNotFoundException(
-          "There is no executable for your plateform included in "
-              + Globals.APP_NAME);
+          "There is no executable for your plateform ("
+              + os + ") included in " + Globals.APP_NAME);
 
-    if (linux && !"i386".equals(arch))
+    if (linux && !("i386".equals(arch) || "amd64".equals(arch)))
       throw new FileNotFoundException(
-          "There is no executable for your architecture included in "
-              + Globals.APP_NAME);
+          "There is no executable for your architecture ("
+              + arch + ") included in " + Globals.APP_NAME);
 
-    final String inputPath = "/files/" + os + "/" + arch;
+    final String inputPath = "/" + os + "/" + arch;
 
     final String outputPath =
         "/tmp/" + Globals.APP_NAME_LOWER_CASE + "/" + Globals.APP_VERSION;

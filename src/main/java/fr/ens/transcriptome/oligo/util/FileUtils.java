@@ -33,7 +33,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
@@ -43,7 +42,7 @@ import java.util.zip.GZIPOutputStream;
  * This class contains utilty methods.
  * @author Laurent Jourdren
  */
-public class FileUtils {
+public final class FileUtils {
 
   /**
    * The default size of the buffer.
@@ -85,7 +84,7 @@ public class FileUtils {
 
     if (file.isFile())
       file.delete();
-    
+
     final FileOutputStream outFile = new FileOutputStream(file);
     final FileChannel outChannel = outFile.getChannel();
 
@@ -195,6 +194,52 @@ public class FileUtils {
     }
 
     return prefix;
+  }
+
+  /**
+   * Set executable bits on file on *nix.
+   * @param file File to handle
+   * @param executable If true, sets the access permission to allow execute
+   *            operations; if false to disallow execute operations
+   * @param ownerOnly If true, the execute permission applies only to the
+   *            owner's execute permission; otherwise, it applies to everybody.
+   *            If the underlying file system can not distinguish the owner's
+   *            execute permission from that of others, then the permission will
+   *            apply to everybody, regardless of this value.
+   * @return true if and only if the operation succeeded
+   * @throws IOException
+   */
+  public static boolean setExecutable(final File file,
+      final boolean executable, final boolean ownerOnly) throws IOException {
+
+    if (file == null)
+      return false;
+
+    if (!file.exists() || !file.isFile())
+      throw new FileNotFoundException(file.getAbsolutePath());
+
+    final String cmd =
+        "chmod " + (ownerOnly ? "u+x " : "ugo+x ") + file.getAbsolutePath();
+
+    ProcessUtils.exec(cmd, false);
+
+    return true;
+  }
+
+  /**
+   * Set executable bits on file on *nix.
+   * @param file File to handle
+   * @param ownerOnly If true, the execute permission applies only to the
+   *            owner's execute permission; otherwise, it applies to everybody.
+   *            If the underlying file system can not distinguish the owner's
+   *            execute permission from that of others, then the permission will
+   *            apply to everybody, regardless of this value.
+   * @return true if and only if the operation succeeded
+   * @throws IOException
+   */
+  public static boolean setExecutable(final File file, boolean executable)
+      throws IOException {
+    return setExecutable(file, executable, true);
   }
 
 }
