@@ -1,0 +1,3 @@
+#Software	version	compile command
+gt	1.2.0	make cairo=no curses=no 64bit=yes static=yes
+soap	1.11	make
