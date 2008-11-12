@@ -106,7 +106,47 @@ public final class ProcessUtils {
 
     FileUtils.copy(std, fos);
 
+    InputStream err = p.getInputStream();
+    BufferedReader errr = new BufferedReader(new InputStreamReader(err));
+
+    String l2 = null;
+
+    while ((l2 = errr.readLine()) != null)
+      System.err.println(l2);
+
     fos.close();
+    errr.close();
+
+    final long endTime = System.currentTimeMillis();
+
+    logger.fine("Done in " + (endTime - startTime) + " ms.");
+  }
+
+  /**
+   * Execute a command with the OS and return the output in a string.
+   * @param cmd Command to execute
+   * @return a string with the output the command
+   * @throws IOException if an error occurs while running the process
+   */
+  public static String execToString(String cmd) throws IOException {
+
+    logger.fine("execute: " + cmd);
+
+    final long startTime = System.currentTimeMillis();
+
+    Process p = Runtime.getRuntime().exec(cmd);
+
+    InputStream std = p.getInputStream();
+
+    BufferedReader stdr = new BufferedReader(new InputStreamReader(std));
+
+    StringBuffer sb = new StringBuffer();
+    String l1 = null;
+
+    while ((l1 = stdr.readLine()) != null) {
+      sb.append(l1);
+      sb.append('\n');
+    }
 
     InputStream err = p.getInputStream();
     BufferedReader errr = new BufferedReader(new InputStreamReader(err));
@@ -116,11 +156,14 @@ public final class ProcessUtils {
     while ((l2 = errr.readLine()) != null)
       System.err.println(l2);
 
+    stdr.close();
     errr.close();
 
     final long endTime = System.currentTimeMillis();
 
     logger.fine("Done in " + (endTime - startTime) + " ms.");
+
+    return sb.toString();
   }
 
   public static class ParalellExec extends SelfLoopHandler {
