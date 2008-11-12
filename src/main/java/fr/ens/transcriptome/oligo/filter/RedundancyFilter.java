@@ -126,6 +126,7 @@ public class RedundancyFilter implements SequenceFilter {
 
     this.br =
         FileUtils.createBufferedReader(new File(this.baseDir, chrSequence
+            .replace(' ', '_')
             + ".sop"));
 
     // Clear current results
