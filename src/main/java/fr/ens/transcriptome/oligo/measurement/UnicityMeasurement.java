@@ -28,10 +28,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.ens.transcriptome.oligo.FastaExplode;
+import fr.ens.transcriptome.oligo.Globals;
 import fr.ens.transcriptome.oligo.Sequence;
 import fr.ens.transcriptome.oligo.Settings;
 import fr.ens.transcriptome.oligo.util.BinariesInstaller;
@@ -44,6 +47,8 @@ import fr.ens.transcriptome.oligo.util.StringUtils;
  * @author Laurent Jourdren
  */
 public final class UnicityMeasurement extends FloatMeasurement {
+
+  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   private static final String SEQ_GZ_WITHOUT_X_EXTENSION = ".seqX.fa.gz";
   private static final String MUP_EXTENSION = ".mup";
@@ -203,10 +208,6 @@ public final class UnicityMeasurement extends FloatMeasurement {
         throw new IOException("Can't create directory for fm index: "
             + fmidxDir.getAbsolutePath());
 
-    String BASENAME = "scaffold";
-
-    File fmidxFile = new File(fmidxDir, BASENAME);
-
     File[] filesIndex = FileUtils.listFilesByExtension(idxDir, ".cpl.prj");
 
     Arrays.sort(filesIndex);
@@ -225,6 +226,9 @@ public final class UnicityMeasurement extends FloatMeasurement {
       }
 
     }
+
+    File fmidxFile =
+        new File(fmidxDir, FileUtils.getPrefix(idxDir.listFiles()));
 
     final String index = sb.toString();
 
@@ -387,6 +391,17 @@ public final class UnicityMeasurement extends FloatMeasurement {
     if (Settings.getGenomeToolsPath() == null)
       Settings.setGenomeToolsPath(BinariesInstaller.install("gt"));
 
+    // Create gtdata directory if not exists
+    final File gtDataDir =
+        new File((new File(Settings.getGenomeToolsPath())).getParent(),
+            "gtdata");
+    if (!gtDataDir.exists())
+      gtDataDir.mkdirs();
+
+    final Level l = logger.getLevel();
+    if (l.equals(Level.FINE) || l.equals(Level.FINER) || l.equals(Level.FINEST) || l.equals(Level.INFO))
+      logger.info("genometools version: " + getGenomeToolsVersion());
+
     // Reset Histogram
     this.resetHistogram(0, this.oligoLength);
 
@@ -405,8 +420,32 @@ public final class UnicityMeasurement extends FloatMeasurement {
     build_fmindex(files);
 
     // Build unique sub
-    run_uniquesub(files, StringUtils.removeNonAlphaAtEndOfString(FileUtils
-        .getPrefix(files)), this.maxPrefixLength);
+    run_uniquesub(files, FileUtils.getPrefix(files), this.maxPrefixLength);
+  }
+
+  /**
+   * Get the the version of genometools.
+   * @return the version of genometools executable
+   */
+  private String getGenomeToolsVersion() {
+
+    final String cmd = Settings.getGenomeToolsPath() + " -version";
+
+    try {
+      final String output = ProcessUtils.execToString(cmd);
+
+      if (output != null) {
+
+        String[] lines = output.split("\n");
+
+        if (lines != null && lines.length > 0)
+          return lines[0];
+      }
+    } catch (IOException e) {
+      logger.severe("Unable to get genometools version: " + e.getMessage());
+    }
+
+    return "";
   }
 
   //
