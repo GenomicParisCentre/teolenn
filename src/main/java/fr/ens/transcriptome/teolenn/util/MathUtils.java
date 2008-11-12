@@ -1,28 +1,27 @@
 /*
- *                      Nividic development code
+ *                  Teolenn development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU Lesser General Public Licence.  This should
- * be distributed with the code.  If you do not have a copy,
+ * terms of the GNU General Public License version 2 or later. This
+ * should be distributed with the code. If you do not have a copy,
  * see:
  *
- *      http://www.gnu.org/copyleft/lesser.html
+ *      http://www.gnu.org/licenses/gpl-2.0.txt
  *
  * Copyright for this code is held jointly by the microarray platform
  * of the École Normale Supérieure and the individual authors.
  * These should be listed in @author doc comments.
  *
- * For more information on the Nividic project and its aims,
- * or to join the Nividic mailing list, visit the home page
+ * For more information on the Teolenn project and its aims,
+ * or to join the Teolenn mailing list, visit the home page
  * at:
  *
- *      http://www.transcriptome.ens.fr/nividic
+ *      http://www.transcriptome.ens.fr/teolenn
  *
  */
 
 package fr.ens.transcriptome.teolenn.util;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.commons.math.stat.descriptive.rank.Median;
