@@ -38,9 +38,11 @@ public class Design {
 
   private static final Logger logger = Logger.getLogger(Globals.APP_NAME);
 
-  private static final int WINDOW_SIZE_DEFAULT = 140; // 141;
-  private static final int OLIGO_SIZE_DEFAULT = 60;
-  //private static final int UNICITY_MAX_PREFIX_LEN = 30;
+  private static final int WINDOW_LEN_DEFAULT = 140; // 141;
+  private static final int WINDOW_STEP_DEFAULT = 140;
+  private static final int OLIGO_LEN_DEFAULT = 60;
+
+  // private static final int UNICITY_MAX_PREFIX_LEN = 30;
 
   public static final String OLIGO_SUFFIX = ".oligo";
   public static final String OLIGO_MASKED_SUFFIX = ".masked";
@@ -53,12 +55,13 @@ public class Design {
       "filtered.stats";
   private static final String SELECTED_FILE = "select.mes";
 
-  private int windowSize = WINDOW_SIZE_DEFAULT;
-  private int oligoLength = OLIGO_SIZE_DEFAULT;
+  private int windowLenght = WINDOW_LEN_DEFAULT;
+  private int oligoLength = OLIGO_LEN_DEFAULT;
+  private int windowStep = WINDOW_STEP_DEFAULT;
 
   private File genomeFile;
   private File genomeMaskedFile;
-  private File outputDir;
+  private File outputDir = new File(".");
 
   private boolean skipSequenceFilters;
   private boolean skipMeasurementsComputation;
@@ -72,11 +75,19 @@ public class Design {
   //
 
   /**
-   * Get the window size of the design.
-   * @return the window size
+   * Get the window length of the design.
+   * @return the window length
    */
-  public int getWindowSize() {
-    return windowSize;
+  public int getWindowLength() {
+    return windowLenght;
+  }
+
+  /**
+   * Get the window step of the design.
+   * @return the window step
+   */
+  public int getWindowStep() {
+    return windowStep;
   }
 
   /**
@@ -135,16 +146,33 @@ public class Design {
     return skipMeasurementsFilters;
   }
 
+  /**
+   * Test if genome masked file is set.
+   * @return true if genome masked file is set
+   */
+  public boolean isGenomeMaskedFile() {
+
+    return this.genomeMaskedFile != null;
+  }
+
   //
   // Setters
   //
 
   /**
-   * Set the window size.
-   * @param windowSize the window size to set
+   * Set the window length.
+   * @param windowLength the window length to set
    */
-  public void setWindowSize(final int windowSize) {
-    this.windowSize = windowSize;
+  public void setWindowLength(final int windowLength) {
+    this.windowLenght = windowLength;
+  }
+
+  /**
+   * Set the window step.
+   * @param windowStep the window step to set
+   */
+  public void setWindowStep(final int windowStep) {
+    this.windowStep = windowStep;
   }
 
   /**
@@ -168,6 +196,7 @@ public class Design {
    * @param genomeMaskedFile the genome masked file
    */
   public void setGenomeMaskedFile(final File genomeMaskedFile) {
+
     this.genomeMaskedFile = genomeMaskedFile;
   }
 
@@ -190,7 +219,7 @@ public class Design {
   /**
    * Set if the measurement computation phase must be skipped.
    * @param skipMeasurementsComputation if the measurement computation phase
-   *            must be skipped.
+   *          must be skipped.
    */
   public void setSkipMeasurementsComputation(
       final boolean skipMeasurementsComputation) {
@@ -200,7 +229,7 @@ public class Design {
   /**
    * Set if the measurement filter phase must be skipped.
    * @param skipMeasurementsFilters if the measurement filter phase must be
-   *            skipped.
+   *          skipped.
    */
   public void setSkipMeasurementsFilters(final boolean skipMeasurementsFilters) {
     this.skipMeasurementsFilters = skipMeasurementsFilters;
@@ -279,10 +308,12 @@ public class Design {
    * Filter oligos fasta files
    * @param oligoFiles input file
    * @param sequenceFilters filters to apply
+   * @param maskedFiles filter masked files too
    * @throws IOException if an error occurs while filtering
    */
   public static final void filterSequencesFiles(final File[] oligoFiles,
-      final List<SequenceFilter> sequenceFilters) throws IOException {
+      final List<SequenceFilter> sequenceFilters, final boolean maskedFiles)
+      throws IOException {
 
     for (int i = 0; i < oligoFiles.length; i++) {
 
@@ -291,12 +322,14 @@ public class Design {
 
       final SequenceIterator si1 = new SequenceIterator(oligoFile);
       final SequenceIterator si2 =
-          new SequenceIterator(new File(basename + OLIGO_MASKED_SUFFIX));
+          maskedFiles ? new SequenceIterator(new File(basename
+              + OLIGO_MASKED_SUFFIX)) : null;
 
       final SequenceWriter sw1 =
           new SequenceWriter(new File(basename + OLIGO_FILTERED_SUFFIX));
       final SequenceWriter sw2 =
-          new SequenceWriter(new File(basename + OLIGO_MASKED_FILTERED_SUFFIX));
+          maskedFiles ? new SequenceWriter(new File(basename
+              + OLIGO_MASKED_FILTERED_SUFFIX)) : null;
 
       final SequenceFilter[] filters =
           sequenceFilters.toArray(new SequenceFilter[0]);
@@ -304,7 +337,8 @@ public class Design {
       while (si1.hasNext()) {
 
         si1.next();
-        si2.next();
+        if (maskedFiles)
+          si2.next();
 
         boolean result = true;
 
@@ -316,13 +350,15 @@ public class Design {
 
         if (result) {
           sw1.write(si1);
-          sw2.write(si2);
+          if (maskedFiles)
+            sw2.write(si2);
         }
 
       }
 
       sw1.close();
-      sw2.close();
+      if (maskedFiles)
+        sw2.close();
     }
 
   }
@@ -430,6 +466,13 @@ public class Design {
    */
   public void phase0() throws IOException {
 
+    logger.info("Window length: " + this.windowLenght);
+    logger.info("Window step: " + this.windowStep);
+    logger.info("Oligo length: " + this.oligoLength);
+    logger.info("Genome file: " + this.genomeFile);
+    logger.info("Genome masked file: " + this.genomeMaskedFile);
+    logger.info("Output directory: " + this.outputDir);
+
     this.startTimeDesign = System.currentTimeMillis();
   }
 
@@ -447,8 +490,9 @@ public class Design {
     FastaOverlap.fastaOverlap(this.genomeFile, outputDir, Design.OLIGO_SUFFIX,
         this.oligoLength);
 
-    FastaOverlap.fastaOverlap(this.genomeMaskedFile, outputDir,
-        Design.OLIGO_MASKED_SUFFIX, this.oligoLength);
+    if (isGenomeMaskedFile())
+      FastaOverlap.fastaOverlap(this.genomeMaskedFile, outputDir,
+          Design.OLIGO_MASKED_SUFFIX, this.oligoLength);
 
     logEndPhase("create oligos");
   }
@@ -475,7 +519,8 @@ public class Design {
         FileUtils.listFilesByExtension(this.outputDir, Design.OLIGO_SUFFIX);
     Arrays.sort(oligoFiles);
 
-    Design.filterSequencesFiles(oligoFiles, listSequenceFilters);
+    Design.filterSequencesFiles(oligoFiles, listSequenceFilters,
+        isGenomeMaskedFile());
 
     logEndPhase("filter oligos");
   }
@@ -573,7 +618,7 @@ public class Design {
     }
 
     Select.select(filteredOligoMeasurementsFile, statsFile, selectedOligos,
-        wSetter, this.windowSize);
+        wSetter, this.windowLenght, this.windowStep);
 
     logEndPhase("select");
     final long endTimeDesign = System.currentTimeMillis();

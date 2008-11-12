@@ -90,38 +90,53 @@ public class Main {
     // for (Iterator i = root.elementIterator("design"); i.hasNext();) {
     // final Element designElement = (Element) i.next();
 
-    // windowsize element
-    for (Iterator i2 = designElement.elementIterator("windowSize"); i2
+    // windowlength element
+    for (Iterator i2 = designElement.elementIterator("windowlength"); i2
         .hasNext();)
-      this.design.setWindowSize(Integer.parseInt(((Element) i2.next())
-          .getText()));
+      this.design.setWindowLength(Integer.parseInt(((Element) i2.next())
+          .getTextTrim()));
 
-    // oligosize element
-    for (Iterator i3 = designElement.elementIterator("oligosize"); i3.hasNext();)
+    // oligolength element
+    for (Iterator i3 = designElement.elementIterator("oligolength"); i3
+        .hasNext();)
       this.design.setOligoLength(Integer.parseInt(((Element) i3.next())
-          .getText()));
+          .getTextTrim()));
 
+    // windowstep element
+    int windowstep = -1;
+    for (Iterator i4 = designElement.elementIterator("windowstep"); i4
+        .hasNext();)
+      windowstep = Integer.parseInt(((Element) i4.next()).getTextTrim());
+    this.design.setWindowStep(windowstep == -1
+        ? this.design.getWindowLength() : windowstep);
+
+    // genomefile element
     if (genomeFile != null)
       this.design.setGenomeFile(genomeFile);
     else
-      for (Iterator i4 = designElement.elementIterator("genomefile"); i4
+      for (Iterator i5 = designElement.elementIterator("genomefile"); i5
           .hasNext();)
-        this.design.setGenomeFile(new File(((Element) i4.next()).getText()));
+        this.design
+            .setGenomeFile(new File(((Element) i5.next()).getTextTrim()));
 
+    // genomemakedfile element
     if (genomeMaskedFile != null)
       this.design.setGenomeMaskedFile(genomeMaskedFile);
     else
-      for (Iterator i5 = designElement.elementIterator("genomemaskedfile"); i5
-          .hasNext();)
-        this.design.setGenomeMaskedFile(new File(((Element) i5.next())
-            .getText()));
+      for (Iterator i6 = designElement.elementIterator("genomemaskedfile"); i6
+          .hasNext();) {
+        final String filename = ((Element) i6.next()).getTextTrim();
+        if (!"".equals(filename))
+          this.design.setGenomeMaskedFile(new File(filename));
+      }
 
+    // outputdir element
     if (outputDir != null)
       this.design.setOutputDir(outputDir);
     else
-      for (Iterator i6 = designElement.elementIterator("outputdir"); i6
+      for (Iterator i7 = designElement.elementIterator("outputdir"); i7
           .hasNext();)
-        this.design.setOutputDir(new File(((Element) i6.next()).getText()));
+        this.design.setOutputDir(new File(((Element) i7.next()).getTextTrim()));
 
     if (this.design.getGenomeFile() == null
         || !this.design.getGenomeFile().isFile())
@@ -129,8 +144,8 @@ public class Main {
           + (this.design.getGenomeFile() == null ? "." : ": "
               + this.design.getGenomeFile()));
 
-    if (this.design.getGenomeMaskedFile() == null
-        || !this.design.getGenomeMaskedFile().isFile())
+    if (this.design.getGenomeMaskedFile() != null
+        && !this.design.getGenomeMaskedFile().isFile())
       throw new InvalidParameterException("genome masked file is not found"
           + (this.design.getGenomeMaskedFile() == null ? "." : ": "
               + this.design.getGenomeMaskedFile()));
@@ -195,7 +210,7 @@ public class Main {
 
         for (Iterator i3 = filter.elementIterator("name"); i3.hasNext();) {
           final Element name = (Element) i3.next();
-          filterName = name.getText().trim();
+          filterName = name.getTextTrim();
         }
 
         if (filterName == null) {
@@ -206,7 +221,7 @@ public class Main {
         // Add the sequence filter to the registery if it is a plug in
         for (Iterator i4 = filter.elementIterator("class"); i4.hasNext();) {
           final Element clazz = (Element) i4.next();
-          String filterClass = clazz.getText().trim();
+          String filterClass = clazz.getTextTrim();
           SequenceFilterRegistery
               .addSequenceFilterType(filterName, filterClass);
         }
@@ -233,7 +248,7 @@ public class Main {
 
     final File genomeFile = this.design.getGenomeFile();
     final File outputDir = this.design.getOutputDir();
-    final int windowSize = this.design.getWindowSize();
+    final int windowSize = this.design.getWindowLength();
     final int oligoSize = this.design.getOligoLength();
 
     // Set the initialization parameter of the sequence filters
@@ -274,7 +289,7 @@ public class Main {
 
         for (Iterator i3 = measurement.elementIterator("name"); i3.hasNext();) {
           final Element name = (Element) i3.next();
-          measurementName = name.getText().trim();
+          measurementName = name.getTextTrim();
         }
 
         if (measurementName == null) {
@@ -295,7 +310,7 @@ public class Main {
         // Add the measurement to registery if it is a plug in
         for (Iterator i4 = measurement.elementIterator("class"); i4.hasNext();) {
           final Element clazz = (Element) i4.next();
-          String measurementClass = clazz.getText().trim();
+          String measurementClass = clazz.getTextTrim();
           MeasurementRegistery.addMeasurementType(measurementName,
               measurementClass);
         }
@@ -322,7 +337,7 @@ public class Main {
 
     final File genomeFile = this.design.getGenomeFile();
     final File outputDir = this.design.getOutputDir();
-    final int windowSize = this.design.getWindowSize();
+    final int windowSize = this.design.getWindowLength();
     final int oligoSize = this.design.getOligoLength();
 
     // Set the initialization parameters of the measurements
@@ -360,7 +375,7 @@ public class Main {
 
         for (Iterator i3 = filter.elementIterator("name"); i3.hasNext();) {
           final Element name = (Element) i3.next();
-          measurementFilterName = name.getText().trim();
+          measurementFilterName = name.getTextTrim();
         }
 
         if (measurementFilterName == null) {
@@ -371,7 +386,7 @@ public class Main {
         // Add the measurement to registery if it is a plug in
         for (Iterator i4 = filter.elementIterator("class"); i4.hasNext();) {
           final Element clazz = (Element) i4.next();
-          String measurementClass = clazz.getText().trim();
+          String measurementClass = clazz.getTextTrim();
           MeasurementFilterRegistery.addMeasurementFilterType(
               measurementFilterName, measurementClass);
         }
@@ -399,7 +414,7 @@ public class Main {
 
     final File genomeFile = this.design.getGenomeFile();
     final File outputDir = this.design.getOutputDir();
-    final int windowSize = this.design.getWindowSize();
+    final int windowSize = this.design.getWindowLength();
     final int oligoSize = this.design.getOligoLength();
 
     // Set the initialization parameters of the measurements filters
@@ -441,7 +456,7 @@ public class Main {
 
         for (Iterator i3 = measurement.elementIterator("name"); i3.hasNext();) {
           final Element name = (Element) i3.next();
-          measurementName = name.getText().trim();
+          measurementName = name.getTextTrim();
         }
 
         if (measurementName == null) {
@@ -452,7 +467,7 @@ public class Main {
         // Get the weight for the measurement
         for (Iterator i4 = measurement.elementIterator("weight"); i4.hasNext();) {
           final Element weight = (Element) i4.next();
-          measurementWeight = weight.getText().trim();
+          measurementWeight = weight.getTextTrim();
         }
 
         try {
@@ -515,15 +530,15 @@ public class Main {
 
         for (Iterator i6 = param.elementIterator("name"); i6.hasNext();) {
           final Element name = (Element) i6.next();
-          pKey = name.getText().trim();
+          pKey = name.getTextTrim();
         }
 
         for (Iterator i7 = param.elementIterator("value"); i7.hasNext();) {
           final Element value = (Element) i7.next();
-          pValue = value.getText().trim();
+          pValue = value.getTextTrim();
 
           if ("${windowsize}".equals(pValue))
-            pValue = Integer.toString(this.design.getWindowSize());
+            pValue = Integer.toString(this.design.getWindowLength());
           else if ("${genomefile}".equals(pValue))
             pValue = this.design.getGenomeFile().getAbsolutePath();
           else if ("${oligolength}".equals(pValue))
@@ -781,6 +796,7 @@ public class Main {
       cli.readDesign(designFile, genomeFile, genomeMaskedFile, outputDir);
     } catch (Exception e) {
       System.err.println(e.getMessage());
+      e.printStackTrace();
       System.exit(1);
     }
 
