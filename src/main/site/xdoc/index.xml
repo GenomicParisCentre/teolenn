@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	/*
+	*                  Corsen development code
+	*
+	* This code may be freely distributed and modified under the
+	* terms of the GNU General Public Licence version 2 or later. This
+	* should be distributed with the code. If you do not have a copy,
+	* see:
+	*
+	*      http://www.gnu.org/licenses/gpl-2.0.txt
+	*
+	* Copyright for this code is held jointly by the microarray platform
+	* of the École Normale Supérieure and the individual authors.
+	* These should be listed in @author doc comments.
+	*
+	* For more information on the Corsen project and its aims,
+	* or to join the Nividic mailing list, visit the home page
+	* at:
+	*
+	*      http://www.transcriptome.ens.fr/corsen
+	*
+	*/
+-->
+<document>
+
+	<properties>
+		<title>Welcome to Corsen</title>
+		<author email="jourdren@biologie.ens.fr">
+			Laurent Jourdren
+		</author>
+	</properties>
+
+	<body>
+
+		<section name="Welcome to AllOligos">
+
+			<div
+				style="float: right; margin: 0 10px 20px 20px; padding: 5px; border: 1px solid #999; background-color: #eee;">
+				<h5
+					style="margin: 0; font-size: smaller; border-bottom: 1px solid #aaaaaa">
+					Get Corsen @@@VERSION@@@
+				</h5>
+				<p style="font-size: smaller">
+					<img valign="top"
+						src="http://maven.apache.org/images/folder-open.gif" border="0"
+						alt="" title="download" />
+					<a href="corsen_plugin-@@@VERSION@@@.jar">
+						Download
+					</a>
+					Corsen  plugin
+					<br/>
+				</p>
+				<p style="font-size: smaller">
+					<img valign="top"
+						src="http://maven.apache.org/images/folder-open.gif" border="0"
+						alt="" title="Launch Corsen" />
+					<a href="webstart/corsen.jnlp">Launch</a>
+					Corsen Application
+					<br />
+				</p>
+				<ul style="margin-top: 0; list-style-type: disc">
+					<li style="font-size: smaller">
+						<a href="download.html#requirements">
+							System Requirements 
+						</a>
+						and 
+						<a href="download.html#installation">Installation Instructions</a>.						
+					</li>
+					<li style="font-size: smaller">
+						<a href="quickstart.html">
+							QuickStart tutorial
+						</a>
+					</li>
+				</ul>
+			</div>
+
+
+			<p>
+				Corsen is a tool dedicated to 3D distances measurements
+				within the cell developed to access the minimal distance
+				between cellular objects (e.g. individual mRNA molecules
+				and mitochondria surface). Corsen include 3D
+				segmentation algorithm allowing extracting and
+				characterizing cell objects to be processed - surface
+				calculation, aggregates decomposition- for minimal
+				distances calculation. A batch process is implemented to
+				analyse cell populations making possible statistical
+				analysis.
+			</p>
+
+
+		</section>
+
+
+		
+			
+
+		<section name="Availabality">
+
+			<p>
+				Corsen is distributed under the
+				<a href="license.html">General Public Licence</a>
+				.
+			</p>
+
+		</section>
+
+	</body>
+</document>
