@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Logger;
 
 import fr.ens.transcriptome.oligo.util.FileUtils;
 
@@ -36,6 +37,8 @@ import fr.ens.transcriptome.oligo.util.FileUtils;
  * @author Laurent Jourdren
  */
 public class FastaOverlap {
+
+  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   private static final int FASTA_MAX_LEN = 70;
   private static final int WRITE_BUFFER_LEN = 1000000;
@@ -54,7 +57,13 @@ public class FastaOverlap {
       final File outputDir, final String extension, final int windowSize)
       throws IOException {
 
-    BufferedReader br = FileUtils.createBufferedReader(inputFile);
+    BufferedReader br = null;
+    try {
+      br = FileUtils.createBufferedReader(inputFile);
+    } catch (FileNotFoundException e) {
+      logger.severe("Unable to read file: " + e.getMessage());
+      throw e;
+    }
 
     boolean first = true;
     String line;
@@ -86,7 +95,13 @@ public class FastaOverlap {
           first = false;
 
         outputFilename = lineTrimed.substring(1).replace(' ', '_');
-        os = getOutputStream(outputDir, outputFilename, extension);
+        try {
+          os = getOutputStream(outputDir, outputFilename, extension);
+        } catch (FileNotFoundException e) {
+
+          logger.severe("Unable to create file: " + e.getMessage());
+          throw e;
+        }
 
         sbHeader.append(lineTrimed);
         sbHeader.append(":subseq(");
