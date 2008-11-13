@@ -32,6 +32,7 @@ import fr.ens.transcriptome.teolenn.util.StringUtils;
 
 /**
  * This class define the complexity measurement.
+ * @author Stéphane Le Crom
  * @author Laurent Jourdren
  */
 public class ComplexityMeasurement extends FloatMeasurement {

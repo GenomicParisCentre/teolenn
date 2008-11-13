@@ -44,6 +44,7 @@ import fr.ens.transcriptome.teolenn.util.StringUtils;
 
 /**
  * This class define a measurement that compute the unicity of a sequence.
+ * @author Stéphane Le Crom
  * @author Laurent Jourdren
  */
 public final class UnicityMeasurement extends FloatMeasurement {
@@ -399,7 +400,9 @@ public final class UnicityMeasurement extends FloatMeasurement {
       gtDataDir.mkdirs();
 
     final Level l = logger.getLevel();
-    if (l.equals(Level.FINE) || l.equals(Level.FINER) || l.equals(Level.FINEST) || l.equals(Level.INFO))
+    if (l.equals(Level.FINE)
+        || l.equals(Level.FINER) || l.equals(Level.FINEST)
+        || l.equals(Level.INFO))
       logger.info("genometools version: " + getGenomeToolsVersion());
 
     // Reset Histogram

@@ -26,6 +26,7 @@ import fr.ens.transcriptome.teolenn.Sequence;
 
 /**
  * This class define a measurement that returns
+ * @author Stéphane Le Crom
  * @author Laurent Jourdren
  */
 public final class PositionMeasurement extends SimpleMeasurement {
