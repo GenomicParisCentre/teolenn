@@ -136,8 +136,9 @@ public class SequenceFilterRegistery {
   static {
 
     addSequenceFilterType("redundancy", RedundancyFilter.class);
-    addSequenceFilterType("Removex", RemoveXSequenceFilter.class);
-    addSequenceFilterType("Sequencexn", SequenceXNFilter.class);
+    addSequenceFilterType("removex", RemoveXSequenceFilter.class);
+    addSequenceFilterType("sequencexn", SequenceXNFilter.class);
+    addSequenceFilterType("removenotatgc",SequenceNotATGCFilter.class);
 
   }
 
