@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	/*
-	*                  Corsen development code
-	*
-	* This code may be freely distributed and modified under the
-	* terms of the GNU General Public Licence version 2 or later. This
-	* should be distributed with the code. If you do not have a copy,
-	* see:
-	*
-	*      http://www.gnu.org/licenses/gpl-2.0.txt
-	*
-	* Copyright for this code is held jointly by the microarray platform
-	* of the École Normale Supérieure and the individual authors.
-	* These should be listed in @author doc comments.
-	*
-	* For more information on the Corsen project and its aims,
-	* or to join the Nividic mailing list, visit the home page
-	* at:
-	*
-	*      http://www.transcriptome.ens.fr/corsen
-	*
-	*/
+/*
+ *                  Teolenn development code
+ *
+ * This code may be freely distributed and modified under the
+ * terms of the GNU General Public License version 2 or later. This
+ * should be distributed with the code. If you do not have a copy,
+ * see:
+ *
+ *      http://www.gnu.org/licenses/gpl-2.0.txt
+ *
+ * Copyright for this code is held jointly by the microarray platform
+ * of the École Normale Supérieure and the individual authors.
+ * These should be listed in @author doc comments.
+ *
+ * For more information on the Teolenn project and its aims,
+ * or to join the Teolenn mailing list, visit the home page
+ * at:
+ *
+ *      http://www.transcriptome.ens.fr/teolenn
+ *
+ */
 -->
 <document>
 
 	<properties>
-		<title>Welcome to Corsen</title>
+		<title>Welcome to Teolenn</title>
 		<author email="jourdren@biologie.ens.fr">
 			Laurent Jourdren
 		</author>
@@ -33,7 +33,7 @@
 
 	<body>
 
-		<section name="Welcome to AllOligos">
+		<section name="Welcome to Teolenn">
 
 			<div
 				style="float: right; margin: 0 10px 20px 20px; padding: 5px; border: 1px solid #999; background-color: #eee;">
