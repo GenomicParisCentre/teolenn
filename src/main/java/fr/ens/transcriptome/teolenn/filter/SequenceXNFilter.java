@@ -25,7 +25,7 @@ package fr.ens.transcriptome.teolenn.filter;
 import fr.ens.transcriptome.teolenn.Sequence;
 
 /**
- * This class define a filter to remove all sequence that containt 'N' or 'X'.
+ * This class define a filter to remove all sequence that contains 'N' or 'X'.
  * @author Laurent Jourdren
  */
 public class SequenceXNFilter implements SequenceFilter {
