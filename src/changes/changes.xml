@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+	<properties>
+		<title>Change log</title>
+		<author email="jourdren@biologie.ens.fr">
+			Laurent Jourdren
+		</author>
+	</properties>
+	<body>
+
+		<release version="1.0" date="2008-11-17" description="Initial Teolen release">
+
+			<action dev="jourdren" type="add">
+				Initial Toelenn 1.0 realease.
+			</action>
+		</release>
+	</body>
+</document>
