@@ -72,8 +72,8 @@ public class Globals {
   private static final String COPYRIGHT_DATE = "2008";
 
   /** Licence text. */
-  public static final String LICENCE_TXT =
-      "This program is developed under the GNU General Public Licence version 2 or later.";
+  public static final String LICENSE_TXT =
+      "This program is developed under the GNU General Public License version 2 or later.";
 
   /** About string, plain text version. */
   public static final String ABOUT_TXT =
@@ -86,7 +86,7 @@ public class Globals {
           + "  Stéphane Le Crom <lecrom@biologie.ens.fr>\n"
 
           + "Copyright " + COPYRIGHT_DATE
-          + " École Normale Supérieure microarray platform.\n" + LICENCE_TXT
+          + " École Normale Supérieure microarray platform.\n" + LICENSE_TXT
           + "\n";
 
   public static final boolean STD_OUTPUT_DEFAULT = false;

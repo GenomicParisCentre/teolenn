@@ -597,9 +597,9 @@ public class Main {
   /**
    * Show information about this application.
    */
-  private static void licence() {
+  private static void license() {
 
-    System.out.println(Globals.LICENCE_TXT);
+    System.out.println(Globals.LICENSE_TXT);
     System.exit(0);
   }
 
@@ -631,8 +631,8 @@ public class Main {
     options
         .addOption("about", false, "display information about this software");
     options.addOption("h", "help", false, "display this help");
-    options.addOption("licence", false,
-        "display information about the licence of this software");
+    options.addOption("license", false,
+        "display information about the license of this software");
     options.addOption("v", "verbose", false, "display external tools output");
     options.addOption("silent", false, "don't show log on console");
 
@@ -678,7 +678,7 @@ public class Main {
         version();
 
       if (line.hasOption("licence"))
-        licence();
+        license();
 
       // Load configuration if exists
       try {
