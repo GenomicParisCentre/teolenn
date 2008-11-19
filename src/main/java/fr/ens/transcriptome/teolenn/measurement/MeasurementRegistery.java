@@ -137,8 +137,8 @@ public class MeasurementRegistery {
 
   static {
 
-    addMeasurementType("scaffold", ScaffoldMeasurement.class);
-    addMeasurementType("start", OligoStartMeasurement.class);
+    addMeasurementType("chromosome", ChromosomeMeasurement.class);
+    addMeasurementType("oligostart", OligoStartMeasurement.class);
     addMeasurementType("position", PositionMeasurement.class);
     addMeasurementType("tm", TmMeasurement.class);
     addMeasurementType("%gc", GCPencentMeasurement.class);

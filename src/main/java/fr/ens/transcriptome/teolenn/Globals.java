@@ -89,7 +89,11 @@ public class Globals {
           + " École Normale Supérieure microarray platform.\n" + LICENSE_TXT
           + "\n";
 
+  /** Default standard output state. */ 
   public static final boolean STD_OUTPUT_DEFAULT = false;
+  
+  /** Design file version. */
+  public static final double DESIGN_FILE_VERSION = 1.0;
 
   private static String getVersion() {
 

@@ -62,11 +62,11 @@ public class RedundancyFilter implements SequenceFilter {
   private BufferedReader br;
   private String currentChr;
 
-  // Soap results for current scaffold
+  // Soap results for current chromosome
   private final Map<Integer, Integer> currentChrResult =
       new HashMap<Integer, Integer>();
 
-  // Regex to retrieve scaffold, startPos and len of a sequence from its name
+  // Regex to retrieve chromosome, startPos and len of a sequence from its name
   private static final Pattern seqNamePattern =
       Pattern.compile("^(.*):subseq\\((\\d+),(\\d+)\\)$");
 
@@ -94,8 +94,8 @@ public class RedundancyFilter implements SequenceFilter {
 
     try {
 
-      // If the sequence to test is not on the current scaffold, load results
-      // for the sequence scaffold
+      // If the sequence to test is not on the current chromosome, load results
+      // for the sequence chromosome
       if (!chr.equals(this.currentChr)) {
         parseResultFile(chr);
         this.currentChr = chr;
@@ -116,7 +116,7 @@ public class RedundancyFilter implements SequenceFilter {
 
   /**
    * Parse a ".sop" file and store its data in memory.
-   * @param chrSequence scaffold to parse
+   * @param chrSequence chromosome to parse
    * @throws IOException if an error occurs while reading soap results
    */
   private final void parseResultFile(final String chrSequence)

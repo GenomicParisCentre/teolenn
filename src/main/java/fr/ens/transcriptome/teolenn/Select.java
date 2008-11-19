@@ -169,7 +169,7 @@ public class Select {
 
       if (first) {
 
-        indexScaffold = sm.getIndexMeasurment("scaffold");
+        indexScaffold = sm.getIndexMeasurment("chromosome");
         indexStartPosition = sm.getIndexMeasurment("start");
         values = sm.getArrayMeasurementValues();
         valuesLength = values.length;
@@ -203,7 +203,7 @@ public class Select {
       if (indexStartPosition < 0)
         throw new RuntimeException("No Start field");
 
-      final String scaffold = (String) values[indexScaffold];
+      final String chromosome = (String) values[indexScaffold];
       final int pos = (Integer) values[indexStartPosition];
 
       final int id = sm.getId();
@@ -211,9 +211,9 @@ public class Select {
       // final boolean debug = "86".equals(scaffold);
 
       if (currentScafold == null)
-        currentScafold = scaffold;
+        currentScafold = chromosome;
 
-      if (!currentScafold.equals(scaffold)) {
+      if (!currentScafold.equals(chromosome)) {
 
         // Write best
         if (bestScore > MIN_SCORE) {
@@ -231,8 +231,8 @@ public class Select {
         logger
             .fine(String
                 .format(
-                    "scaffold: %s\t%d windows (%.2f theoric), "
-                        + "%d oligos selected, %d pb in scaffold, %d pb windows, %d pb step.",
+                    "chromosome: %s\t%d windows (%.2f theoric), "
+                        + "%d oligos selected, %d pb in chromosome, %d pb windows, %d pb step.",
                     currentScafold,
                     infoCountWindows,
                     ((infoLastIndexStartPosition + 1.0f - windowLength) / windowStep) + 1.0f,
@@ -241,7 +241,7 @@ public class Select {
 
         infoCountSelectedOligos = 0;
 
-        currentScafold = scaffold;
+        currentScafold = chromosome;
         endWindow = windowLength;
         startWindow = 0;
         infoCountWindows = 1;
@@ -345,8 +345,8 @@ public class Select {
         smw.writeSequenceMesurement(smToWrite);
     }
 
-    logger.fine(String.format("scaffold: %s\t%d windows (%.2f theoric), "
-        + "%d oligos selected, %d pb in scaffold, %d pb windows, %d pb step.",
+    logger.fine(String.format("chromosome: %s\t%d windows (%.2f theoric), "
+        + "%d oligos selected, %d pb in chromosome, %d pb windows, %d pb step.",
         currentScafold, infoCountWindows, (float) infoLastIndexStartPosition
             / (float) windowLength, infoCountSelectedOligos,
         infoLastIndexStartPosition, windowLength, windowStep));

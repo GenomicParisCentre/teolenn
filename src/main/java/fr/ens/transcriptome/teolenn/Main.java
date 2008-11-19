@@ -54,7 +54,7 @@ import fr.ens.transcriptome.teolenn.filter.SequenceFilterRegistery;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
-import fr.ens.transcriptome.teolenn.measurement.ScaffoldMeasurement;
+import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilterRegistery;
 
@@ -67,6 +67,7 @@ public class Main {
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   private Design design = new Design();
+  private double designFileVersion;
 
   /**
    * Read the design file and run the design
@@ -89,6 +90,16 @@ public class Main {
     // root element
     // for (Iterator i = root.elementIterator("design"); i.hasNext();) {
     // final Element designElement = (Element) i.next();
+
+    for (Iterator i1 = designElement.elementIterator("formatversion"); i1.hasNext();)
+      this.designFileVersion =
+          Double.parseDouble(((Element) i1.next()).getTextTrim());
+
+    if (this.designFileVersion != Globals.DESIGN_FILE_VERSION) {
+      System.err.println("Invalid version of your "
+          + Globals.APP_NAME + " design file.");
+      System.exit(1);
+    }
 
     // windowlength element
     for (Iterator i2 = designElement.elementIterator("windowlength"); i2
@@ -275,7 +286,7 @@ public class Main {
 
     final List<Measurement> list = new ArrayList<Measurement>();
 
-    list.add(new ScaffoldMeasurement());
+    list.add(new ChromosomeMeasurement());
     list.add(new OligoStartMeasurement());
 
     for (Iterator i = rootElement.elementIterator("measurements"); i.hasNext();) {
@@ -298,7 +309,7 @@ public class Main {
         }
 
         // Skip if user attempt to add another Scaffold measurement
-        if (ScaffoldMeasurement.MEASUREMENT_NAME.toLowerCase().equals(
+        if (ChromosomeMeasurement.MEASUREMENT_NAME.toLowerCase().equals(
             measurementName.toLowerCase()))
           continue;
 
@@ -537,12 +548,16 @@ public class Main {
           final Element value = (Element) i7.next();
           pValue = value.getTextTrim();
 
-          if ("${windowsize}".equals(pValue))
+          if ("${windowlength}".equals(pValue))
             pValue = Integer.toString(this.design.getWindowLength());
           else if ("${genomefile}".equals(pValue))
             pValue = this.design.getGenomeFile().getAbsolutePath();
+          else if ("${genomemaskedfile}".equals(pValue))
+            pValue = this.design.getGenomeMaskedFile().getAbsolutePath();
           else if ("${oligolength}".equals(pValue))
             pValue = Integer.toString(this.design.getOligoLength());
+          else if ("${windowstep}".equals(pValue))
+            pValue = Integer.toString(this.design.getWindowStep());
 
         }
 
@@ -796,7 +811,7 @@ public class Main {
       cli.readDesign(designFile, genomeFile, genomeMaskedFile, outputDir);
     } catch (Exception e) {
       System.err.println(e.getMessage());
-      e.printStackTrace();
+      // e.printStackTrace();
       System.exit(1);
     }
 

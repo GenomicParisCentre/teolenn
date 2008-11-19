@@ -97,10 +97,10 @@ public class ComplexityMeasurement extends FloatMeasurement {
   }
 
   /**
-   * Test if two sequences have the same scaffold and position.
+   * Test if two sequences have the same chromosome and position.
    * @param seqA Sequence A to test
    * @param seqB Sequence B to test
-   * @return true if the two sequences have the same scaffold and position
+   * @return true if the two sequences have the same chromosome and position
    */
   private boolean isSameSequencePosition(final Sequence seqA,
       final Sequence seqB) {

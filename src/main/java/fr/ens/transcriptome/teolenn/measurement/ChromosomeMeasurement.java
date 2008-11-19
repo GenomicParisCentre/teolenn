@@ -25,13 +25,13 @@ package fr.ens.transcriptome.teolenn.measurement;
 import fr.ens.transcriptome.teolenn.Sequence;
 
 /**
- * This class define a measurement that returns the scaffolds of sequences.
+ * This class define a measurement that returns the chromosome of sequences.
  * @author Laurent Jourdren
  */
-public final class ScaffoldMeasurement extends StringMeasurement {
+public final class ChromosomeMeasurement extends StringMeasurement {
 
   /** Measurement name. */
-  public static final String MEASUREMENT_NAME = "Scaffold";
+  public static final String MEASUREMENT_NAME = "Chromosome";
 
   /**
    * Calc the measurement of a sequence.
@@ -51,7 +51,7 @@ public final class ScaffoldMeasurement extends StringMeasurement {
    */
   public String getDescription() {
 
-    return "Get the scaffold of the sequence";
+    return "Get the chromosome of the sequence";
   }
 
   /**

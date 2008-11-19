@@ -326,13 +326,13 @@ public final class UnicityMeasurement extends FloatMeasurement {
 
   /**
    * Parse a resuly file.
-   * @param scaffold scaffold witch result file must be parsed
+   * @param chromosome chromosome witch result file must be parsed
    * @throws IOException if an error occurs while reading result file
    */
-  private void parseResultFile(final String scaffold) throws IOException {
+  private void parseResultFile(final String chromosome) throws IOException {
 
     final File mupDir = new File(this.baseDir, MUP_DIR);
-    final File file = new File(mupDir, scaffold + MUP_EXTENSION);
+    final File file = new File(mupDir, chromosome + MUP_EXTENSION);
 
     // Load the minimum unique prefix file in a list
     mupDict.clear();
