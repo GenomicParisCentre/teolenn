@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+
+  <properties>
+    <title>Installing Teolenn</title>
+    <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+  </properties>
+
+  <body>
+    
+    <section name="Standalone installation">
+     
+      <p>The installation of Toelenn on all *nix systems is quite similar and very easy. You don't need to be the root user of your system to install Toelenn.</p> 
+     
+      <p>The only tool you need to have is a tar/gz/bz2/zip extractor.</p>
+     
+      <ul>
+        <li><a href="download.html">Download Teolenn</a> on our website.</li>
+
+<source>
+$ wget http://transcriptome.ens.fr/toelenn/teolenn-@@@VERSION@@@.tar.gz
+</source>
+
+        <li>Unzip the archive where you want install the software.</li>
+
+<source>
+$ tar xzf teolenn-@@@VERSION@@@.tar.gz
+</source>
+
+        <li>Toelenn is ready to run.</li>
+
+<source>
+$ cd teolenn-@@@VERSION@@@
+$ ./teolenn.sh
+</source>
+
+      </ul>
+     
+
+   </section>
+   
+  </body>
+</document>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+
+	<properties>
+		<title>Welcome to Teolenn</title>
+		<author email="jourdren@biologie.ens.fr">
+			Laurent Jourdren
+		</author>
+	</properties>
+
+	<body>
+
+		<section name="Welcome to Teolenn">
+
+			<div
+				style="float: right; margin: 0 10px 20px 20px; padding: 5px; border: 1px solid #999; background-color: #eee;">
+				<h5
+					style="margin: 0; font-size: smaller; border-bottom: 1px solid #aaaaaa">
+					Get Teolenn @@@VERSION@@@
+				</h5>
+				<p style="font-size: smaller">
+					<img valign="top"
+						src="http://maven.apache.org/images/folder-open.gif" border="0"
+						alt="" title="Download Toelenn" />
+					<a href="teolenn-@@@VERSION@@@.tar.gz">Download</a>
+					Teolenn Application
+					<br />
+				</p>
+				<ul style="margin-top: 0; list-style-type: disc">
+					<li style="font-size: smaller">
+						<a href="download.html#requirements">
+							System Requirements 
+						</a>
+						and 
+						<a href="installing.html">Installation Instructions</a>.						
+					</li>
+					<li style="font-size: smaller">
+						<a href="quickstart.html">
+							QuickStart tutorial
+						</a>
+					</li>
+				</ul>
+			</div>
+
+
+			<p>
+				Teolenn is a tool dedicated to 3D distances measurements
+				within the cell developed to access the minimal distance
+				between cellular objects (e.g. individual mRNA molecules
+				and mitochondria surface). Corsen include 3D
+				segmentation algorithm allowing extracting and
+				characterizing cell objects to be processed - surface
+				calculation, aggregates decomposition- for minimal
+				distances calculation. A batch process is implemented to
+				analyse cell populations making possible statistical
+				analysis.
+			</p>
+
+
+		</section>
+
+
+		
+			
+
+		<section name="Availabality">
+
+			<p>
+				Corsen is distributed under the
+				<a href="license.html">General Public Licence</a>.
+			</p>
+
+		</section>
+
+	</body>
+</document>

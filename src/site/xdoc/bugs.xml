@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<document> 
+
+  <properties> 
+    <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author> 
+  </properties> 
+
+
+
+  <body>
+  
+    <section name="Known Bugs for Teolenn @@@VERSION@@@">
+
+      <p>No bug has been discovered in Teolenn.</p>  
+
+      <!--ul> 
+        <li>Bug 1.</li>
+	<li>Bug 2.</li>
+      </ul--> 
+      
+    </section>
+
+    <section name="Submit a Teolenn bug">
+
+      <!-- toelenn-list?subject=Bug -->
+      <p>You can submit a bug by sending a sending a mail to the <a href="mailto:%64%6f%65%6c%61%6e%2d%6c%69%73%74%40%62%69%6f%6c%6f%67%69%65%2e%65%6e%73%2e%66%72%3f%73%75%62%6a%65%63%74%3d%42%75%67">Toelenn list</a>.</p>
+
+    </section>
+
+  </body>
+  
+</document>

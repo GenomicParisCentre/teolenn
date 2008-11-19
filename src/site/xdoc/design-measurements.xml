@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+
+<properties>
+  <title>The measurement section of design file</title>
+  <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+</properties>
+
+<body>
+    
+  <section name="The measurement section of design file">
+  
+  	<p>This section of the design file define the measurements to compute 
+  	on generated oligonucleotides.</p>
+  
+    <p>The following source show the structure of a typical measurement
+     section of the design file:</p>
+  
+<source>
+
+&lt;measurements skip="false"&gt;
+                &lt;measurement&gt;
+                        &lt;name&gt;oligosequence&lt;/name&gt;
+                &lt;/measurement&gt;
+                &lt;measurement&gt;
+                        &lt;name&gt;position&lt;/name&gt;
+                &lt;/measurement&gt;
+                &lt;measurement&gt;
+                        &lt;name&gt;tm&lt;/name&gt;
+                &lt;/measurement&gt;
+                &lt;measurement&gt;
+                        &lt;name&gt;%gc&lt;/name&gt;
+                &lt;/measurement&gt;
+                &lt;measurement&gt;
+                        &lt;name&gt;complexity&lt;/name&gt;
+                &lt;/measurement&gt;
+                &lt;measurement&gt;
+                        &lt;name&gt;unicity&lt;/name&gt;
+                        &lt;parameters&gt;
+                                &lt;parameter&gt;
+                                        &lt;name&gt;maxprefixlength&lt;/name&gt;
+                                        &lt;value&gt;30&lt;/value&gt;
+                                &lt;/parameter&gt;
+                        &lt;/parameters&gt;
+
+                &lt;/measurement&gt;
+        &lt;/measurements&gt;</source>
+
+	
+
+	<p>Each sequence filter is defined by:</p>
+	<ul>
+		<li>A <b>name</b>.</li>
+		<li>A <b>class</b> if the sequence filter is provided by an external plugin.</li>
+		<li>Some <b>parameters</b> that allow configure each measurement.</li>
+	</ul>
+
+	<p>The standard version of Toelenn contains 2 filters:</p>
+	<ul>
+		<li><b>complexity</b>: .</li>
+		<li><b>%gc</b>: .</li>
+		<li><b>oligoname</b>: .</li>
+		<li><b>oligolength</b>: .</li>
+		<li><b>oligosequence</b>: .</li>
+		<li><b>oligostart</b>: .</li>
+		<li><b>position</b>: .</li>
+		<li><b>Chromosome</b>: .</li>
+		<li><b>Complexity</b>: .</li>
+		<li><b>Complexity</b>: .</li>
+		<li><b>Complexity</b>: .</li>
+		<li><b>Complexity</b>: .</li>
+		
+		addMeasurementType("scaffold", ScaffoldMeasurement.class);
+    addMeasurementType("start", OligoStartMeasurement.class);
+    addMeasurementType("position", PositionMeasurement.class);
+    addMeasurementType("tm", TmMeasurement.class);
+    addMeasurementType("%gc", GCPencentMeasurement.class);
+    addMeasurementType("complexity", ComplexityMeasurement.class);
+    addMeasurementType("unicity", UnicityMeasurement.class);
+    addMeasurementType("oligosequence", OligoSequenceMeasurement.class);
+		
+
+	</ul>
+  
+  <p>Note that this step can be skipped by setting the <b>skip</b> attribute to <b>true</b>.</p>
+  
+  </section>
+  
+  <subsection name="The notatgc filter">
+  
+  	<ul>
+  		<li><b>Description:</b> This sequence filter filters all the sequence that contains other 
+		Nucleic Acid Code that A,T,G or C (case insensitive).</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> No.</li>
+  	</ul>
+  
+  
+  </subsection>
+  
+  <subsection name="The redundancy filter">
+  
+  	<ul>
+  		<li><b>Description:</b> This sequence filter filters all the redundancy oligonucleotides.</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> SOAP.</li>
+  	</ul>
+  
+  </subsection>
+  
+  
+  
+  <subsection name="Use external sequence filters">
+  
+  	<p>Teolenn is a very customizable tool, you can use your own sequence
+  	 filter. This filter must be written in Java and implements the 
+  	 <code>SequenceFilter</code> interface. See the developer section for more 
+  	 information. Your plugin must be in the classpath of Toelenn define in 
+  	 <code>teolenn.sh</code>. In addition, to use your filter in Toelenn, you must 
+  	 add the full name of the main class (witch implements <code>SequenceFilter</code>)
+  	 of your plugin in the design <code></code>file :</p>
+  	 
+  	 <source>
+&lt;sequencefilter&gt;
+	&lt;name&gt;redundancy&lt;/name&gt;
+	&lt;class&gt;com.example.mysequencefilter&lt;/class&gt;
+&lt;/sequencefilter&gt;</source>   
+  	 
+  
+  </subsection>
+  
+</body>
+
+</document>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <properties>
+    <title>Download Teolenn @@@VERSION@@@ source</title>
+    <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+  </properties>
+  <body>
+    <section name="Download Teolenn source">
+      <p>
+        Teolenn source is distributed in several formats for your convenience.
+      </p>
+      <ul>
+        <li>
+          <!--a href="/sgdb/download.php?ref=lbdl/toelenn-src-@@@VERSION@@@.tar.gz"-->
+          <a href="teolenn-src-@@@VERSION@@@.tar.gz">
+            <code>.tar.gz</code> archive
+          </a>
+        </li>
+        <li>
+          <!--a href="/sgdb/download.php?ref=lbdl/teolenn-src-@@@VERSION@@@.tar.bz2"-->
+          <a href="teolenn-src-@@@VERSION@@@.tar.bz2">
+            <code>.tar.bz2</code> archive
+          </a>
+        </li>
+	<li>
+          <!--a href="/sgdb/download.php?ref=lbdl/teolenn-src-@@@VERSION@@@.zip"-->
+          <a href="teolenn-src-@@@VERSION@@@.zip">
+            <code>.zip</code> archive
+          </a>
+        </li>
+      </ul>
+      <p>
+        Teolenn is distributed under the
+        <a href="license.html">General Public License</a>.
+      </p>
+      <subsection name="Compilation">
+        <p>You'll find more information about how compile Teolenn in the <a href="compiling.html">compiling section</a>.</p>
+      </subsection>
+    </section>
+  </body>
+</document>

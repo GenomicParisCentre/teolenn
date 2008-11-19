@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+
+<properties>
+  <title>The global parameters of the design file</title>
+  <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+</properties>
+
+<body>
+    
+  <section name="Global parameters">
+  
+  <p>The global section of the design file is composed of 6 parameters (3 are optional):</p>
+  
+  <table>
+	  <tr><th>Parameter</th><th>Type</th><th>Value</th><th>Optional</th><th>Description</th></tr>
+	  <tr><td>windowlength</td><td>Integer</td><td>Must be &gt; 0</td><td>No</td><td>The windows length</td></tr>
+	  <tr><td>windowstep</td><td>Integer</td><td>Must be &gt; 0</td><td>No</td><td>The distance in pb between the start of two windows</td></tr>
+	  <tr><td>oligolength</td><td>Integer</td><td>Must be &gt; 0</td><td>No</td><td>The length of the oligonucleotide to design</td></tr>
+	  
+	  <tr><td>genomefile</td><td>String</td><td>A relative path</td><td>Yes, can be overrided by the second argument of <code>toelenn.sh</code></td><td>The path to the genome file. All the sequences must be in one file in fasta format.</td></tr>
+	  <tr><td>genomemaskedfile</td><td>String</td><td>A relative path</td><td>Yes, can be overrided by the third argument of <code>toelenn.sh</code></td><td>The path to the masked genome file. All the sequences must be in one file in fasta format.</td></tr>
+	  <tr><td>outputdir</td><td>String</td><td>A relative path</td><td>Yes, can be overrided by the 4th argument of <code>toelenn.sh</code>. If none value is set in design file or in command line, the value is set to the current directory.</td><td>The path to the output directory</td></tr>
+	  
+  </table>
+  
+  <p>The following source show a sample the global section of design file:</p>
+
+
+<source>
+&lt;design&gt;
+        &lt;windowlength&gt;90&lt;/windowlength&gt;
+        &lt;windowstep&gt;60&lt;/windowstep&gt;
+        &lt;oligolength&gt;60&lt;/oligolength&gt;
+
+        &lt;genomefile&gt;Ca21_chromosomes2.fasta&lt;/genomefile&gt;
+        &lt;genomemaskedfile&gt;Ca21_chromosomes2.fasta.allmasked&lt;/genomemaskedfile&gt;
+        &lt;outputdir&gt;/home/jourdren/tmp/candida_design&lt;/outputdir&gt;
+	...
+&lt;/design&gt;</source>
+  
+  </section>
+  
+</body>
+</document>

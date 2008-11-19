@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <properties>
+    <title>Download Teolenn @@@VERSION@@@</title>
+    <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+  </properties>
+  <body>
+    <section name="Download Teolenn latest version">
+      <p>
+        Teolenn is distributed in several formats for your convenience.
+      </p>
+      <ul>
+        <li>
+          <!--a href="/sgdb/download.php?ref=lbdl/teolenn-@@@VERSION@@@.tar.gz"-->
+          <a href="teolenn-@@@VERSION@@@.tar.gz">	
+            <code>.tar.gz</code> archive
+          </a>
+        </li>
+        <li>
+          <!--a href="/sgdb/download.php?ref=lbdl/teolenn-@@@VERSION@@@.tar.bz2"-->
+          <a href="teolenn-@@@VERSION@@@.tar.bz2">
+            <code>.tar.bz2</code> archive
+          </a>
+        </li>
+        <li>
+          <!--a href="/sgdb/download.php?ref=lbdl/teolenn-@@@VERSION@@@.zip"-->
+          <a href="teolenn-@@@VERSION@@@.zip">
+            <code>.zip</code> archive
+          </a>
+        </li>
+      </ul>
+      <p>
+        Teolenn is distributed under the
+        <a href="license.html">General Public License</a>.
+      </p>
+      <a name="requirements"/>
+      <subsection name="System Requirements">
+        <table>
+	  <tr>
+	    <th>Component</th>
+	    <th>Comment</th>
+	  </tr>
+          <tr>
+            <td>Java Runtime Environment</td>
+            <td>5.0 or above (However Java 6.0 is fastest). </td>
+          </tr>
+          <tr>
+            <td>Memory</td>
+            <td>By default 512 MiB are allocated to the JVM for running Teolenn. You can edit this value in the <code>teolenn.sh</code> file with the <b>-Xmx</b> option of the JVM. However Teolenn use external tools like soap or genometools that also need memory, 2-3 GiB seem to be a good amount of memory to run Teolenn.</td>
+          </tr>
+          <tr>
+            <td>Disk Space</td>
+            <td>
+              Approximately 6 MiB will be used by Teolenn installation but the disk space needed to compute design is huge. For Trichoderma Reesei genome (33454791 pb) and 60 pb for oligonucleotides length, 26 GiB will be necessary.
+            </td>
+          </tr>
+          <tr>
+            <td>Operating System</td>
+            <td>
+		Teolenn can only works on *nix system as some externals tools (genometools and soap) can't run under Microsoft Windows.
+            </td>
+          </tr>
+        </table>
+      </subsection>
+    </section>
+  </body>
+</document>
+

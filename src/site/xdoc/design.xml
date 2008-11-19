@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+
+<properties>
+  <title>The design file</title>
+  <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+</properties>
+
+<body>
+    
+  <section name="The design file">
+  
+  <p>The design file (usualy named as <code>design.xml</code> is the file where all the parameters of a design will be set. This file use the XML syntax and is divided in 4 sections : </p>
+  
+  <ul>
+    <li>The <a href="design-global.html">global parameters</a>. Set the main parameter of the design (length of windows, oligos, path to the files...).</li>
+    <li>The <a href="design-sequencesfilters.html">sequencefilters</a> section. This section define the filters on all the oligonucleotides generated.</li>
+    <li>The measurements section. This section define the measurement to compute on the filtered oligonucleotides.</li>
+    <li>The measurementfilters section. This section define the filters based on measurements to remove oligonucleotides.</li>
+    <li>The select section. This last part of the file set the parameter to select the best oligonucleotide for each window.</li>
+  </ul>
+  
+  <p>The following source show the structure of a typical <code>design.xml</code> file:</p>
+  
+  <source>
+&lt;design&gt;
+        &lt;windowlength&gt;90&lt;/windowlength&gt;
+        &lt;windowstep&gt;60&lt;/windowstep&gt;
+        &lt;oligolength&gt;60&lt;/oligolength&gt;
+
+        &lt;genomefile&gt;Ca21_chromosomes2.fasta&lt;/genomefile&gt;
+        &lt;genomemaskedfile&gt;Ca21_chromosomes2.fasta.allmasked&lt;/genomemaskedfile&gt;
+        &lt;outputdir&gt;/home/jourdren/tmp/candida_design&lt;/outputdir&gt;
+
+        &lt;sequencefilters&gt;
+	...
+	&lt;/sequencfilters&gt;
+	&lt;measurements&gt;
+	...
+	&lt;/measurements&gt;
+	&lt;measurementfilters&gt;
+	...
+	&lt;/measurementfilters&gt;
+	&lt;select&gt;
+	...
+	&lt;/select&gt;
+&lt;/design&gt;</source>
+  
+  </section>
+  
+</body>
+</document>

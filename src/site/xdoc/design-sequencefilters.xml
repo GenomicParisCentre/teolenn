@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+
+<properties>
+  <title>The sequence filters section of design file</title>
+  <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+</properties>
+
+<body>
+    
+  <section name="The sequence filters section of design file">
+  
+  	<p>This section of the design file define the filter that Teolenn must 
+  	apply on the sequences generated from the genome file.</p>
+  
+    <p>The following source show the structure of a typical sequence filters
+     section of the design file:</p>
+  
+<source>
+&lt;sequencefilters skip="false"&gt;
+	&lt;sequencefilter&gt;
+		&lt;name&gt;redundancy&lt;/name&gt;
+    &lt;/sequencefilter&gt;
+    &lt;sequencefilter&gt;
+		&lt;name&gt;notatgc&lt;/name&gt;
+    &lt;/sequencefilter&gt;
+    &lt;sequencefilter&gt;
+		&lt;name&gt;dummysequencefilter&lt;/name&gt;
+		&lt;parameters&gt;
+			&lt;parameter&gt;
+				&lt;parameter&gt;param1&lt;parameter&gt;
+				&lt;parameter&gt;value1&lt;parameter&gt;
+			&lt;/parameter&gt;
+			&lt;parameter&gt;
+				&lt;parameter&gt;param2&lt;parameter&gt;
+				&lt;parameter&gt;value2&lt;parameter&gt;
+			&lt;/parameter&gt;
+		&lt;/parameters&gt;		
+    &lt;/sequencefilter&gt;
+&lt;/sequencefilters&gt;</source>
+
+	
+
+	<p>Each sequence filter is defined by:</p>
+	<ul>
+		<li>A <b>name</b>.</li>
+		<li>A <b>class</b> if the sequence filter is provided by an external plugin.</li>
+		<li>Some <b>parameters</b> that allow configure each filter.</li>
+	</ul>
+
+	<p>The standard version of Toelenn contains 2 filters:</p>
+	<ul>
+		<li><b>notatgc</b>: filter all the sequence that contains other 
+		Nucleic Acid Code that A,T,G or C (case insensitive).</li>
+		<li><b>redundancy</b>: filter all the redundancy oligonucleotides.</li>
+	</ul>
+  
+  <p>Note that this step can be skipped by setting the <b>skip</b> attribute to <b>true</b>.</p>
+  
+  </section>
+  
+  <subsection name="The notatgc filter">
+  
+  	<ul>
+  		<li><b>Description:</b> This sequence filter filters all the sequence that contains other 
+		Nucleic Acid Code that A,T,G or C (case insensitive).</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> No.</li>
+  	</ul>
+  
+  
+  </subsection>
+  
+  <subsection name="The redundancy filter">
+  
+  	<ul>
+  		<li><b>Description:</b> This sequence filter filters all the redundancy oligonucleotides.</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> SOAP.</li>
+  	</ul>
+  
+  </subsection>
+  
+  
+  
+  <subsection name="Use external sequence filters">
+  
+  	<p>Teolenn is a very customizable tool, you can use your own sequence
+  	 filter. This filter must be written in Java and implements the 
+  	 <code>SequenceFilter</code> interface. See the developer section for more 
+  	 information. Your plugin must be in the classpath of Toelenn define in 
+  	 <code>teolenn.sh</code>. In addition, to use your filter in Toelenn, you must 
+  	 add the full name of the main class (witch implements <code>SequenceFilter</code>)
+  	 of your plugin in the design <code></code>file :</p>
+  	 
+  	 <source>
+&lt;sequencefilter&gt;
+	&lt;name&gt;redundancy&lt;/name&gt;
+	&lt;class&gt;com.example.mysequencefilter&lt;/class&gt;
+&lt;/sequencefilter&gt;</source>   
+  	 
+  
+  </subsection>
+  
+</body>
+
+</document>

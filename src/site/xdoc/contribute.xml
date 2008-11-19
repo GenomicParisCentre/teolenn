@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+
+  <properties>
+    <title>Contribute to Teolenn</title>
+    <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+  </properties>
+
+  <body>
+  
+    <section name="How can I contribute to Teolenn?">
+    
+
+      <p>Teolenn is a free software project. Everybody is encouraged to contribute to Teolenn. There are lots of ways in which you can help to continue Teolenn:</p>
+
+
+      <ul>
+        <li>Testing new versions</li>
+        <li>Submitting bug reports to the mailing list</li>
+        <li>Programming new Teolenn plugins</li>
+      </ul>
+
+      <p>There are several places to look for more information if you want to get involved in the development. The first step is to subscribe to the mailing list. You will soon see something that can be improved or added.</p>
+
+
+    </section>
+
+    <section name="How do I commit a bug report?">
+      <p>There is actualy no automatic bug tracking system available like Bugzilla for Doelan. So, to report a bug, you must send your report on the <a href="mail-lists.html">mailing-list</a>.</p>
+    </section>
+
+<!--    <section name="How do I get access to the code repository ?">
+      <p>The Teolenn project uses the Subversion system to develop the core parts of the software. Due to security reasons, we cannot open freely this subversion server to external users of the ENS. So if you want contribute to the core of Teolenn, you can send patches to the developer using the developers <a href="mail-lists.html">mailing-list</a>.</p>
+    </section>-->
+
+    <section name="Publish plugins on Teolenn website">
+      <p>We can post on the <a href="mail-lists.html">mailing-lists</a> your TestSuite suggestions for publication on website. For the pluggins, please contact the <a href="mailto:%64%6f%65%6c%61%6e%40%62%69%6f%6c%6f%67%69%65%2e%65%6e%73%2e%66%72">developer</a> without sending your plugin in attachment.</p>
+    </section>
+    
+  </body>
+</document>
