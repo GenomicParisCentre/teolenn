@@ -32,7 +32,7 @@ import fr.ens.transcriptome.teolenn.Sequence;
 public final class OligoStartMeasurement extends IntegerMeasurement {
 
   /** Measurement name. */
-  public static final String MEASUREMENT_NAME = "Start";
+  public static final String MEASUREMENT_NAME = "OligoStart";
 
   /**
    * Calc the measurement of a sequence.

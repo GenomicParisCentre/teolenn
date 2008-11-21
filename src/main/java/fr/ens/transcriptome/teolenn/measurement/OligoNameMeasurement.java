@@ -55,7 +55,7 @@ public final class OligoNameMeasurement extends StringMeasurement {
    */
   public String getName() {
 
-    return "Name";
+    return "OligoName";
   }
 
 }

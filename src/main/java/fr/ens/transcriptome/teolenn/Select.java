@@ -170,7 +170,7 @@ public class Select {
       if (first) {
 
         indexScaffold = sm.getIndexMeasurment("chromosome");
-        indexStartPosition = sm.getIndexMeasurment("start");
+        indexStartPosition = sm.getIndexMeasurment("oligostart");
         values = sm.getArrayMeasurementValues();
         valuesLength = values.length;
 

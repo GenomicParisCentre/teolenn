@@ -138,14 +138,15 @@ public class MeasurementRegistery {
   static {
 
     addMeasurementType("chromosome", ChromosomeMeasurement.class);
+    addMeasurementType("complexity", ComplexityMeasurement.class);
+    addMeasurementType("%gc", GCPencentMeasurement.class);
+    addMeasurementType("oligoLength", OligoLengthMeasurement.class);
+    addMeasurementType("oligoname", OligoNameMeasurement.class);
+    addMeasurementType("oligosequence", OligoSequenceMeasurement.class);
     addMeasurementType("oligostart", OligoStartMeasurement.class);
     addMeasurementType("position", PositionMeasurement.class);
     addMeasurementType("tm", TmMeasurement.class);
-    addMeasurementType("%gc", GCPencentMeasurement.class);
-    addMeasurementType("complexity", ComplexityMeasurement.class);
     addMeasurementType("unicity", UnicityMeasurement.class);
-    addMeasurementType("oligosequence", OligoSequenceMeasurement.class);
-
   }
 
 }

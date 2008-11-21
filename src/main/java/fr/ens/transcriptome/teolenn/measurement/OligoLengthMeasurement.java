@@ -52,7 +52,7 @@ public final class OligoLengthMeasurement extends IntegerMeasurement {
    */
   public String getName() {
 
-    return "Length";
+    return "OligoLength";
   }
 
   /**
