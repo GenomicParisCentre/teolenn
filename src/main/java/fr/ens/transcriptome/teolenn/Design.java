@@ -61,7 +61,7 @@ public class Design {
 
   private File genomeFile;
   private File genomeMaskedFile;
-  private File outputDir = new File(".");
+  private File outputDir = (new File("")).getAbsoluteFile();
 
   private boolean skipSequenceFilters;
   private boolean skipMeasurementsComputation;

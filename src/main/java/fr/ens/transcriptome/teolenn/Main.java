@@ -91,7 +91,8 @@ public class Main {
     // for (Iterator i = root.elementIterator("design"); i.hasNext();) {
     // final Element designElement = (Element) i.next();
 
-    for (Iterator i1 = designElement.elementIterator("formatversion"); i1.hasNext();)
+    for (Iterator i1 = designElement.elementIterator("formatversion"); i1
+        .hasNext();)
       this.designFileVersion =
           Double.parseDouble(((Element) i1.next()).getTextTrim());
 
@@ -146,8 +147,11 @@ public class Main {
       this.design.setOutputDir(outputDir);
     else
       for (Iterator i7 = designElement.elementIterator("outputdir"); i7
-          .hasNext();)
-        this.design.setOutputDir(new File(((Element) i7.next()).getTextTrim()));
+          .hasNext();) {
+        final String path = ((Element) i7.next()).getTextTrim();
+        if (!"".equals(path))
+          this.design.setOutputDir((new File(path)).getCanonicalFile());
+      }
 
     if (this.design.getGenomeFile() == null
         || !this.design.getGenomeFile().isFile())
@@ -161,7 +165,7 @@ public class Main {
           + (this.design.getGenomeMaskedFile() == null ? "." : ": "
               + this.design.getGenomeMaskedFile()));
 
-    // Test the validity of the
+    // Test the validity of the outptdir
     if (this.design.getOutputDir() == null
         || !this.design.getOutputDir().isDirectory())
       throw new InvalidParameterException("output directory is not found"
