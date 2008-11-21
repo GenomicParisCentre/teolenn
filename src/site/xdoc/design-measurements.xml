@@ -17,35 +17,32 @@
     <p>The following source show the structure of a typical measurement
      section of the design file:</p>
   
-<source>
-
-&lt;measurements skip="false"&gt;
-                &lt;measurement&gt;
-                        &lt;name&gt;oligosequence&lt;/name&gt;
-                &lt;/measurement&gt;
-                &lt;measurement&gt;
-                        &lt;name&gt;position&lt;/name&gt;
-                &lt;/measurement&gt;
-                &lt;measurement&gt;
-                        &lt;name&gt;tm&lt;/name&gt;
-                &lt;/measurement&gt;
-                &lt;measurement&gt;
-                        &lt;name&gt;%gc&lt;/name&gt;
-                &lt;/measurement&gt;
-                &lt;measurement&gt;
-                        &lt;name&gt;complexity&lt;/name&gt;
-                &lt;/measurement&gt;
-                &lt;measurement&gt;
-                        &lt;name&gt;unicity&lt;/name&gt;
-                        &lt;parameters&gt;
-                                &lt;parameter&gt;
-                                        &lt;name&gt;maxprefixlength&lt;/name&gt;
-                                        &lt;value&gt;30&lt;/value&gt;
-                                &lt;/parameter&gt;
-                        &lt;/parameters&gt;
-
-                &lt;/measurement&gt;
-        &lt;/measurements&gt;</source>
+<source>&lt;measurements skip="false"&gt;
+	&lt;measurement&gt;
+		&lt;name&gt;oligosequence&lt;/name&gt;
+	&lt;/measurement&gt;
+	&lt;measurement&gt;
+		&lt;name&gt;position&lt;/name&gt;
+	&lt;/measurement&gt;
+	&lt;measurement&gt;
+		&lt;name&gt;tm&lt;/name&gt;
+	&lt;/measurement&gt;
+	&lt;measurement&gt;
+		&lt;name&gt;%gc&lt;/name&gt;
+	&lt;/measurement&gt;
+	&lt;measurement&gt;
+		&lt;name&gt;complexity&lt;/name&gt;
+	&lt;/measurement&gt;
+	&lt;measurement&gt;
+		&lt;name&gt;unicity&lt;/name&gt;
+		&lt;parameters&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;maxprefixlength&lt;/name&gt;
+				&lt;value&gt;30&lt;/value&gt;
+			&lt;/parameter&gt;
+		&lt;/parameters&gt;
+	&lt;/measurement&gt;
+&lt;/measurements&gt;</source>
 
 	
 
@@ -56,56 +53,120 @@
 		<li>Some <b>parameters</b> that allow configure each measurement.</li>
 	</ul>
 
-	<p>The standard version of Toelenn contains 2 filters:</p>
+	<p>Each measurement, add a column to the measurement file. The standard version of Toelenn contains 10 measurements:</p>
 	<ul>
-		<li><b>complexity</b>: .</li>
-		<li><b>%gc</b>: .</li>
-		<li><b>oligoname</b>: .</li>
-		<li><b>oligolength</b>: .</li>
-		<li><b>oligosequence</b>: .</li>
-		<li><b>oligostart</b>: .</li>
-		<li><b>position</b>: .</li>
-		<li><b>Chromosome</b>: .</li>
-		<li><b>Complexity</b>: .</li>
-		<li><b>Complexity</b>: .</li>
-		<li><b>Complexity</b>: .</li>
-		<li><b>Complexity</b>: .</li>
-		
-		addMeasurementType("scaffold", ScaffoldMeasurement.class);
-    addMeasurementType("start", OligoStartMeasurement.class);
-    addMeasurementType("position", PositionMeasurement.class);
-    addMeasurementType("tm", TmMeasurement.class);
-    addMeasurementType("%gc", GCPencentMeasurement.class);
-    addMeasurementType("complexity", ComplexityMeasurement.class);
-    addMeasurementType("unicity", UnicityMeasurement.class);
-    addMeasurementType("oligosequence", OligoSequenceMeasurement.class);
-		
-
+		<li><b>chromosome</b>: Add the chromosome of the oligonucleotides sequence to the measurement file.</li>
+		<li><b>complexity</b>: Add a complexity score based on the genome masked.</li>
+		<li><b>%gc</b>: Add the percent of gc of the oligonucleotides.</li>
+		<li><b>oligolength</b>: Add the length of the oligonucleotides.</li>
+		<li><b>oligoname</b>: Add the name of the oligonucleotides.</li>
+		<li><b>oligosequence</b>: Add the sequences of the oligonucleotides.</li>
+		<li><b>oligostart</b>: Add the start position of the oligonucleotides..</li>
+		<li><b>position</b>: Add a position score for each oligonucleotides.</li>
+		<li><b>tm</b>: Add the tm of the oligonucleotides.</li>
+		<li><b>unicity</b>: Add the unicity score for each oligonucleotides.</li>
 	</ul>
   
-  <p>Note that this step can be skipped by setting the <b>skip</b> attribute to <b>true</b>.</p>
+  	<p>However, on this 10 measurements two (Chromosome and oligostart) are 
+  	automatically added to measurement file.</p> 
+  
+  
+  <p>Note that this step can be skipped by setting the <b>skip</b> attribute to <b>true</b> in <b>measurements</b> tag.</p>
   
   </section>
   
-  <subsection name="The notatgc filter">
+  <subsection name="The chromosome measurement">
   
   	<ul>
-  		<li><b>Description:</b> This sequence filter filters all the sequence that contains other 
-		Nucleic Acid Code that A,T,G or C (case insensitive).</li>
+  		<li><b>Description:</b> Get the chromosome source of an oligonucleotide.</li>
 		<li><b>Parameters:</b> None.</li>
 		<li><b>Use external tool:</b> No.</li>
-  	</ul>
-  
+		<li><b>Automatically added to measurements file:</b> Yes.</li>
+  	</ul>  
   
   </subsection>
   
-  <subsection name="The redundancy filter">
+  <subsection name="The complexity measurement">
   
   	<ul>
-  		<li><b>Description:</b> This sequence filter filters all the redundancy oligonucleotides.</li>
+  		<li><b>Description:</b> Get a complexity score using masked genome created probes.</li>
 		<li><b>Parameters:</b> None.</li>
-		<li><b>Use external tool:</b> SOAP.</li>
-  	</ul>
+		<li><b>Use external tool:</b> No.</li>
+		<li><b>Automatically added to measurements file:</b> No.</li>
+  	</ul>  
+  
+  </subsection>
+  
+  <subsection name="The %GC measurement">
+  
+  	<ul>
+  		<li><b>Description:</b> Get the percentage of GC bases in the oligonucleotide sequence.</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> No.</li>
+		<li><b>Automatically added to measurements file:</b> No.</li>
+  	</ul>  
+  
+  </subsection>
+  
+  <subsection name="The oligolength measurement">
+  
+  	<ul>
+  		<li><b>Description:</b> Get the length of the probe. Usualy, it's not 
+  		very useful as all probes has the same length.</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> No.</li>
+		<li><b>Automatically added to measurements file:</b> No.</li>
+  	</ul>  
+  
+  </subsection>
+ 
+  <subsection name="The oligoname measurement">
+  
+  	<ul>
+  		<li><b>Description:</b> Get the name of the probe.</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> No.</li>
+		<li><b>Automatically added to measurements file:</b> No.</li>
+  	</ul>  
+  
+  </subsection>
+  
+  <subsection name="The oligstart measurement">
+  
+  	<ul>
+  		<li><b>Description:</b> Get the start position on the chromosome of the probe.</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> No.</li>
+		<li><b>Automatically added to measurements file:</b> No.</li>
+  	</ul>  
+  
+  </subsection>
+  
+  <subsection name="The position measurement">
+  
+  	<ul>
+  		<li><b>Description:</b> Get a position score is calculated in order
+  		 to favour probes centred in the window.</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> No.</li>
+		<li><b>Automatically added to measurements file:</b> No.</li>
+  	</ul>  
+  
+  </subsection>
+  
+  <subsection name="The unicity measurement">
+  
+  	<ul>
+  		<li><b>Description:</b> Get the minimum length of the unique prefixes
+  		 are located all along the genome in the oligonucleotide sequence.</li>
+		<li><b>Parameters:</b>
+			<ul>
+				<li><b>maxprefixlength:</b> The maximum prefix length to search in all the genome.</li>
+			</ul> 
+		</li>
+		<li><b>Use external tool:</b> gt (genometools).</li>
+		<li><b>Automatically added to measurements file:</b> No.</li>
+  	</ul>  
   
   </subsection>
   
@@ -113,19 +174,19 @@
   
   <subsection name="Use external sequence filters">
   
-  	<p>Teolenn is a very customizable tool, you can use your own sequence
-  	 filter. This filter must be written in Java and implements the 
-  	 <code>SequenceFilter</code> interface. See the developer section for more 
+  	<p>Teolenn is a very customizable tool, you can use your own measurement 
+  	calculator. This measurement must be written in Java and implements the 
+  	 <code>Measurement</code> interface. See the developer section for more 
   	 information. Your plugin must be in the classpath of Toelenn define in 
   	 <code>teolenn.sh</code>. In addition, to use your filter in Toelenn, you must 
-  	 add the full name of the main class (witch implements <code>SequenceFilter</code>)
+  	 add the full name of the main class (witch implements <code>Measurement</code>)
   	 of your plugin in the design <code></code>file :</p>
   	 
   	 <source>
-&lt;sequencefilter&gt;
-	&lt;name&gt;redundancy&lt;/name&gt;
-	&lt;class&gt;com.example.mysequencefilter&lt;/class&gt;
-&lt;/sequencefilter&gt;</source>   
+&lt;measurement&gt;
+	&lt;name&gt;mymeasurement&lt;/name&gt;
+	&lt;class&gt;com.example.mymeasurement&lt;/class&gt;
+&lt;/measurement&gt;</source>   
   	 
   
   </subsection>

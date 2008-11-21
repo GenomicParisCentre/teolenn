@@ -30,13 +30,13 @@
 
 <source>
 &lt;design&gt;
-        &lt;windowlength&gt;90&lt;/windowlength&gt;
-        &lt;windowstep&gt;60&lt;/windowstep&gt;
-        &lt;oligolength&gt;60&lt;/oligolength&gt;
+	&lt;windowlength&gt;90&lt;/windowlength&gt;
+	&lt;windowstep&gt;60&lt;/windowstep&gt;
+	&lt;oligolength&gt;60&lt;/oligolength&gt;
 
-        &lt;genomefile&gt;Ca21_chromosomes2.fasta&lt;/genomefile&gt;
-        &lt;genomemaskedfile&gt;Ca21_chromosomes2.fasta.allmasked&lt;/genomemaskedfile&gt;
-        &lt;outputdir&gt;/home/jourdren/tmp/candida_design&lt;/outputdir&gt;
+	&lt;genomefile&gt;Ca21_chromosomes2.fasta&lt;/genomefile&gt;
+	&lt;genomemaskedfile&gt;Ca21_chromosomes2.fasta.allmasked&lt;/genomemaskedfile&gt;
+	&lt;outputdir&gt;/home/jourdren/tmp/candida_design&lt;/outputdir&gt;
 	...
 &lt;/design&gt;</source>
   

@@ -21,11 +21,11 @@
 &lt;sequencefilters skip="false"&gt;
 	&lt;sequencefilter&gt;
 		&lt;name&gt;redundancy&lt;/name&gt;
-    &lt;/sequencefilter&gt;
-    &lt;sequencefilter&gt;
+	&lt;/sequencefilter&gt;
+	&lt;sequencefilter&gt;
 		&lt;name&gt;notatgc&lt;/name&gt;
-    &lt;/sequencefilter&gt;
-    &lt;sequencefilter&gt;
+	&lt;/sequencefilter&gt;
+	&lt;sequencefilter&gt;
 		&lt;name&gt;dummysequencefilter&lt;/name&gt;
 		&lt;parameters&gt;
 			&lt;parameter&gt;
@@ -37,7 +37,7 @@
 				&lt;parameter&gt;value2&lt;parameter&gt;
 			&lt;/parameter&gt;
 		&lt;/parameters&gt;		
-    &lt;/sequencefilter&gt;
+	&lt;/sequencefilter&gt;
 &lt;/sequencefilters&gt;</source>
 
 	
@@ -56,7 +56,7 @@
 		<li><b>redundancy</b>: filter all the redundancy oligonucleotides.</li>
 	</ul>
   
-  <p>Note that this step can be skipped by setting the <b>skip</b> attribute to <b>true</b>.</p>
+  <p>Note that this step can be skipped by setting the <b>skip</b> attribute to <b>true</b> in <b>sequencefilters</b> tag.</p>
   
   </section>
   
@@ -96,10 +96,10 @@
   	 
   	 <source>
 &lt;sequencefilter&gt;
-	&lt;name&gt;redundancy&lt;/name&gt;
+	&lt;name&gt;sequencefilter&lt;/name&gt;
 	&lt;class&gt;com.example.mysequencefilter&lt;/class&gt;
 &lt;/sequencefilter&gt;</source>   
-  	 
+ 
   
   </subsection>
   

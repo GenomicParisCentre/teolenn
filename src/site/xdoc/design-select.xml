@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+
+<properties>
+  <title>The select section of design file</title>
+  <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+</properties>
+
+<body>
+    
+  <section name="The measurement section of design file">
+  
+  	<p>This section of the design file allow to set the weight and other parameters for each measurement used for the design.</p>
+  
+    <p>The following source show the structure of a typical select
+     section of the design file:</p>
+  
+<source>&lt;select&gt;
+	&lt;measurement&gt;
+		&lt;name&gt;%gc&lt;/name&gt;
+		&lt;weight&gt;0.150&lt;/weight&gt;
+		&lt;parameters&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;reference&lt;/name&gt;
+				&lt;value&gt;0.33&lt;/value&gt;
+			&lt;/parameter&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;deviation&lt;/name&gt;
+				&lt;value&gt;0.14&lt;/value&gt;
+			&lt;/parameter&gt;
+		&lt;/parameters&gt;
+	&lt;/measurement&gt;
+	&lt;measurement&gt;
+		&lt;name&gt;complexity&lt;/name&gt;
+		&lt;weight&gt;0.075&lt;/weight&gt;
+	&lt;/measurement&gt;
+	&lt;measurement&gt;
+		&lt;name&gt;unicity&lt;/name&gt;
+		&lt;weight&gt;0.225&lt;/weight&gt;
+		&lt;parameters&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;max&lt;/name&gt;
+ 				&lt;value&gt;38&lt;/value&gt;
+			&lt;/parameter&gt;
+		&lt;/parameters&gt;
+	&lt;/measurement&gt;
+	...
+&lt;/select&gt;</source>
+
+
+
+	<p>Each measurement of the select selection is defined by:</p>
+	<ul>
+		<li>A <b>name</b>.</li>
+		<li>A <b>weight</b> that define the weight of the measurement in the global score</li>
+		<li>Some <b>parameters</b> that allow configure the computation of the score for each measurement.</li>
+	</ul>
+
+
+
+	<p>If a measurement is not present in the <b>select</b> the scores of this 
+	measurement will be 0 as by default the weight of a measurement is equal to
+	0. In addition, extra parameters are needed to compute the score for a measurement. 
+	The next subsections summaries this parameters for score computation.</p>
+	
+  
+ 
+  	
+  
+  
+  
+  <subsection name="The tm measurement">
+  
+  	<ul>
+  		<li><b>name</b>: tm</li>
+		<li><b>Parameters:</b> 
+			<ul>
+				<li><b>reference</b>: </li>
+				<li><b>deviation</b>: </li>
+			</ul>
+		</li>
+  	</ul>  
+  
+  </subsection>
+  
+  <subsection name="The %GC measurement">
+  
+  	<ul>
+  		<li><b>name</b>: %gc</li>
+		<li><b>Parameters:</b> 
+			<ul>
+				<li><b>reference</b>: </li>
+				<li><b>deviation</b>: </li>
+			</ul>
+		</li>
+  	</ul>  
+  
+  </subsection>
+  
+  <subsection name="The complexity measurement">
+  
+  	<ul>
+  		<li><b>name</b>: complexity</li>
+		<li><b>Parameters:</b> None.</li>
+  	</ul>  
+  
+  </subsection>
+  
+  <subsection name="The unicity measurement">
+  
+  	<ul>
+  		<li><b>name</b>: unicity</li>
+		<li><b>Parameter:</b> 
+			<ul>
+				<li><b>max</b>: Maximum of uniqueness value</li>
+			</ul>
+		</li>
+  	</ul>  
+  
+  </subsection>
+  
+  
+  <subsection name="The position measurement">
+  
+  	<ul>
+  		<li><b>name</b>: unicity</li>
+		<li><b>Parameter:</b> None.</li>
+  	</ul>  
+  
+  </subsection>
+  
+  
+  </section>
+  
+</body>
+
+</document>

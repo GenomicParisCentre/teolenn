@@ -47,13 +47,18 @@
 			<item name="The design file" href="/design.html" collapse="true">
 				<item name="Global parameters" href="/design-global.html" />
 				<item name="Sequence filters" href="/design-sequencefilters.html" />
+				<item name="Measurements" href="/design-measurements.html" />
+				<item name="Measurement filers" href="/design-measurementfilters.html" />
+				<item name="Select" href="/design-select.html" />
 			</item>
+			<!-- item name ="Optimize" href="/optimize.html"/-->
 			<item name="Known bugs" href="/bugs.html" />
 			<item name="Mailing list" href="/mail-lists.html" />
 		</menu>
 
 		<menu name="Developement">
 			<item name="Downloading sources" href="/download-src.html" />
+			<item name="Writing plugins" href="/plugins.html" /> 
 			<item name="Compiling" href="/compiling.html"/>
 			<item name="Known bugs" href="/bugs.html"/>
 			<item name="Contribute to Teolenn" href="/contribute.html"/>

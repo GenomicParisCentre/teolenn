@@ -6,11 +6,16 @@
 		<author email="jourdren@biologie.ens.fr">
 			Laurent Jourdren
 		</author>
+		
 	</properties>
+		
 
 	<body>
-
+        <link rel="alternate" type="application/rss+xml" title="Teolenn updates" href="teolenn.rss" />
+        
 		<section name="Welcome to Teolenn">
+
+
 
 			<div
 				style="float: right; margin: 0 10px 20px 20px; padding: 5px; border: 1px solid #999; background-color: #eee;">

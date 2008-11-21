@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <properties>
+    <title>Handbook</title>
+    <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+  </properties>
+  <body>
+  
+    <section name="How run a design with Teolenn">
+    
+        <subsection  name="Requierements">
+        
+        <p>You need to run Teolenn:</p>
+        
+        <ul>
+            <li>A computer that can execute 
+            Teolenn (see <a href="download.html#">installation requirements</a> for more information.</li>
+            <li><a href="download.html">Download Teolenn</a> and <a href="installing.html">install it</a>.</li>
+            <li>The sequence of the genome to use for the design
+                <ul>
+                    <li>This genome must be in one file at Fasta format</li>
+                    <li>The header of each chromosome must be simple (short as possible, without punctuation marks or other symbols). 
+                        <source>
+>chromosome_1
+TATATAAAAACCTTTACTACTTTTACTATTATTATTACCTTATTATATAGTTATAATTAACTTCCTTTTA
+...</source></li>
+                </ul>
+            </li>
+            <li>The sequence of the masked genome if you want use the complexity measurement.
+                <ul>
+                    <li>This genome must be in one file at Fasta format</li>
+                    <li>The header of each chromosome must be simple (short as possible, without punctuation marks or other symbols).</li>
+                    <li>The name of the header of each chromosome must be the same for genome file and genome masked file</li>
+                </ul>
+            
+            </li>
+        </ul>
+        
+        
+        </subsection>
+        
+        
+        
+        <subsection name="Non standard Installation">
+        
+        <p><a href="http://soap.genomics.org.cn">Soap</a> and 
+        <a href="http://genometools.org/">genometools</a> can be installed 
+        manualy. This mandatory if executable is not built-in Teolenn.</p>
+        
+        <table>
+            <tr><th>Tool</th><th>Version</th><th>OS</th><th>Arch</th><th>Comment</th></tr>
+            <tr><td>soap</td><td>1.11</td><td>linux</td><td>i386</td><td></td></tr>
+            <tr><td>soap</td><td>1.11</td><td>linux</td><td>x86_64</td><td></td></tr>
+            <tr><td>genometools</td><td>1.2.0</td><td>linux</td><td>i386</td><td></td></tr>
+            <tr><td>genometools</td><td>1.2.0</td><td>linux</td><td>x86_64</td><td>
+            This the i386 that is embedded because it was impossible to compile genometools 
+            as a static executable for this architecture. IA32 compatibility 
+            libraries are may be needed.</td></tr>
+        </table>
+        
+        
+        </subsection>
+    
+        <subsection name="The design file">
+        
+            <p>The design file is core element of a design using Teolenn. It 
+            contains the filters to apply on generated sequences, the measurements
+            to compute, the filters on measurements and the selection parameters.
+            The design file is an XML file (see 
+            <a href="http://en.wikipedia.org/wiki/XML">Wikipedia article</a> for 
+            more information about XML. This file allow to Teolenn be very flexible 
+            design tools. As the deisgn file is the central part of Teolenn you must 
+            read carefuly the <a href="design.html">design section</a> of the
+            documentation.</p>
+            
+            <p>You can also use the <a href="design-thricoderna-reesei.xml">Trichoderma 
+            reesei design file</a> as a model your design. <b>Don't forget that the parameters
+            in this design are specific to Trichoderma reesei and <u>need to be adapted to your design</u>.</b></p> 
+            
+        </subsection>
+    
+    
+        <subsection name="The Teolenn process">
+        
+            <p>There are 5 steps in the Teolenn process to select the best oligonucleotides:</p>
+        
+           <ol>
+            <li>Generate all oligonucleotides sequences for genome and genome masked (create one file per chromosome, "<b>.oligo</b>" and "<b>.masked</b>" files)</li>
+            <li>Filter oligonucleotides sequences (one file per chromosome, "<b>.oligo.filtered</b>" and "<b>.masked.filtered</b>" files)</li>
+            <li>Compute measurements (create <b>oligo.mes</b> file)</li>
+            <li>Filter measurements (create <b>filtered.mes</b> and <b>filtered.stat</b> file)</li>
+            <li>Compute selected oligonucleotides (create <b>select.mes</b> file). This final step
+                <ol>
+                    <li>For each measurement and oligonucleotide compute a score using the measurement value and 
+                    sometimes one or more statistical parameters (defined in the parameters of the measurements in the
+                    select section of the design file). A score is a float value between 0 and 1 whereas a measurement 
+                    value can have any value (negative, string...).</li>
+                </ol>
+                <ol>Apply a weight on each measurement score to get a global score for an oligonucleotide.</ol>
+                <ol>Choose the oligonucleotide with the best score a window.</ol>           
+            </li>
+           </ol>
+                
+            <p>As there is the need of statistical data for the last step of 
+            the process, Teolenn must run two times. One to get the statistical 
+            data and one to get the selected oligonucleotides. You can skip 
+            the 4 firsts step in the second run using the <b>skip</b> attribute 
+            in the design file (see the <a href="design.html">design section</a> 
+            of the documentation more information).</p>   
+        
+        </subsection>
+    
+    </section>
+  
+  </body>
+</document>

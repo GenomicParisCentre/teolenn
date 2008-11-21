@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+
+    <properties>
+        <title>Developing plugins for Teolen</title>
+        <author email="jourdren@biologie.ens.fr">
+            Laurent Jourdren
+        </author>
+    </properties>
+
+    <body>
+
+        <section name="Developing plugins for Teolen">
+        
+        <p>Teolenn is a very customizable tool, you can use your own module at 
+        each step of Teolenn process.</p>
+        
+        <p>Your plugin must be written is Java but it could call external tools 
+        or use <a href="http://scripting.dev.java.net">scripting language</a> 
+        available on the Java platform.</p>
+        
+        <p>You can provide your plugin as class file(s) or jar file(s) by adding 
+        your plugin to the Teolenn <code>CLASSPATH</code>. To do it, edit 
+        <code>teolenn.sh</code> in the <code>bin</code> directory of the 
+        Teolenn installation and add the path to your plugin and dependencies after 
+        the declaration of the <code>PLUGINS</code> variable.</p>
+        
+<source>
+#!/bin/sh
+
+#
+# This script set the right classpath and start the application
+#
+
+# Get the path to this script
+BASEDIR=`dirname $0`
+
+# Set the Toelenn libraries path
+LIBDIR=$BASEDIR/lib
+
+# Set the memory in MiB needed by Teolenn (only Java part, not external tools)
+# By Default 512
+MEMORY=512
+
+# Add here your plugins and dependencies
+PLUGINS=
+
+# Set the path to java
+JAVA_CMD=java
+
+# Launch Toelenn
+$JAVA_CMD -server \
+          -Xmx${MEMORY}m \ 
+          -cp $LIBDIR/teolenn.jar:$LIBDIR/commons-math.jar:$LIBDIR/dom4j.jar:$LIBDIR/commons-cli.jar:$PLUGINS \ 
+          fr.ens.transcriptome.teolenn.Main $*</source>        
+        
+      <p>The next table summaries, the java interface you need to implements 
+      for the type of plugin you want to write:</p>
+      
+      <table>
+        <tr><th>Type</th><th>Section in design file</th><th>Interface to implements</th></tr>
+        <tr><td>Sequence filter</td><td><code>sequencefilters</code></td><td><code>SequenceFilter</code></td></tr>
+        <tr><td>Measurement</td><td><code>measurements</code></td><td><code>Measurements</code></td></tr>
+        <tr><td>Measurement filter</td><td><code>measurementfilters</code></td><td><code>MeasurementFilter</code></td></tr>
+      </table>
+      
+<source>
+
+</source>
+      
+      <p>Don't forget to signal your plugin in the design file using the <code>class</code>
+       tag. Note that measurement need only to be declared in <code>measurements</code> 
+       section, not in <code>select</code> section. The following sample show the 
+       declaration of a sequence filter plugin:</p>
+     
+     <source>
+&lt;sequencefilter&gt;
+    &lt;name&gt;sequencefilter&lt;/name&gt;
+    &lt;class&gt;com.example.mysequencefilter&lt;/class&gt;
+&lt;/sequencefilter&gt;</source>   
+ 
+        
+        
+        
+        
+        </section>
+    </body>
+ </document>

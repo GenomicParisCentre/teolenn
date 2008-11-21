@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+
+<properties>
+  <title>The measurement filters section of design file</title>
+  <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+</properties>
+
+<body>
+    
+  <section name="The measurement section of design file">
+  
+  	<p>This section of the design file that define the measurement filters.</p>
+  
+    <p>The following source show the structure of a typical measurement filters
+     section of the design file:</p>
+  
+<source>&lt;measurementfilters&gt;
+	&lt;measurementfilter&gt;
+		&lt;name&gt;floatrange&gt;/name&gt;
+		&lt;parameters&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;measurement&lt;/name&gt;
+				&lt;value&gt;%gc&lt;/value&gt;
+			&lt;/parameter&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;min&lt;/name&gt;
+				&lt;value&gt;0&lt;/value&gt;
+ 			&lt;/parameter&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;max&lt;/name&gt;
+				&lt;value&gt;1&lt;/value&gt;
+			&lt;/parameter&gt;
+		 &lt;/parameters&gt;
+	&lt;/measurementfilter&gt;
+	&lt;measurementfilter&gt;
+		&lt;name&gt;floatrange&lt;/name&gt;
+		&lt;parameters&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;measurement&lt;/name&gt;
+				&lt;value&gt;tm&lt;/value&gt;
+			&lt;/parameter&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;min&lt;/name&gt;
+				&lt;value&gt;0&lt;/value&gt;
+			&lt;/parameter&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;max&lt;/name&gt;
+				&lt;value&gt;100&lt;/value&gt;
+			&lt;/parameter&gt;
+		&lt;/parameters&gt;
+	&lt;/measurementfilter&gt;
+&lt;/measurementfilters&gt;</source>
+
+
+	<p>Each measurement filter is defined by:</p>
+	<ul>
+		<li>A <b>name</b>.</li>
+		<li>A <b>class</b> if the sequence filter is provided by an external plugin.</li>
+		<li>Some <b>parameters</b> that allow configure each measurement.</li>
+	</ul>
+
+	<p>The standard version of Toelenn contains 2 measurement filters:</p>
+	<ul>
+		<li><b>booleanfilter</b>: Filter boolean measurement values</li>
+		<li><b>floatrange</b>: Filter float measurement values that are not in a defined range.</li>
+	</ul>
+  
+ 
+  <p>Note that this step can be skipped by setting the <b>skip</b> attribute to <b>true</b> in <b>measurementfilters</b> tag.</p>
+  
+  </section>
+  
+  <subsection name="The booleanfilter measurement filter">
+  
+  	<ul>
+  		<li><b>Description:</b> Filter boolean measurements values. No that the standard version Toelenn does not contains measurements that produce boolean values.</li>
+		<li><b>Parameters:</b> 
+			<ul>
+				<li><b>measurement</b>: Name of the measurement that values must be filtered.</li>
+				<li><b>acceptValue</b>: Values to keep after filtering.</li>
+			</ul>
+		</li>
+		<li><b>Use external tool:</b> No.</li>
+  	</ul>  
+  
+  </subsection>
+  
+  <subsection name="The floatrange measurement filter">
+  
+  	<ul>
+  		<li><b>Description:</b> Filter float measurements values. Probes witch measurement values are outside the range are filtered out.</li>
+		<li><b>Parameters:</b> 
+			<ul>
+				<li><b>measurement</b>: Name of the measurement that values must be filtered.</li>
+				<li><b>min</b>: Minimal value of the range (included).</li>
+				<li><b>max</b>: Maximal value of the range (included).</li>
+			</ul>
+		</li>
+		<li><b>Use external tool:</b> No.</li>
+  	</ul>  
+  
+  </subsection>
+  
+  <subsection name="Use external measurement filters">
+  
+  	<p>Teolenn is a very customizable tool, you can use your own measurement 
+  	filter. This measurement filter must be written in Java and implements the 
+  	 <code>MeasurementFilter</code> interface. See the developer section for more 
+  	 information. Your plugin must be in the classpath of Toelenn define in 
+  	 <code>teolenn.sh</code>. In addition, to use your filter in Toelenn, you must 
+  	 add the full name of the main class (witch implements <code>Measurement</code>)
+  	 of your plugin in the design <code></code>file :</p>
+  	 
+  	 <source>
+&lt;measurementfilter&gt;
+	&lt;name&gt;mymeasurementfilter&lt;/name&gt;
+	&lt;class&gt;com.example.mymeasurementfilter&lt;/class&gt;
+&lt;/measurementfilter&gt;</source>   
+  	 
+  
+  </subsection>
+  
+</body>
+
+</document>

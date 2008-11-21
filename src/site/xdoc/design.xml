@@ -25,6 +25,7 @@
   
   <source>
 &lt;design&gt;
+		&lt;formatversion&gt;1.0&lt;/formatversion&gt;
         &lt;windowlength&gt;90&lt;/windowlength&gt;
         &lt;windowstep&gt;60&lt;/windowstep&gt;
         &lt;oligolength&gt;60&lt;/oligolength&gt;
@@ -47,7 +48,24 @@
 	&lt;/select&gt;
 &lt;/design&gt;</source>
   
+  	<subsection name="Built-in variables">
+  	
+  		<p>In parameters sections of the XML design file, you can use the 
+  		following built-in variable as values for parameters:</p>
+  		
+  		<ul>
+  			<li><b>${windowlength}</b>: Contains the length of the window.</li>
+  			<li><b>${genomefile}</b>: Contains the path to the genome file.</li>
+  			<li><b>${genomemaskedfile}</b>: Contains the path to the genome masked file.</li>
+  			<li><b>${windowstep}</b>: Contains the step between two windows.</li>
+  			<li><b>${oligolength}</b>: Contains the length of the oligonucleotides.</li>  			
+  		</ul>
+  		
+  	
+  	</subsection>
+  
   </section>
+  
   
 </body>
 </document>
