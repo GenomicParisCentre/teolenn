@@ -22,7 +22,6 @@
 
 package fr.ens.transcriptome.teolenn.measurement.filter;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 
