@@ -38,13 +38,6 @@ public class Settings {
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
   private static Properties properties = new Properties();
 
-  private static final String GT_PATH =
-      "/export/home2/users/sgdb/jourdren/ArrayDesignTmp/src/genometools-1.0.2/bin/gt";
-
-  private static final String SOAP_PATH =
-      "/export/home2/users/sgdb/jourdren/soap-align/soap";
-  // "/export/home2/users/sgdb/lecrom/soap_soft/soap";
-
   static {
 
     // setGenomeToolsPath(GT_PATH);
@@ -192,7 +185,7 @@ public class Settings {
     if (!confFile.exists())
       logger.config("No configuration file found.");
     else
-      loadSettings();
+      loadSettings(confFile);
   }
 
   /**
