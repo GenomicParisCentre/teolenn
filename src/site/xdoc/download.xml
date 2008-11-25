@@ -64,7 +64,7 @@
                Reesei genome (33454791 pb) and 60 pb for oligonucleotides 
                length, 26 GiB will be necessary. Fast hard drive with SCSI 
                interface is recommended. <!-- Note for linux users that XFS file 
-               system is faster than ext3 for large sequential files used by Toelenn.-->
+               system is faster than ext3 for large sequential files used by Teolenn.-->
             </td>
           </tr>
           <tr>

@@ -10,7 +10,7 @@
     
     <section name="Standalone installation">
      
-      <p>The installation of Toelenn on all *nix systems is quite similar and very easy. You don't need to be the root user of your system to install Toelenn.</p> 
+      <p>The installation of Teolenn on all *nix systems is quite similar and very easy. You don't need to be the root user of your system to install Teolenn.</p> 
      
       <p>The only tool you need to have is a tar/gz/bz2/zip extractor.</p>
      
@@ -27,7 +27,7 @@ $ wget http://transcriptome.ens.fr/toelenn/teolenn-@@@VERSION@@@.tar.gz
 $ tar xzf teolenn-@@@VERSION@@@.tar.gz
 </source>
 
-        <li>Toelenn is ready to run.</li>
+        <li>Teolenn is ready to run.</li>
 
 <source>
 $ cd teolenn-@@@VERSION@@@

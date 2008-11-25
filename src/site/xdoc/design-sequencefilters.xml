@@ -49,7 +49,7 @@
 		<li>Some <b>parameters</b> that allow configure each filter.</li>
 	</ul>
 
-	<p>The standard version of Toelenn contains 2 filters:</p>
+	<p>The standard version of Teolenn contains 2 filters:</p>
 	<ul>
 		<li><b>notatgc</b>: filter all the sequence that contains other 
 		Nucleic Acid Code that A, T, G or C (case insensitive).</li>

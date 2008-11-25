@@ -35,7 +35,7 @@
 # Get the path to this script
 BASEDIR=`dirname $0`
 
-# Set the Toelenn libraries path
+# Set the Teolenn libraries path
 LIBDIR=$BASEDIR/lib
 
 # Set the memory in MiB needed by Teolenn (only Java part, not external tools)
@@ -48,7 +48,7 @@ PLUGINS=
 # Set the path to java
 JAVA_CMD=java
 
-# Launch Toelenn
+# Launch Teolenn
 $JAVA_CMD -server \
           -Xmx${MEMORY}m \ 
           -cp $LIBDIR/teolenn.jar:$LIBDIR/commons-math.jar:$LIBDIR/dom4j.jar:$LIBDIR/commons-cli.jar:$PLUGINS \ 

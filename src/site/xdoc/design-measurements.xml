@@ -52,7 +52,7 @@
 	</ul>
 
 	<p>Each measurement, add a column to the measurement file(<code>oligo.mes</code>). 
-	The standard version of Toelenn contains 10 measurements:</p>
+	The standard version of Teolenn contains 10 measurements:</p>
 	<ul>
 		<li><b>chromosome</b>: Add the chromosome of the oligonucleotides sequence to the measurement file.</li>
 		<li><b>complexity</b>: Add a complexity value based on the genome masked.</li>

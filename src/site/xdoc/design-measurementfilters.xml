@@ -61,7 +61,7 @@
 		<li>Some <b>parameters</b> that allow configure each measurement.</li>
 	</ul>
 
-	<p>The standard version of Toelenn contains 2 measurement filters:</p>
+	<p>The standard version of Teolenn contains 2 measurement filters:</p>
 	<ul>
 		<li><b>booleanfilter</b>: Filter boolean measurement values</li>
 		<li><b>floatrange</b>: Filter float measurement values that are not in a defined range.</li>
@@ -75,7 +75,7 @@
   <subsection name="The booleanfilter measurement filter">
   
   	<ul>
-  		<li><b>Description:</b> Filter boolean measurements values. No that the standard version Toelenn does not contains any measurements that produce boolean values.</li>
+  		<li><b>Description:</b> Filter boolean measurements values. No that the standard version Teolenn does not contains any measurements that produce boolean values.</li>
 		<li><b>Parameters:</b> 
 			<ul>
 				<li><b>measurement</b>: Name of the measurement that values must be filtered.</li>
