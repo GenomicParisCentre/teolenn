@@ -55,6 +55,9 @@ public class Globals {
 
   /** The log level of the application. */
   public static final Level LOG_LEVEL = Level.INFO; // Level.OFF;
+  
+  /** Set the debug mode. */
+  public static final boolean DEBUG = false;
 
   /** Format of the log. */
   public static final Formatter LOG_FORMATTER = new Formatter() {

@@ -815,7 +815,8 @@ public class Main {
       cli.readDesign(designFile, genomeFile, genomeMaskedFile, outputDir);
     } catch (Exception e) {
       System.err.println(e.getMessage());
-      // e.printStackTrace();
+      if (Globals.DEBUG)
+        e.printStackTrace();
       System.exit(1);
     }
 
