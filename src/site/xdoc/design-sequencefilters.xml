@@ -52,7 +52,7 @@
 	<p>The standard version of Toelenn contains 2 filters:</p>
 	<ul>
 		<li><b>notatgc</b>: filter all the sequence that contains other 
-		Nucleic Acid Code that A,T,G or C (case insensitive).</li>
+		Nucleic Acid Code that A, T, G or C (case insensitive).</li>
 		<li><b>redundancy</b>: filter all the redundancy oligonucleotides.</li>
 	</ul>
   
@@ -87,12 +87,9 @@
   <subsection name="Use external sequence filters">
   
   	<p>Teolenn is a very customizable tool, you can use your own sequence
-  	 filter. This filter must be written in Java and implements the 
-  	 <code>SequenceFilter</code> interface. See the developer section for more 
-  	 information. Your plugin must be in the classpath of Toelenn define in 
-  	 <code>teolenn.sh</code>. In addition, to use your filter in Toelenn, you must 
+  	 filter (see the <a href="plugins.html">developping plugins section</a> for more informations). To enable your custom filter, you must 
   	 add the full name of the main class (witch implements <code>SequenceFilter</code>)
-  	 of your plugin in the design <code></code>file :</p>
+  	 of your plugin in the design file as shown in the following sample:</p>
   	 
   	 <source>
 &lt;sequencefilter&gt;

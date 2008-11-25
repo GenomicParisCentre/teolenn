@@ -9,7 +9,7 @@
 
 <body>
     
-  <section name="The measurement section of design file">
+  <section name="The select section of design file">
   
   	<p>This section of the design file allow to set the weight and other parameters for each measurement used for the design.</p>
   
@@ -59,9 +59,9 @@
 
 
 
-	<p>If a measurement is not present in the <b>select</b> the scores of this 
-	measurement will be 0 as by default the weight of a measurement is equal to
-	0. In addition, extra parameters are needed to compute the score for a measurement. 
+	<p>If a measurement is not present in the <b>select</b> section, all the scores of this 
+	measurement will be at 0 as by default the weight of a measurement is equal to
+	0. In addition, extra parameters are sometimes needed to compute the score for a measurement. 
 	The next subsections summaries this parameters for score computation.</p>
 	
   

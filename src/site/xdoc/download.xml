@@ -63,14 +63,14 @@
                disk space needed to compute design is huge. For Trichoderma 
                Reesei genome (33454791 pb) and 60 pb for oligonucleotides 
                length, 26 GiB will be necessary. Fast hard drive with SCSI 
-               interface are recommended. Note for linux user that XFS file 
-               system is faster than ext3 for large sequential file used by Toelenn.
+               interface is recommended. <!-- Note for linux users that XFS file 
+               system is faster than ext3 for large sequential files used by Toelenn.-->
             </td>
           </tr>
           <tr>
             <td>Processor architecture</td>
             <td>Any architecture processor that can run Java, Soap and genometools. 
-            Multi processor or multi core system (SMP) are strongly recommended.</td>
+            Multi processors or multi cores system (SMP) are strongly recommended.</td>
           </tr>
           <tr>
             <td>Operating System</td>

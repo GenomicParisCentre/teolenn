@@ -9,7 +9,7 @@
 
 <body>
     
-  <section name="The measurement section of design file">
+  <section name="The measurement filters section of design file">
   
   	<p>This section of the design file that define the measurement filters.</p>
   
@@ -75,7 +75,7 @@
   <subsection name="The booleanfilter measurement filter">
   
   	<ul>
-  		<li><b>Description:</b> Filter boolean measurements values. No that the standard version Toelenn does not contains measurements that produce boolean values.</li>
+  		<li><b>Description:</b> Filter boolean measurements values. No that the standard version Toelenn does not contains any measurements that produce boolean values.</li>
 		<li><b>Parameters:</b> 
 			<ul>
 				<li><b>measurement</b>: Name of the measurement that values must be filtered.</li>
@@ -106,12 +106,9 @@
   <subsection name="Use external measurement filters">
   
   	<p>Teolenn is a very customizable tool, you can use your own measurement 
-  	filter. This measurement filter must be written in Java and implements the 
-  	 <code>MeasurementFilter</code> interface. See the developer section for more 
-  	 information. Your plugin must be in the classpath of Toelenn define in 
-  	 <code>teolenn.sh</code>. In addition, to use your filter in Toelenn, you must 
-  	 add the full name of the main class (witch implements <code>Measurement</code>)
-  	 of your plugin in the design <code></code>file :</p>
+  	filter (see the <a href="plugins.html">developping plugins section</a> for more informations). To enable your custom filter, you must 
+     add the full name of the main class (witch implements <code>Measurement</code>)
+     of your plugin in the design file as shown in the following sample:</p>
   	 
   	 <source>
 &lt;measurementfilter&gt;

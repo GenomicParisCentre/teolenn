@@ -16,13 +16,13 @@
         each step of Teolenn process.</p>
         
         <p>Your plugin must be written is Java but it could call external tools 
-        or use <a href="http://scripting.dev.java.net">scripting language</a> 
+        or use <a href="http://scripting.dev.java.net">scripting languages</a> 
         available on the Java platform.</p>
         
-        <p>You can provide your plugin as class file(s) or jar file(s) by adding 
+        <p>You can provide your plugin for Teolenn as class file(s) or jar file(s) by adding 
         your plugin to the Teolenn <code>CLASSPATH</code>. To do it, edit 
         <code>teolenn.sh</code> in the <code>bin</code> directory of the 
-        Teolenn installation and add the path to your plugin and dependencies after 
+        Teolenn installation, then add the path to your plugin and dependencies after 
         the declaration of the <code>PLUGINS</code> variable.</p>
         
 <source>
@@ -68,8 +68,8 @@ $JAVA_CMD -server \
 
 </source>
       
-      <p>Don't forget to signal your plugin in the design file using the <code>class</code>
-       tag. Note that measurement need only to be declared in <code>measurements</code> 
+      <p>Don't forget to register your plugin in the design file using the <b>class</b>
+       tag. Note that measurements need only to be declared once in <code>measurements</code> 
        section, not in <code>select</code> section. The following sample show the 
        declaration of a sequence filter plugin:</p>
      
@@ -80,7 +80,7 @@ $JAVA_CMD -server \
 &lt;/sequencefilter&gt;</source>   
  
         
-        
+        <p>For more specific information about plugin development see the <a href="contribute.html">contribute page</a>.</p>
         
         
         </section>

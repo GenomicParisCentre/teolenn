@@ -25,17 +25,17 @@
   
   <source>
 &lt;design&gt;
-		&lt;formatversion&gt;1.0&lt;/formatversion&gt;
-        &lt;windowlength&gt;90&lt;/windowlength&gt;
-        &lt;windowstep&gt;60&lt;/windowstep&gt;
-        &lt;oligolength&gt;60&lt;/oligolength&gt;
+    &lt;formatversion&gt;1.0&lt;/formatversion&gt;
+    &lt;windowlength&gt;90&lt;/windowlength&gt;
+    &lt;windowstep&gt;60&lt;/windowstep&gt;
+    &lt;oligolength&gt;60&lt;/oligolength&gt;
 
-        &lt;genomefile&gt;Ca21_chromosomes2.fasta&lt;/genomefile&gt;
-        &lt;genomemaskedfile&gt;Ca21_chromosomes2.fasta.allmasked&lt;/genomemaskedfile&gt;
-        &lt;outputdir&gt;/home/jourdren/tmp/candida_design&lt;/outputdir&gt;
+    &lt;genomefile&gt;Ca21_chromosomes2.fasta&lt;/genomefile&gt;
+    &lt;genomemaskedfile&gt;Ca21_chromosomes2.fasta.allmasked&lt;/genomemaskedfile&gt;
+    &lt;outputdir&gt;/home/jourdren/tmp/candida_design&lt;/outputdir&gt;
 
-        &lt;sequencefilters&gt;
-	...
+    &lt;sequencefilters&gt;
+    ...
 	&lt;/sequencfilters&gt;
 	&lt;measurements&gt;
 	...
@@ -50,8 +50,8 @@
   
   	<subsection name="Built-in variables">
   	
-  		<p>In parameters sections of the XML design file, you can use the 
-  		following built-in variable as values for parameters:</p>
+  		<p>In parameters sections of the design file, you can use the 
+  		following built-in variables as values for parameters:</p>
   		
   		<ul>
   			<li><b>${windowlength}</b>: Contains the length of the window.</li>

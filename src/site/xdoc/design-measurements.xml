@@ -12,10 +12,8 @@
   <section name="The measurement section of design file">
   
   	<p>This section of the design file define the measurements to compute 
-  	on generated oligonucleotides.</p>
-  
-    <p>The following source show the structure of a typical measurement
-     section of the design file:</p>
+  	on generated oligonucleotides. The following source show the structure 
+  	of a typical measurement section of the design file:</p>
   
 <source>&lt;measurements skip="false"&gt;
 	&lt;measurement&gt;
@@ -53,21 +51,22 @@
 		<li>Some <b>parameters</b> that allow configure each measurement.</li>
 	</ul>
 
-	<p>Each measurement, add a column to the measurement file. The standard version of Toelenn contains 10 measurements:</p>
+	<p>Each measurement, add a column to the measurement file(<code>oligo.mes</code>). 
+	The standard version of Toelenn contains 10 measurements:</p>
 	<ul>
 		<li><b>chromosome</b>: Add the chromosome of the oligonucleotides sequence to the measurement file.</li>
-		<li><b>complexity</b>: Add a complexity score based on the genome masked.</li>
+		<li><b>complexity</b>: Add a complexity value based on the genome masked.</li>
 		<li><b>%gc</b>: Add the percent of gc of the oligonucleotides.</li>
-		<li><b>oligolength</b>: Add the length of the oligonucleotides.</li>
-		<li><b>oligoname</b>: Add the name of the oligonucleotides.</li>
+		<li><b>oligolength</b>: Add the sequence length of the oligonucleotides.</li>
+		<li><b>oligoname</b>: Add the sequence name of the oligonucleotides.</li>
 		<li><b>oligosequence</b>: Add the sequences of the oligonucleotides.</li>
-		<li><b>oligostart</b>: Add the start position of the oligonucleotides..</li>
+		<li><b>oligostart</b>: Add the start position of the oligonucleotides on the chromosome.</li>
 		<li><b>position</b>: Add a position score for each oligonucleotides.</li>
-		<li><b>tm</b>: Add the tm of the oligonucleotides.</li>
-		<li><b>unicity</b>: Add the unicity score for each oligonucleotides.</li>
+		<li><b>tm</b>: Add the melting temperature of the oligonucleotides.</li>
+		<li><b>unicity</b>: Add the unicity value for each oligonucleotides.</li>
 	</ul>
   
-  	<p>However, on this 10 measurements two (Chromosome and oligostart) are 
+  	<p>On this 10 measurements two (Chromosome and oligostart) are 
   	automatically added to measurement file.</p> 
   
   
@@ -89,7 +88,7 @@
   <subsection name="The complexity measurement">
   
   	<ul>
-  		<li><b>Description:</b> Get a complexity score using masked genome created probes.</li>
+  		<li><b>Description:</b> Get a complexity value using masked genome created probes.</li>
 		<li><b>Parameters:</b> None.</li>
 		<li><b>Use external tool:</b> No.</li>
 		<li><b>Automatically added to measurements file:</b> No.</li>
@@ -145,7 +144,7 @@
   <subsection name="The position measurement">
   
   	<ul>
-  		<li><b>Description:</b> Get a position score is calculated in order
+  		<li><b>Description:</b> Get a position value is calculated in order
   		 to favour probes centred in the window.</li>
 		<li><b>Parameters:</b> None.</li>
 		<li><b>Use external tool:</b> No.</li>
@@ -175,12 +174,9 @@
   <subsection name="Use external sequence filters">
   
   	<p>Teolenn is a very customizable tool, you can use your own measurement 
-  	calculator. This measurement must be written in Java and implements the 
-  	 <code>Measurement</code> interface. See the developer section for more 
-  	 information. Your plugin must be in the classpath of Toelenn define in 
-  	 <code>teolenn.sh</code>. In addition, to use your filter in Toelenn, you must 
-  	 add the full name of the main class (witch implements <code>Measurement</code>)
-  	 of your plugin in the design <code></code>file :</p>
+  	calculator (see the <a href="plugins.html">developping plugins section</a> for more informations). To enable your custom filter, you must 
+     add the full name of the main class (witch implements <code>Measurement</code>)
+     of your plugin in the design file as shown in the following sample:</p>
   	 
   	 <source>
 &lt;measurement&gt;
