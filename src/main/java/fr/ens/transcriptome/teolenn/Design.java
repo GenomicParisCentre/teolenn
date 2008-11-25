@@ -164,6 +164,11 @@ public class Design {
    * @param windowLength the window length to set
    */
   public void setWindowLength(final int windowLength) {
+
+    if (windowLength <= 0)
+      throw new IllegalArgumentException("Invalid window length value: "
+          + windowLength);
+
     this.windowLenght = windowLength;
   }
 
@@ -172,6 +177,11 @@ public class Design {
    * @param windowStep the window step to set
    */
   public void setWindowStep(final int windowStep) {
+
+    if (windowStep <= 0)
+      throw new IllegalArgumentException("Invalid window step value: "
+          + windowStep);
+
     this.windowStep = windowStep;
   }
 
@@ -180,6 +190,11 @@ public class Design {
    * @param oligoLength The oligo length
    */
   public void setOligoLength(final int oligoLength) {
+
+    if (oligoLength <= 0)
+      throw new IllegalArgumentException("Invalid oligo length value: "
+          + oligoLength);
+
     this.oligoLength = oligoLength;
   }
 
