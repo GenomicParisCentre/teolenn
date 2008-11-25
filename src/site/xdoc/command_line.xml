@@ -16,7 +16,7 @@
   <p>The only user interface of Teolenn is the command line. The syntax and the
   available options can be get using the following command :</p>
 <source>
-$ toelenn.sh -h
+$ teolenn.sh -h
 </source>
 
   <p>The program show you the next output:</p>
@@ -80,8 +80,8 @@ usage: teolenn [options] design [genome [genome_masked [output_dir]]]
   <section name="Toelenn configuration file">
   	<p>Some global parameters of Teolenn such as the path of the external tools can be set in a configuration file. There are two ways use this configuration file:</p>
   	<ul>
-  		<li>Create a <code>~/.toelenn</code> file.</li>
-  		<li>use the <b>-conf &lt;file&gt;</b> option of Toelenn command line. The <code>~/.toelenn</code> file will not be read.</li>
+  		<li>Create a <code>~/.teolenn</code> file.</li>
+  		<li>use the <b>-conf &lt;file&gt;</b> option of Toelenn command line. The <code>~/.teolenn</code> file will not be read.</li>
   	</ul>
 
 	<p>The next table summaries the available parameters for Toelenn configuration file:</p> 
@@ -99,10 +99,10 @@ usage: teolenn [options] design [genome [genome_masked [output_dir]]]
   <source>
 # This is an example of configuration file for Teolenn.
 # You need to use the -conf parameter or rename this file to
-# $HOME/.toelenn to enable it.
+# $HOME/.teolenn to enable it.
 
 # SOAP path.
-# By default Toelenn use the its embedded version if exists for your platform.
+# By default Teolenn use the its embedded version if exists for your platform.
 soap.path=/usr/local/soap/soap
 
 # Genome tools path.

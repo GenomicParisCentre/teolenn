@@ -11,7 +11,7 @@
       </p>
       <ul>
         <li>
-          <!--a href="/sgdb/download.php?ref=lbdl/toelenn-src-@@@VERSION@@@.tar.gz"-->
+          <!--a href="/sgdb/download.php?ref=lbdl/teolenn-src-@@@VERSION@@@.tar.gz"-->
           <a href="teolenn-src-@@@VERSION@@@.tar.gz">
             <code>.tar.gz</code> archive
           </a>

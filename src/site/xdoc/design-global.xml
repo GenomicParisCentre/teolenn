@@ -19,9 +19,9 @@
 	  <tr><td>windowstep</td><td>Integer</td><td>Must be &gt; 0</td><td>No</td><td>The distance in pb between the start of two windows</td></tr>
 	  <tr><td>oligolength</td><td>Integer</td><td>Must be &gt; 0</td><td>No</td><td>The length of the oligonucleotide to design</td></tr>
 	  
-	  <tr><td>genomefile</td><td>String</td><td>A relative or an absolute path</td><td>Yes, can be overrided by the second argument of <code>toelenn.sh</code></td><td>The path to the genome file. All the sequences must be in one file in fasta format.</td></tr>
-	  <tr><td>genomemaskedfile</td><td>String</td><td>A or an absolute relative path</td><td>Yes, can be overrided by the third argument of <code>toelenn.sh</code></td><td>The path to the masked genome file. All the sequences must be in one file in fasta format.</td></tr>
-	  <tr><td>outputdir</td><td>String</td><td>A relative or an absolute path</td><td>Yes, can be overrided by the 4th argument of <code>toelenn.sh</code>. If none value is set in design file or in command line, the value is set to the current directory.</td><td>The path to the output directory</td></tr>
+	  <tr><td>genomefile</td><td>String</td><td>A relative or an absolute path</td><td>Yes, can be overrided by the second argument of <code>teolenn.sh</code></td><td>The path to the genome file. All the sequences must be in one file in fasta format.</td></tr>
+	  <tr><td>genomemaskedfile</td><td>String</td><td>A or an absolute relative path</td><td>Yes, can be overrided by the third argument of <code>teolenn.sh</code></td><td>The path to the masked genome file. All the sequences must be in one file in fasta format.</td></tr>
+	  <tr><td>outputdir</td><td>String</td><td>A relative or an absolute path</td><td>Yes, can be overrided by the 4th argument of <code>teolenn.sh</code>. If none value is set in design file or in command line, the value is set to the current directory.</td><td>The path to the output directory</td></tr>
 	  
   </table>
   
