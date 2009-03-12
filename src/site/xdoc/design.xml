@@ -16,9 +16,9 @@
   <ul>
     <li>The <a href="design-global.html">global parameters</a>. Set the main parameter of the design (length of windows, oligos, path to the files...).</li>
     <li>The <a href="design-sequencesfilters.html">sequencefilters</a> section. This section define the filters on all the oligonucleotides generated.</li>
-    <li>The measurements section. This section define the measurement to compute on the filtered oligonucleotides.</li>
-    <li>The measurementfilters section. This section define the filters based on measurements to remove oligonucleotides.</li>
-    <li>The select section. This last part of the file set the parameter to select the best oligonucleotide for each window.</li>
+    <li>The <a href="design-measurements.html">measurements section</a>. This section define the measurement to compute on the filtered oligonucleotides.</li>
+    <li>The <a href="design-measurementfilters.html">measurementfilters</a> section. This section define the filters based on measurements to remove oligonucleotides.</li>
+    <li>The <a href="design-select.html">select section</a>. This last part of the file set the parameter to select the best oligonucleotide for each window.</li>
   </ul>
   
   <p>The following source show the structure of a typical <code>design.xml</code> file:</p>

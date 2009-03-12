@@ -11,7 +11,7 @@
 		
 
 	<body>
-        <link rel="alternate" type="application/rss+xml" title="Teolenn updates" href="teolenn.rss" />
+	        <link rel="alternate" type="application/rss+xml" title="Teolenn updates" href="teolenn.rss" />
         
 		<section name="Welcome to Teolenn">
 
@@ -76,6 +76,8 @@
 			</p>
 
 		</section>
+		
+		<p><a href="teolenn.rss"><img src="images/feed-icon-14x14.png"/></a></p>
 
 	</body>
 </document>
