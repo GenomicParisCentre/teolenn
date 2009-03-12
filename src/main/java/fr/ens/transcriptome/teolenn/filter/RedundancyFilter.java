@@ -234,6 +234,15 @@ public class RedundancyFilter implements SequenceFilter {
     if (Settings.getSoapPath() == null)
       Settings.setSoapPath(BinariesInstaller.install("soap"));
 
+    // Test if soap is correctly installed
+    try {
+      ProcessUtils.execToString(Settings.getSoapPath());
+      final long endTime = System.currentTimeMillis();
+    } catch (IOException e) {
+      logger.info("soap is correctly installed. ");
+      throw new RuntimeException(e);
+    }
+
     // Create the parameter file
     File paramFile = File.createTempFile("soap-", ".param");
     createParameterFile(paramFile, this.oligosFiles);
@@ -248,7 +257,7 @@ public class RedundancyFilter implements SequenceFilter {
     ProcessUtils.exec(cmd, Settings.isStandardOutputForExecutable());
 
     // remove the parameter file
-    if (!paramFile.delete())
+    if (!Globals.DEBUG && !paramFile.delete())
       logger.warning("Can't remove redundancy parameter file: "
           + paramFile.getAbsolutePath());
 

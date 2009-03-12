@@ -47,7 +47,7 @@ public final class ProcessUtils {
    * Execute a command with the OS.
    * @param cmd Command to execute
    * @param stdOutput don't show the result of the command on the standard
-   *            output
+   *          output
    * @throws IOException if an error occurs while running the process
    */
   public static void exec(final String cmd, final boolean stdOutput)
@@ -159,9 +159,22 @@ public final class ProcessUtils {
     stdr.close();
     errr.close();
 
-    final long endTime = System.currentTimeMillis();
+    try {
 
-    logger.fine("Done in " + (endTime - startTime) + " ms.");
+      final int exitValue = p.waitFor();
+      final long endTime = System.currentTimeMillis();
+
+      if (exitValue == 126)
+        throw new IOException("Command invoked cannot execute");
+
+      if (exitValue == 127)
+        throw new IOException("Command not found");
+
+      logger.fine("Done in " + (endTime - startTime) + " ms.");
+    } catch (InterruptedException e) {
+
+      logger.severe("Interrupted exception: " + e.getMessage());
+    }
 
     return sb.toString();
   }

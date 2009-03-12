@@ -444,8 +444,13 @@ public final class UnicityMeasurement extends FloatMeasurement {
         if (lines != null && lines.length > 0)
           return lines[0];
       }
+
     } catch (IOException e) {
-      logger.severe("Unable to get genometools version: " + e.getMessage());
+      logger.severe("Unable to get genometools version. "
+          + "If you are using a x86-64 version of linux, "
+          + "you must install ia32-libs package to run genometools."
+          + e.getMessage());
+      throw new RuntimeException(e);
     }
 
     return "";
