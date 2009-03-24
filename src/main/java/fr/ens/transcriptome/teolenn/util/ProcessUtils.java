@@ -80,9 +80,7 @@ public final class ProcessUtils {
     stdr.close();
     errr.close();
 
-    final long endTime = System.currentTimeMillis();
-
-    logger.fine("Done in " + (endTime - startTime) + " ms.");
+    logEndTime(p, cmd, startTime);
   }
 
   /**
@@ -117,9 +115,7 @@ public final class ProcessUtils {
     fos.close();
     errr.close();
 
-    final long endTime = System.currentTimeMillis();
-
-    logger.fine("Done in " + (endTime - startTime) + " ms.");
+    logEndTime(p, cmd, startTime);
   }
 
   /**
@@ -159,16 +155,34 @@ public final class ProcessUtils {
     stdr.close();
     errr.close();
 
+    logEndTime(p, cmd, startTime);
+
+    return sb.toString();
+  }
+
+  /**
+   * Log the time of execution of a process.
+   * @param p Process to log
+   * @param cmd Command of the process
+   * @param startTime Start time in ms
+   * @throws IOException if an error occurs at the end of the process
+   */
+  private static final void logEndTime(final Process p, final String cmd,
+      final long startTime) throws IOException {
+
     try {
 
       final int exitValue = p.waitFor();
       final long endTime = System.currentTimeMillis();
 
       if (exitValue == 126)
-        throw new IOException("Command invoked cannot execute");
+        throw new IOException("Command invoked cannot execute: " + cmd);
 
       if (exitValue == 127)
-        throw new IOException("Command not found");
+        throw new IOException("Command not found: " + cmd);
+
+      if (exitValue == 139)
+        throw new IOException("Segmentation fault: " + cmd);
 
       logger.fine("Done in " + (endTime - startTime) + " ms.");
     } catch (InterruptedException e) {
@@ -176,7 +190,6 @@ public final class ProcessUtils {
       logger.severe("Interrupted exception: " + e.getMessage());
     }
 
-    return sb.toString();
   }
 
   public static class ParalellExec extends SelfLoopHandler {
