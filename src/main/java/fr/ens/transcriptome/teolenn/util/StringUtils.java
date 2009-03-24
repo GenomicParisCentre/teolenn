@@ -34,7 +34,7 @@ public final class StringUtils {
     if (filename == null)
       return null;
 
-    int pos = filename.indexOf('.');
+    int pos = filename.lastIndexOf('.');
 
     return filename.substring(0, pos);
   }
@@ -49,7 +49,7 @@ public final class StringUtils {
     if (filename == null)
       return null;
 
-    int pos = filename.indexOf('.');
+    int pos = filename.lastIndexOf('.');
 
     return filename.substring(pos, filename.length());
   }
