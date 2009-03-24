@@ -481,6 +481,8 @@ public class Design {
    */
   public void phase0() throws IOException {
 
+    logger.info("Java version: " + System.getProperty("java.version"));
+    logger.info("Log level:" + logger.getLevel());
     logger.info("Window length: " + this.windowLenght);
     logger.info("Window step: " + this.windowStep);
     logger.info("Oligo length: " + this.oligoLength);
