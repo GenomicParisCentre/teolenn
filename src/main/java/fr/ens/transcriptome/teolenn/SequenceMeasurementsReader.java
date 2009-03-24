@@ -38,6 +38,7 @@ import fr.ens.transcriptome.teolenn.util.FileUtils;
 public class SequenceMeasurementsReader {
 
   private BufferedReader br;
+  private String infoCurrentFile;
   private Measurement[] ms;
 
   private static final Pattern tabPattern = Pattern.compile("\t");
@@ -47,7 +48,8 @@ public class SequenceMeasurementsReader {
     final String line = br.readLine();
 
     if (line == null)
-      throw new IOException("File is empty");
+      throw new IOException("File is empty" + this.infoCurrentFile == null
+          ? "" : this.infoCurrentFile);
 
     final String[] mNames = tabPattern.split(line);
     this.ms = new Measurement[mNames.length - 1];
@@ -121,6 +123,7 @@ public class SequenceMeasurementsReader {
     if (file == null)
       throw new NullPointerException("File is null");
 
+    this.infoCurrentFile = file.getName();
     this.br = FileUtils.createBufferedReader(file);
 
     readHeader();
