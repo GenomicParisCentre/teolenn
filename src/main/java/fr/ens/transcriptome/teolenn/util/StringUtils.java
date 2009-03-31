@@ -22,6 +22,8 @@
 
 package fr.ens.transcriptome.teolenn.util;
 
+import java.io.File;
+
 public final class StringUtils {
 
   /**
@@ -34,9 +36,16 @@ public final class StringUtils {
     if (filename == null)
       return null;
 
-    int pos = filename.lastIndexOf('.');
+    final File f = new File(filename);
+    final String shortName = f.getName();
 
-    return filename.substring(0, pos);
+    final int pos = shortName.indexOf('.');
+
+    if (pos == -1)
+      return filename;
+
+    return filename
+        .substring(0, filename.length() - (shortName.length() - pos));
   }
 
   /**
@@ -49,9 +58,16 @@ public final class StringUtils {
     if (filename == null)
       return null;
 
-    int pos = filename.lastIndexOf('.');
+    final File f = new File(filename);
+    final String shortName = f.getName();
 
-    return filename.substring(pos, filename.length());
+    final int pos = shortName.indexOf('.');
+
+    if (pos == -1)
+      return "";
+
+    return filename.substring(filename.length() - (shortName.length() - pos),
+        filename.length());
   }
 
   /**
