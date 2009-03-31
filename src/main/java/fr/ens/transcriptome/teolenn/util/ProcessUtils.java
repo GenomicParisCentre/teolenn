@@ -53,7 +53,8 @@ public final class ProcessUtils {
   public static void exec(final String cmd, final boolean stdOutput)
       throws IOException {
 
-    logger.fine("execute: " + cmd);
+    logger.fine("execute (Thread "
+        + Thread.currentThread().getId() + "): " + cmd);
 
     final long startTime = System.currentTimeMillis();
 
@@ -92,7 +93,8 @@ public final class ProcessUtils {
   public static void execWriteOutput(String cmd, File outputFile)
       throws IOException {
 
-    logger.fine("execute: " + cmd);
+    logger.fine("execute (Thread "
+        + Thread.currentThread().getId() + "): " + cmd);
 
     final long startTime = System.currentTimeMillis();
 
@@ -126,7 +128,8 @@ public final class ProcessUtils {
    */
   public static String execToString(String cmd) throws IOException {
 
-    logger.fine("execute: " + cmd);
+    logger.fine("execute (Thread "
+        + Thread.currentThread().getId() + "): " + cmd);
 
     final long startTime = System.currentTimeMillis();
 
@@ -175,16 +178,24 @@ public final class ProcessUtils {
       final int exitValue = p.waitFor();
       final long endTime = System.currentTimeMillis();
 
+      if (exitValue == 1)
+        throw new IOException("Error while executing: " + cmd);
+
       if (exitValue == 126)
         throw new IOException("Command invoked cannot execute: " + cmd);
 
       if (exitValue == 127)
         throw new IOException("Command not found: " + cmd);
 
+      if (exitValue == 134)
+        throw new IOException("Abort: " + cmd);
+
       if (exitValue == 139)
         throw new IOException("Segmentation fault: " + cmd);
 
-      logger.fine("Done in " + (endTime - startTime) + " ms.");
+      logger.fine("Done (Thread "
+          + Thread.currentThread().getId() + ", exit code: " + exitValue
+          + ") in " + (endTime - startTime) + " ms.");
     } catch (InterruptedException e) {
 
       logger.severe("Interrupted exception: " + e.getMessage());
@@ -239,7 +250,8 @@ public final class ProcessUtils {
 
         try {
 
-          logger.fine("PExec: (" + Thread.currentThread() + ") " + cmd);
+          logger.fine("PExec: (Thread "
+              + Thread.currentThread().getId() + ") " + cmd);
 
           if (outputFile == null)
             exec(cmd, Settings.isStandardOutputForExecutable());
