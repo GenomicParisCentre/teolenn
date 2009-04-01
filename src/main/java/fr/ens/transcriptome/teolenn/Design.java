@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 import fr.ens.transcriptome.teolenn.filter.SequenceFilter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
+import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
+import fr.ens.transcriptome.teolenn.selector.TilingSelector;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 import fr.ens.transcriptome.teolenn.util.StringUtils;
 
@@ -55,7 +57,7 @@ public class Design {
       "filtered.stats";
   private static final String SELECTED_FILE = "select.mes";
 
-  private int windowLenght = WINDOW_LEN_DEFAULT;
+  private int windowLength = WINDOW_LEN_DEFAULT;
   private int oligoLength = OLIGO_LEN_DEFAULT;
   private int windowStep = WINDOW_STEP_DEFAULT;
 
@@ -79,7 +81,7 @@ public class Design {
    * @return the window length
    */
   public int getWindowLength() {
-    return windowLenght;
+    return windowLength;
   }
 
   /**
@@ -169,7 +171,7 @@ public class Design {
       throw new IllegalArgumentException("Invalid window length value: "
           + windowLength);
 
-    this.windowLenght = windowLength;
+    this.windowLength = windowLength;
   }
 
   /**
@@ -483,7 +485,7 @@ public class Design {
 
     logger.info("Java version: " + System.getProperty("java.version"));
     logger.info("Log level:" + logger.getLevel());
-    logger.info("Window length: " + this.windowLenght);
+    logger.info("Window length: " + this.windowLength);
     logger.info("Window step: " + this.windowStep);
     logger.info("Oligo length: " + this.oligoLength);
     logger.info("Genome file: " + this.genomeFile);
@@ -617,8 +619,7 @@ public class Design {
    * @param wSetter weight of selection
    * @throws IOException if an error occurs while selecting
    */
-  public void phase5Select(final Select.WeightsSetter wSetter)
-      throws IOException {
+  public void phase5Select(final WeightsSetter wSetter) throws IOException {
 
     logStartPhase("select");
 
@@ -634,8 +635,21 @@ public class Design {
       throw new RuntimeException("No stats file found.");
     }
 
-    Select.select(filteredOligoMeasurementsFile, statsFile, selectedOligos,
-        wSetter, this.windowLenght, this.windowStep);
+    SequenceSelector selector = new TilingSelector();
+    selector.setInitParameter("_inputFile", filteredOligoMeasurementsFile
+        .getAbsolutePath());
+    selector.setInitParameter("_statsFile", statsFile.getAbsolutePath());
+    selector
+        .setInitParameter("_selectedFile", selectedOligos.getAbsolutePath());
+    selector.setInitParameter("_windowlength", "" + this.windowLength);
+    selector.setInitParameter("_windowStep", "" + this.windowStep);
+
+    selector.init();
+
+    selector.select(wSetter);
+
+    // Select.select(filteredOligoMeasurementsFile, statsFile, selectedOligos,
+    // wSetter, this.windowLength, this.windowStep);
 
     logEndPhase("select");
     final long endTimeDesign = System.currentTimeMillis();

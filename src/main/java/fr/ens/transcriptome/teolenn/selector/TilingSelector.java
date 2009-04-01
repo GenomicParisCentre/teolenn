@@ -20,39 +20,36 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn;
+package fr.ens.transcriptome.teolenn.selector;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import fr.ens.transcriptome.teolenn.Globals;
+import fr.ens.transcriptome.teolenn.Sequence;
+import fr.ens.transcriptome.teolenn.SequenceMeasurements;
+import fr.ens.transcriptome.teolenn.SequenceMeasurementsReader;
+import fr.ens.transcriptome.teolenn.SequenceMeasurementsStatReader;
+import fr.ens.transcriptome.teolenn.SequenceMeasurementsWriter;
+import fr.ens.transcriptome.teolenn.WeightsSetter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.SimpleMeasurement;
 
 /**
- * This class implements the algorithm used for oligo selection
+ * This class implements the sequence selector for tiling design. *
  * @author Laurent Jourdren
  */
-public class Select {
+public class TilingSelector implements SequenceSelector {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
-
   private static final float MIN_SCORE = -1 * Float.MAX_VALUE;
 
-  /**
-   * This abstract class allow the user to set weights and other parameters
-   * before selection.
-   * @author Laurent Jourdren
-   */
-  public static abstract class WeightsSetter {
-
-    /**
-     * Define the weigths to use for selection
-     * @param sm SequenceMeasurement that contains all the measurements to use
-     *          by the selection algorithm.
-     */
-    public abstract void setWeights(final SequenceMeasurements sm);
-  };
+  private File inputFile;
+  private File statsFile;
+  private File outputFile;
+  private int windowLength;
+  private int windowStep;
 
   private static class GlobalScoreMeasurement extends SimpleMeasurement {
 
@@ -116,23 +113,51 @@ public class Select {
   }
 
   /**
-   * Proceed to the oligo selection.
-   * @param inputFile measurements input file
-   * @param statsFile stats file for the measurements input file
-   * @param outputFile output file to generate with the selected oligos
+   * Set a parameter for the filter.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(String key, String value) {
+
+    if ("_inputFile".equals(key))
+      this.inputFile = new File(value);
+
+    if ("_statsFile".equals(key))
+      this.statsFile = new File(value);
+
+    if ("_selectedFile".equals(key))
+      this.outputFile = new File(value);
+
+    if ("_windowLength".equals(key))
+      this.windowLength = Integer.parseInt(value.trim());
+
+    if ("_windowStep".equals(key))
+      this.windowStep = Integer.parseInt(value.trim());
+
+  }
+
+  /**
+   * Run the initialization phase of the parameter.
+   * @throws IOException if an error occurs while the initialization phase
+   */
+  public void init() throws IOException {
+
+  }
+
+  /**
+   * Proceed to the oligonucleotide selection.
    * @param weightsSetters Weight to apply on measurements
-   * @param windowLength size of the window
-   * @param windowStep step for the windows
    * @throws IOException if an error occurs while reading/writing input/output
    *           files
    */
-  public static void select(final File inputFile, final File statsFile,
-      File outputFile, final WeightsSetter weightsSetters,
-      final int windowLength, final int windowStep) throws IOException {
+  public void select(final WeightsSetter weightsSetters) throws IOException {
+
+    final int windowLength = this.windowLength;
+    final int windowStep = this.windowStep;
 
     // Open measurement file
     final SequenceMeasurementsReader smr =
-        new SequenceMeasurementsReader(inputFile);
+        new SequenceMeasurementsReader(this.inputFile);
 
     // Object used to read oligo measurement
     SequenceMeasurements sm = null;
@@ -163,7 +188,7 @@ public class Select {
 
     // Open output file
     final SequenceMeasurementsWriter smw =
-        new SequenceMeasurementsWriter(outputFile);
+        new SequenceMeasurementsWriter(this.outputFile);
 
     while ((sm = smr.next(sm)) != null) {
 
@@ -345,11 +370,15 @@ public class Select {
         smw.writeSequenceMesurement(smToWrite);
     }
 
-    logger.fine(String.format("chromosome: %s\t%d windows (%.2f theoric), "
-        + "%d oligos selected, %d pb in chromosome, %d pb windows, %d pb step.",
-        currentScafold, infoCountWindows, (float) infoLastIndexStartPosition
-            / (float) windowLength, infoCountSelectedOligos,
-        infoLastIndexStartPosition, windowLength, windowStep));
+    logger
+        .fine(String
+            .format(
+                "chromosome: %s\t%d windows (%.2f theoric), "
+                    + "%d oligos selected, %d pb in chromosome, %d pb windows, %d pb step.",
+                currentScafold, infoCountWindows,
+                (float) infoLastIndexStartPosition / (float) windowLength,
+                infoCountSelectedOligos, infoLastIndexStartPosition,
+                windowLength, windowStep));
 
     smw.close();
 

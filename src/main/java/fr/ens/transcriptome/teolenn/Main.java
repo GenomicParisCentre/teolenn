@@ -450,7 +450,7 @@ public class Main {
    * @return a list of weights objects
    * @throws IOException if an error occurs while parsing
    */
-  private Select.WeightsSetter parseSelectWeights(final Element rootElement)
+  private WeightsSetter parseSelectWeights(final Element rootElement)
       throws IOException {
 
     // Map of weights
@@ -499,7 +499,7 @@ public class Main {
       }
     }
 
-    return new Select.WeightsSetter() {
+    return new WeightsSetter() {
 
       @Override
       public void setWeights(SequenceMeasurements sm) {
