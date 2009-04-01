@@ -234,15 +234,6 @@ public class RedundancyFilter implements SequenceFilter {
     if (Settings.getSoapPath() == null)
       Settings.setSoapPath(BinariesInstaller.install("soap"));
 
-    // Test if soap is correctly installed
-    try {
-      ProcessUtils.execToString(Settings.getSoapPath());
-      final long endTime = System.currentTimeMillis();
-    } catch (IOException e) {
-      logger.info("soap is correctly installed. ");
-      throw new RuntimeException(e);
-    }
-
     // Create the parameter file
     File paramFile = File.createTempFile("soap-", ".param");
     createParameterFile(paramFile, this.oligosFiles);
