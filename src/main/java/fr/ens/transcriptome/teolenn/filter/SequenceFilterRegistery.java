@@ -138,7 +138,8 @@ public class SequenceFilterRegistery {
     addSequenceFilterType("redundancy", RedundancyFilter.class);
     addSequenceFilterType("removex", RemoveXSequenceFilter.class);
     addSequenceFilterType("sequencexn", SequenceXNFilter.class);
-    addSequenceFilterType("notatgc",SequenceNotATGCFilter.class);
+    addSequenceFilterType("notatgc", SequenceNotATGCFilter.class);
+    addSequenceFilterType("orfs", ORFsFilter.class);
 
   }
 
