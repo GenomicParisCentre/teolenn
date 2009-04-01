@@ -234,10 +234,10 @@ public class SequenceMeasurements {
   }
 
   /**
-   * Set the arrat of measurement values
+   * Set the array of measurement values
    * @param values Values to set
    */
-  void setArrayMeasurementValues(final Object[] values) {
+  public void setArrayMeasurementValues(final Object[] values) {
 
     this.measurementValues = values;
   }
