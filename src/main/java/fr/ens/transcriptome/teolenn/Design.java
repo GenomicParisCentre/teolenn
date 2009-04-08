@@ -31,6 +31,11 @@ import java.util.logging.Logger;
 import fr.ens.transcriptome.teolenn.filter.SequenceFilter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
+import fr.ens.transcriptome.teolenn.measurement.io.FileSequenceMeasurementsReader;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReaderFactory;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriterFactory;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
 import fr.ens.transcriptome.teolenn.selector.TilingSelector;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
@@ -271,7 +276,8 @@ public class Design {
       return;
 
     final SequenceMeasurementsWriter smw =
-        new SequenceMeasurementsWriter(measurementsFile);
+        SequenceMeasurementsWriterFactory
+            .createSequenceMeasurementsWriter(measurementsFile);
 
     final SequenceMeasurements sm = new SequenceMeasurements();
     if (measurements != null)
@@ -393,10 +399,12 @@ public class Design {
       final List<MeasurementFilter> filters) throws IOException {
 
     final SequenceMeasurementsReader smr =
-        new SequenceMeasurementsReader(measurementsFile);
+        SequenceMeasurementsReaderFactory
+            .createSequenceMeasurementsReader(measurementsFile);
 
     final SequenceMeasurementsWriter smw =
-        new SequenceMeasurementsWriter(filteredMeasurementsFile);
+        SequenceMeasurementsWriterFactory
+            .createSequenceMeasurementsWriter(filteredMeasurementsFile);
 
     SequenceMeasurements sm = null;
     SequenceMeasurements last = null;

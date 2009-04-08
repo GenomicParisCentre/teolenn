@@ -1,41 +1,44 @@
 /*
- *                  Teolenn development code
+ *                      Nividic development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 2 or later. This
- * should be distributed with the code. If you do not have a copy,
+ * terms of the GNU Lesser General Public Licence.  This should
+ * be distributed with the code.  If you do not have a copy,
  * see:
  *
- *      http://www.gnu.org/licenses/gpl-2.0.txt
+ *      http://www.gnu.org/copyleft/lesser.html
  *
  * Copyright for this code is held jointly by the microarray platform
  * of the École Normale Supérieure and the individual authors.
  * These should be listed in @author doc comments.
  *
- * For more information on the Teolenn project and its aims,
- * or to join the Teolenn mailing list, visit the home page
+ * For more information on the Nividic project and its aims,
+ * or to join the Nividic mailing list, visit the home page
  * at:
  *
- *      http://www.transcriptome.ens.fr/teolenn
+ *      http://www.transcriptome.ens.fr/nividic
  *
  */
 
-package fr.ens.transcriptome.teolenn;
+package fr.ens.transcriptome.teolenn.measurement.io;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import fr.ens.transcriptome.teolenn.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
 /**
- * This class implements a reader for SequenceMeasurement.
+ * This class in implements a reader for SequenceMeasurement based on simple
+ * text files.
  * @author Laurent Jourdren
  */
-public class SequenceMeasurementsReader {
+public final class FileSequenceMeasurementsReader implements
+    SequenceMeasurementsReader {
 
   private BufferedReader br;
   private String infoCurrentFile;
@@ -118,7 +121,7 @@ public class SequenceMeasurementsReader {
    * Public constructor.
    * @param file Sequence measurement file to parse
    */
-  public SequenceMeasurementsReader(final File file) throws IOException {
+  public FileSequenceMeasurementsReader(final File file) throws IOException {
 
     if (file == null)
       throw new NullPointerException("File is null");

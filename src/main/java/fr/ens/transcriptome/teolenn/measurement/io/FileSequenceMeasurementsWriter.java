@@ -1,39 +1,40 @@
 /*
- *                  Teolenn development code
+ *                      Nividic development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 2 or later. This
- * should be distributed with the code. If you do not have a copy,
+ * terms of the GNU Lesser General Public Licence.  This should
+ * be distributed with the code.  If you do not have a copy,
  * see:
  *
- *      http://www.gnu.org/licenses/gpl-2.0.txt
+ *      http://www.gnu.org/copyleft/lesser.html
  *
  * Copyright for this code is held jointly by the microarray platform
  * of the École Normale Supérieure and the individual authors.
  * These should be listed in @author doc comments.
  *
- * For more information on the Teolenn project and its aims,
- * or to join the Teolenn mailing list, visit the home page
+ * For more information on the Nividic project and its aims,
+ * or to join the Nividic mailing list, visit the home page
  * at:
  *
- *      http://www.transcriptome.ens.fr/teolenn
+ *      http://www.transcriptome.ens.fr/nividic
  *
  */
 
-package fr.ens.transcriptome.teolenn;
+package fr.ens.transcriptome.teolenn.measurement.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 
+import fr.ens.transcriptome.teolenn.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
 /**
- * This class define a sequence measurement writer.
+ * This class define a sequence measurement writer based on simple text file.
  * @author Laurent Jourdren
  */
-public class SequenceMeasurementsWriter {
+public final class FileSequenceMeasurementsWriter implements SequenceMeasurementsWriter {
 
   private static final int WRITE_BUFFER_LEN = 1000000;
 
@@ -114,7 +115,7 @@ public class SequenceMeasurementsWriter {
    * Public constructor.
    * @param file file to write
    */
-  public SequenceMeasurementsWriter(final File file)
+  public FileSequenceMeasurementsWriter(final File file)
       throws FileNotFoundException {
 
     if (file == null)
@@ -122,4 +123,5 @@ public class SequenceMeasurementsWriter {
 
     this.writer = FileUtils.createBufferedWriter(file);
   }
+  
 }

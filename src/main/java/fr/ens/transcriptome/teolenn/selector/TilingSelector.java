@@ -29,12 +29,14 @@ import java.util.logging.Logger;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.Sequence;
 import fr.ens.transcriptome.teolenn.SequenceMeasurements;
-import fr.ens.transcriptome.teolenn.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.SequenceMeasurementsStatReader;
-import fr.ens.transcriptome.teolenn.SequenceMeasurementsWriter;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.SimpleMeasurement;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReaderFactory;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriterFactory;
 
 /**
  * This class implements the sequence selector for tiling design. *
@@ -157,7 +159,8 @@ public class TilingSelector implements SequenceSelector {
 
     // Open measurement file
     final SequenceMeasurementsReader smr =
-        new SequenceMeasurementsReader(this.inputFile);
+        SequenceMeasurementsReaderFactory
+            .createSequenceMeasurementsReader(this.inputFile);
 
     // Object used to read oligo measurement
     SequenceMeasurements sm = null;
@@ -188,7 +191,8 @@ public class TilingSelector implements SequenceSelector {
 
     // Open output file
     final SequenceMeasurementsWriter smw =
-        new SequenceMeasurementsWriter(this.outputFile);
+        SequenceMeasurementsWriterFactory
+            .createSequenceMeasurementsWriter(this.outputFile);
 
     while ((sm = smr.next(sm)) != null) {
 
