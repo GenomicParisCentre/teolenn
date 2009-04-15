@@ -33,13 +33,12 @@ import fr.ens.transcriptome.teolenn.SequenceMeasurementsStatReader;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.SimpleMeasurement;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
-import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReaderFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
-import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriterFactory;
 
 /**
- * This class implements the sequence selector for tiling design. *
+ * This class implements the sequence selector for tiling design.
  * @author Laurent Jourdren
  */
 public class TilingSelector implements SequenceSelector {
@@ -47,7 +46,8 @@ public class TilingSelector implements SequenceSelector {
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
   private static final float MIN_SCORE = -1 * Float.MAX_VALUE;
 
-  private File inputFile;
+  private File oriFile;
+  private File filteredFile;
   private File statsFile;
   private File outputFile;
   private int windowLength;
@@ -121,8 +121,10 @@ public class TilingSelector implements SequenceSelector {
    */
   public void setInitParameter(String key, String value) {
 
-    if ("_inputFile".equals(key))
-      this.inputFile = new File(value);
+    if ("_filteredMesFile".equals(key))
+      this.filteredFile = new File(value);
+    if ("_oriMesFile".equals(key))
+      this.oriFile = new File(value);
 
     if ("_statsFile".equals(key))
       this.statsFile = new File(value);
@@ -159,8 +161,8 @@ public class TilingSelector implements SequenceSelector {
 
     // Open measurement file
     final SequenceMeasurementsReader smr =
-        SequenceMeasurementsReaderFactory
-            .createSequenceMeasurementsReader(this.inputFile);
+        SequenceMeasurementsIOFactory.createSequenceMeasurementsFilteredReader(
+            filteredFile, this.oriFile);
 
     // Object used to read oligo measurement
     SequenceMeasurements sm = null;
@@ -191,8 +193,8 @@ public class TilingSelector implements SequenceSelector {
 
     // Open output file
     final SequenceMeasurementsWriter smw =
-        SequenceMeasurementsWriterFactory
-            .createSequenceMeasurementsWriter(this.outputFile);
+        SequenceMeasurementsIOFactory
+            .createSequenceMeasurementsSelectWriter(this.outputFile);
 
     while ((sm = smr.next(sm)) != null) {
 
@@ -384,8 +386,7 @@ public class TilingSelector implements SequenceSelector {
                 infoCountSelectedOligos, infoLastIndexStartPosition,
                 windowLength, windowStep));
 
+    smr.close();
     smw.close();
-
   }
-
 }

@@ -55,9 +55,12 @@ public class Globals {
 
   /** The log level of the application. */
   public static final Level LOG_LEVEL = Level.INFO; // Level.OFF;
-  
+
   /** Set the debug mode. */
-  public static final boolean DEBUG = false;
+  public static final boolean DEBUG = true;
+
+  /** Use serialization format for measurement file. */
+  public static final boolean MEASUREMENT_FILE_SERIALIZED = true;
 
   /** Format of the log. */
   public static final Formatter LOG_FORMATTER = new Formatter() {
@@ -92,9 +95,9 @@ public class Globals {
           + " École Normale Supérieure microarray platform.\n" + LICENSE_TXT
           + "\n";
 
-  /** Default standard output state. */ 
+  /** Default standard output state. */
   public static final boolean STD_OUTPUT_DEFAULT = false;
-  
+
   /** Design file version. */
   public static final double DESIGN_FILE_VERSION = 1.0;
 

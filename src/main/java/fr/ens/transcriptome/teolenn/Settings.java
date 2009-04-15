@@ -46,6 +46,7 @@ public class Settings {
 
     Runtime runtime = Runtime.getRuntime();
     setMaxthreads(runtime.availableProcessors());
+    setMeasurementFileSerialized(Globals.MEASUREMENT_FILE_SERIALIZED);
   }
 
   //
@@ -88,6 +89,16 @@ public class Settings {
     return Integer.parseInt(properties.getProperty("max.threads"));
   }
 
+  /**
+   * Get if the measurements files use serialization.
+   * @return true if the measurements files use serialization
+   */
+  public static boolean isMeasurementFileSerialized() {
+
+    return Boolean
+        .parseBoolean(properties.getProperty("mes.serialized.format"));
+  }
+
   //
   // Setters
   //
@@ -128,6 +139,16 @@ public class Settings {
     if (maxThreads < 1)
       return;
     properties.setProperty("max.threads", Integer.toString(maxThreads));
+  }
+
+  /**
+   * Get if the measurements files use serialization.
+   * @param serialized true if the measurements files use serialization
+   */
+  public static void setMeasurementFileSerialized(final boolean serialized) {
+
+    properties.getProperty("mes.serialized.format", Boolean
+        .toString(serialized));
   }
 
   //

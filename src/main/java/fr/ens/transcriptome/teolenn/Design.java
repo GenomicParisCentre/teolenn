@@ -31,11 +31,9 @@ import java.util.logging.Logger;
 import fr.ens.transcriptome.teolenn.filter.SequenceFilter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
-import fr.ens.transcriptome.teolenn.measurement.io.FileSequenceMeasurementsReader;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
-import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReaderFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
-import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriterFactory;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
 import fr.ens.transcriptome.teolenn.selector.TilingSelector;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
@@ -276,7 +274,7 @@ public class Design {
       return;
 
     final SequenceMeasurementsWriter smw =
-        SequenceMeasurementsWriterFactory
+        SequenceMeasurementsIOFactory
             .createSequenceMeasurementsWriter(measurementsFile);
 
     final SequenceMeasurements sm = new SequenceMeasurements();
@@ -399,12 +397,12 @@ public class Design {
       final List<MeasurementFilter> filters) throws IOException {
 
     final SequenceMeasurementsReader smr =
-        SequenceMeasurementsReaderFactory
+        SequenceMeasurementsIOFactory
             .createSequenceMeasurementsReader(measurementsFile);
 
     final SequenceMeasurementsWriter smw =
-        SequenceMeasurementsWriterFactory
-            .createSequenceMeasurementsWriter(filteredMeasurementsFile);
+        SequenceMeasurementsIOFactory.createSequenceMeasurementsFilteredWriter(
+            filteredMeasurementsFile, measurementsFile);
 
     SequenceMeasurements sm = null;
     SequenceMeasurements last = null;
@@ -429,6 +427,7 @@ public class Design {
       last = sm;
     }
 
+    smr.close();
     smw.close();
 
     // Create a stat file if needed
@@ -631,6 +630,8 @@ public class Design {
 
     logStartPhase("select");
 
+    final File oligoMeasurementsFile =
+        new File(this.outputDir, OLIGO_MEASUREMENTS_FILE);
     final File filteredOligoMeasurementsFile =
         new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_FILE);
     final File statsFile =
@@ -644,7 +645,9 @@ public class Design {
     }
 
     SequenceSelector selector = new TilingSelector();
-    selector.setInitParameter("_inputFile", filteredOligoMeasurementsFile
+    selector.setInitParameter("_oriMesFile", oligoMeasurementsFile
+        .getAbsolutePath());
+    selector.setInitParameter("_filteredMesFile", filteredOligoMeasurementsFile
         .getAbsolutePath());
     selector.setInitParameter("_statsFile", statsFile.getAbsolutePath());
     selector
