@@ -131,8 +131,6 @@ public final class FileUtils {
     final FileOutputStream outFile = new FileOutputStream(file);
     final FileChannel outChannel = outFile.getChannel();
 
-    // return new ObjectOutputStream(new GZIPOutputStream(Channels
-    // .newOutputStream(outChannel)));
     return new ObjectOutputStream(Channels.newOutputStream(outChannel));
   }
 
