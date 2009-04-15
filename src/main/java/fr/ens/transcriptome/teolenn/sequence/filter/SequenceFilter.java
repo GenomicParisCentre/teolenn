@@ -20,11 +20,11 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.filter;
+package fr.ens.transcriptome.teolenn.sequence.filter;
 
 import java.io.IOException;
 
-import fr.ens.transcriptome.teolenn.Sequence;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
  * This interface define a sequence filter.

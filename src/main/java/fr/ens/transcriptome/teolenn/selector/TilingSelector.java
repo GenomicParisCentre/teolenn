@@ -27,15 +27,15 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Globals;
-import fr.ens.transcriptome.teolenn.Sequence;
-import fr.ens.transcriptome.teolenn.SequenceMeasurements;
-import fr.ens.transcriptome.teolenn.SequenceMeasurementsStatReader;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.SimpleMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurementsStatReader;
 
 /**
  * This class implements the sequence selector for tiling design.

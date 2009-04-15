@@ -24,7 +24,7 @@ package fr.ens.transcriptome.teolenn.measurement;
 
 import java.util.Random;
 
-import fr.ens.transcriptome.teolenn.Sequence;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 public class DummyMeasurement extends IntegerMeasurement {
 

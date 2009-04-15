@@ -27,7 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 
-import fr.ens.transcriptome.teolenn.SequenceMeasurements;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
 /**

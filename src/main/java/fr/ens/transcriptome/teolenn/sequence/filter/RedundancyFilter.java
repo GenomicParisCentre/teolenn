@@ -20,7 +20,7 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.filter;
+package fr.ens.transcriptome.teolenn.sequence.filter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,8 +36,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.ens.transcriptome.teolenn.Globals;
-import fr.ens.transcriptome.teolenn.Sequence;
 import fr.ens.transcriptome.teolenn.Settings;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.util.BinariesInstaller;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 import fr.ens.transcriptome.teolenn.util.ProcessUtils;

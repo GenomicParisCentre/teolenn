@@ -25,7 +25,7 @@ package fr.ens.transcriptome.teolenn.measurement;
 import java.io.IOException;
 import java.util.Properties;
 
-import fr.ens.transcriptome.teolenn.Sequence;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
  * This interface define a measurement.
@@ -94,7 +94,7 @@ public interface Measurement {
    * Add last measurements value to the statistics.
    */
   void addLastMeasurementToStats();
-  
+
   /**
    * Set a parameter for the filter.
    * @param key key for the parameter

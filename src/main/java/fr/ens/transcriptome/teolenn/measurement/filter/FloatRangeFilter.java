@@ -27,7 +27,7 @@ import java.security.InvalidParameterException;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Globals;
-import fr.ens.transcriptome.teolenn.SequenceMeasurements;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
 /**
  * This class define a filter on a range of float values.

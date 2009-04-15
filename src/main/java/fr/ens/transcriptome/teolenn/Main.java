@@ -49,14 +49,15 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import fr.ens.transcriptome.teolenn.filter.SequenceFilter;
-import fr.ens.transcriptome.teolenn.filter.SequenceFilterRegistery;
+import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
-import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilterRegistery;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
+import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilter;
+import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilterRegistery;
 
 /**
  * This is the main class of the application.
@@ -68,6 +69,7 @@ public class Main {
 
   private Design design = new Design();
   private double designFileVersion;
+  private Properties constants = new Properties();
 
   /**
    * Read the design file and run the design
@@ -81,6 +83,10 @@ public class Main {
   public void readDesign(final File designFile, final File genomeFile,
       final File genomeMaskedFile, File outputDir) throws IOException,
       DocumentException {
+
+    logger.info(Globals.APP_NAME
+        + " version " + Globals.APP_VERSION + " (" + Globals.APP_BUILD_NUMBER
+        + " " + Globals.APP_BUILD_DATE + ")");
 
     SAXReader saxReader = new SAXReader();
     Document document = saxReader.read(new FileReader(designFile));
@@ -102,23 +108,24 @@ public class Main {
       System.exit(1);
     }
 
+    // constants element
+    this.constants = getElementConstants(designElement);
+
     // windowlength element
     for (Iterator i2 = designElement.elementIterator("windowlength"); i2
         .hasNext();)
-      this.design.setWindowLength(Integer.parseInt(((Element) i2.next())
-          .getTextTrim()));
+      this.design.setWindowLength(Integer.parseInt(getValue(i2)));
 
     // oligolength element
     for (Iterator i3 = designElement.elementIterator("oligolength"); i3
         .hasNext();)
-      this.design.setOligoLength(Integer.parseInt(((Element) i3.next())
-          .getTextTrim()));
+      this.design.setOligoLength(Integer.parseInt(getValue(i3)));
 
     // windowstep element
     int windowstep = -1;
     for (Iterator i4 = designElement.elementIterator("windowstep"); i4
         .hasNext();)
-      windowstep = Integer.parseInt(((Element) i4.next()).getTextTrim());
+      windowstep = Integer.parseInt(getValue(i4));
     this.design.setWindowStep(windowstep == -1
         ? this.design.getWindowLength() : windowstep);
 
@@ -128,8 +135,7 @@ public class Main {
     else
       for (Iterator i5 = designElement.elementIterator("genomefile"); i5
           .hasNext();)
-        this.design
-            .setGenomeFile(new File(((Element) i5.next()).getTextTrim()));
+        this.design.setGenomeFile(new File(getValue(i5)));
 
     // genomemakedfile element
     if (genomeMaskedFile != null)
@@ -137,7 +143,7 @@ public class Main {
     else
       for (Iterator i6 = designElement.elementIterator("genomemaskedfile"); i6
           .hasNext();) {
-        final String filename = ((Element) i6.next()).getTextTrim();
+        final String filename = getValue(i6);
         if (!"".equals(filename))
           this.design.setGenomeMaskedFile(new File(filename));
       }
@@ -148,7 +154,7 @@ public class Main {
     else
       for (Iterator i7 = designElement.elementIterator("outputdir"); i7
           .hasNext();) {
-        final String path = ((Element) i7.next()).getTextTrim();
+        final String path = getValue(i7);
         if (!"".equals(path))
           this.design.setOutputDir((new File(path)).getCanonicalFile());
       }
@@ -200,6 +206,31 @@ public class Main {
       d.phase4FilterMeasurements(parseMeasurementFilters(designElement), true);
 
     d.phase5Select(parseSelectWeights(designElement));
+  }
+
+  private String getValue(final Iterator i) {
+
+    return getValue((Element) i.next());
+  }
+
+  private String getValue(final Element e) {
+
+    if (e == null)
+      return "";
+
+    return getValue(e.getTextTrim());
+  }
+
+  private String getValue(final String s) {
+
+    if (s.startsWith("${") && s.endsWith("}")) {
+
+      final String constantName = s.substring(2, s.length() - 1);
+      if (this.constants.containsKey(constantName))
+        return this.constants.getProperty(constantName);
+    }
+
+    return s;
   }
 
   /**
@@ -562,6 +593,44 @@ public class Main {
             pValue = Integer.toString(this.design.getOligoLength());
           else if ("${windowstep}".equals(pValue))
             pValue = Integer.toString(this.design.getWindowStep());
+
+          pValue = getValue(pValue);
+        }
+
+        result.setProperty(pKey, pValue);
+      }
+
+    }
+
+    return result;
+  }
+
+  /**
+   * Get the constants
+   * @param element Element to parse
+   * @return a Properties object with the name and values of the parameters
+   */
+  private final Properties getElementConstants(final Element element) {
+
+    final Properties result = new Properties();
+
+    for (Iterator i4 = element.elementIterator("constants"); i4.hasNext();) {
+      final Element params = (Element) i4.next();
+
+      for (Iterator i5 = params.elementIterator("constant"); i5.hasNext();) {
+        final Element param = (Element) i5.next();
+
+        String pKey = null;
+        String pValue = null;
+
+        for (Iterator i6 = param.elementIterator("name"); i6.hasNext();) {
+          final Element name = (Element) i6.next();
+          pKey = name.getTextTrim();
+        }
+
+        for (Iterator i7 = param.elementIterator("value"); i7.hasNext();) {
+          final Element value = (Element) i7.next();
+          pValue = value.getTextTrim();
 
         }
 

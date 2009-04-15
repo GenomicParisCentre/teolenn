@@ -20,7 +20,7 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn;
+package fr.ens.transcriptome.teolenn.sequence;
 
 /**
  * This class define a sequence.

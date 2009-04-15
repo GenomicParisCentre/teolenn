@@ -22,7 +22,7 @@
 
 package fr.ens.transcriptome.teolenn.measurement;
 
-import fr.ens.transcriptome.teolenn.Sequence;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
  * This measurement define a measurement that return the name of the sequences.

@@ -1,5 +1,7 @@
 package fr.ens.transcriptome.teolenn;
 
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
+
 /**
  * This abstract class allow the user to set weights and other parameters
  * before selection.

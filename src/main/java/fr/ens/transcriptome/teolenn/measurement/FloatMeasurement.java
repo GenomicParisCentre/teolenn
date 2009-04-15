@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import fr.ens.transcriptome.teolenn.Sequence;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.util.Histogram;
 import fr.ens.transcriptome.teolenn.util.MathUtils;
 

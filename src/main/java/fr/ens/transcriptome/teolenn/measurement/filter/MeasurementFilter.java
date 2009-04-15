@@ -24,7 +24,7 @@ package fr.ens.transcriptome.teolenn.measurement.filter;
 
 import java.io.IOException;
 
-import fr.ens.transcriptome.teolenn.SequenceMeasurements;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
 /**
  * This interface define filters on SequenceMeasurement.

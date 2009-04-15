@@ -27,9 +27,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-import fr.ens.transcriptome.teolenn.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
 /**

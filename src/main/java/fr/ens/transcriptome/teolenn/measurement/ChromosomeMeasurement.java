@@ -22,7 +22,7 @@
 
 package fr.ens.transcriptome.teolenn.measurement;
 
-import fr.ens.transcriptome.teolenn.Sequence;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
  * This class define a measurement that returns the chromosome of sequences.

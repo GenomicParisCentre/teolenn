@@ -22,8 +22,8 @@
 
 package fr.ens.transcriptome.teolenn.measurement;
 
-import fr.ens.transcriptome.teolenn.MeltingTemp;
-import fr.ens.transcriptome.teolenn.Sequence;
+import fr.ens.transcriptome.teolenn.sequence.MeltingTemp;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
  * This class define a measurement that returns the Tm of the sequences.

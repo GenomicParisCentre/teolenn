@@ -20,30 +20,43 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.filter;
+package fr.ens.transcriptome.teolenn.sequence.filter;
 
-import fr.ens.transcriptome.teolenn.Sequence;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
- * This class define a filter that filters nothing but replace all 'X' of the
- * sequences by 'N'.
+ * This class define a filter to remove all sequence that contains other
+ * character than 'A','a','T','t','G','g','C','c'.
  * @author Laurent Jourdren
  */
-public class RemoveXSequenceFilter implements SequenceFilter {
+public class SequenceNotATGCFilter implements SequenceFilter {
 
   /**
    * Tests whether or not the specified sequence should be accepted.
    * @param sequence Sequence to test
-   * @return allways true
+   * @return true if and only if the specified sequence should be accepted
    */
-  public boolean accept(Sequence sequence) {
-
-    if (sequence == null)
-      return false;
+  public boolean accept(final Sequence sequence) {
 
     final String s = sequence.getSequence();
-    if (s != null)
-      sequence.setSequence(s.replace('X', 'N'));
+    final int len = s.length();
+
+    for (int i = 0; i < len; i++)
+      switch (s.charAt(i)) {
+
+      case 'A':
+      case 'a':
+      case 'T':
+      case 't':
+      case 'G':
+      case 'g':
+      case 'C':
+      case 'c':
+        break;
+
+      default:
+        return false;
+      }
 
     return true;
   }
@@ -61,7 +74,7 @@ public class RemoveXSequenceFilter implements SequenceFilter {
    */
   public void init() {
   }
-  
+
   //
   // Constructor
   //
@@ -69,7 +82,7 @@ public class RemoveXSequenceFilter implements SequenceFilter {
   /**
    * Public constructor.
    */
-  public RemoveXSequenceFilter() {
+  public SequenceNotATGCFilter() {
   }
-  
+
 }

@@ -20,7 +20,7 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn;
+package fr.ens.transcriptome.teolenn.sequence;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 
+import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
 /**

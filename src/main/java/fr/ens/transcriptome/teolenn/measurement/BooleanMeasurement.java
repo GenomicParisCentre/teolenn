@@ -26,18 +26,14 @@ import java.io.IOException;
 
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
-/**
- * This class define a string measurement.
- * @author Laurent Jourdren
- */
-public abstract class StringMeasurement extends SimpleMeasurement {
+public abstract class BooleanMeasurement extends SimpleMeasurement {
 
   /**
    * Calc the measurement of a sequence.
    * @param sequence the sequence to use for the measurement
-   * @return an String Object
+   * @return an int value
    */
-  protected abstract String calcStringMeasurement(final Sequence sequence);
+  protected abstract boolean calcBooleanMeasurement(final Sequence sequence);
 
   /**
    * Calc the measurement of a sequence.
@@ -46,7 +42,7 @@ public abstract class StringMeasurement extends SimpleMeasurement {
    */
   public Object calcMesurement(final Sequence sequence) {
 
-    return calcStringMeasurement(sequence);
+    return calcBooleanMeasurement(sequence);
   }
 
   /**
@@ -55,7 +51,7 @@ public abstract class StringMeasurement extends SimpleMeasurement {
    */
   public Object getType() {
 
-    return String.class;
+    return Boolean.class;
   }
 
   /**
@@ -65,7 +61,10 @@ public abstract class StringMeasurement extends SimpleMeasurement {
    */
   public Object parse(final String s) {
 
-    return s;
+    if (s == null)
+      return null;
+
+    return Boolean.parseBoolean(s);
   }
 
   /**
@@ -78,8 +77,9 @@ public abstract class StringMeasurement extends SimpleMeasurement {
 
   /**
    * Run the initialization phase of the parameter.
+   * @throws IOException if an error occurs while the initialization phase
    */
-  public void init() {
+  public void init() throws IOException {
   }
 
 }

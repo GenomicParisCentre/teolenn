@@ -20,7 +20,7 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.filter;
+package fr.ens.transcriptome.teolenn.sequence.filter;
 
 import java.util.HashMap;
 import java.util.Map;

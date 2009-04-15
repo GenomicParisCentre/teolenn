@@ -20,9 +20,9 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.filter;
+package fr.ens.transcriptome.teolenn.sequence.filter;
 
-import fr.ens.transcriptome.teolenn.Sequence;
+import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
  * This class define a filter to remove all sequence that contains 'N' or 'X'.

@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import fr.ens.transcriptome.teolenn.filter.SequenceFilter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory;
@@ -36,6 +35,12 @@ import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
 import fr.ens.transcriptome.teolenn.selector.TilingSelector;
+import fr.ens.transcriptome.teolenn.sequence.FastaOverlap;
+import fr.ens.transcriptome.teolenn.sequence.SequenceIterator;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurementsStatWriter;
+import fr.ens.transcriptome.teolenn.sequence.SequenceWriter;
+import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilter;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 import fr.ens.transcriptome.teolenn.util.StringUtils;
 

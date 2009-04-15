@@ -29,9 +29,9 @@ import java.io.ObjectInputStream;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Globals;
-import fr.ens.transcriptome.teolenn.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
 /**

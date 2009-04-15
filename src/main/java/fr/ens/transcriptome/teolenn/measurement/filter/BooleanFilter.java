@@ -25,7 +25,7 @@ package fr.ens.transcriptome.teolenn.measurement.filter;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 
-import fr.ens.transcriptome.teolenn.SequenceMeasurements;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
 /**
  * This class define a filter on boolean values.

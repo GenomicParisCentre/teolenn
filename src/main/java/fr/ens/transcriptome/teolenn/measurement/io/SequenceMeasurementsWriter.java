@@ -24,7 +24,7 @@ package fr.ens.transcriptome.teolenn.measurement.io;
 
 import java.io.IOException;
 
-import fr.ens.transcriptome.teolenn.SequenceMeasurements;
+import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
 /**
  * This class define a sequence measurement writer.
