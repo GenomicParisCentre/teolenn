@@ -23,45 +23,40 @@
 package fr.ens.transcriptome.teolenn.measurement.io;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.ObjectOutputStream;
 
 import fr.ens.transcriptome.teolenn.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
 /**
- * This class define a sequence measurement writer based on simple text file.
+ * This class define a writer for SequenceMeasurement that only store the id of
+ * measurements using serialization.
  * @author Laurent Jourdren
  */
-public final class FileSequenceMeasurementsWriter implements
+public class FilteredSequenceMeasurementsWriter implements
     SequenceMeasurementsWriter {
 
-  private static final int WRITE_BUFFER_LEN = 1000000;
+  // private static Logger logger = Logger.getLogger(Globals.APP_NAME);
+  private static final String SERIALIZED_FORMAT_VERSION =
+      "TEOLENN__FILTERED_MES_1";
 
-  private Writer writer;
-  private final StringBuilder buffer =
-      new StringBuilder(WRITE_BUFFER_LEN + 50000);
+  private ObjectOutputStream out;
+
   private boolean headerDone;
 
-  private void writeHeader(SequenceMeasurements sm) throws IOException {
+  /**
+   * Write the header of the file.
+   * @param sm the object that contains the name and type of measurements
+   * @throws IOException if an error occurs while writing header
+   */
+  private void writeHeader(final SequenceMeasurements sm) throws IOException {
 
     if (headerDone)
       return;
 
-    buffer.append("Id");
-
-    final String[] names = sm.getArrayMesurementNames();
-
-    for (int i = 0; i < names.length; i++) {
-
-      buffer.append("\t");
-      buffer.append(names[i]);
-    }
-    buffer.append("\n");
-
-    writer.append(buffer.toString());
-    buffer.setLength(0);
+    // Write MAGIC COOKIE
+    out.writeUTF(SERIALIZED_FORMAT_VERSION);
 
     this.headerDone = true;
   }
@@ -74,27 +69,19 @@ public final class FileSequenceMeasurementsWriter implements
   public void writeSequenceMesurement(final SequenceMeasurements sm)
       throws IOException {
 
-    if (this.writer == null)
+    if (this.out == null)
       return;
 
+    // Write the header
     if (!headerDone)
       writeHeader(sm);
 
-    buffer.append(sm.getId());
+    // Write the id of the current measurement
+    final int id = sm.getId();
+    out.writeInt(id);
 
-    final Object[] values = sm.getArrayMeasurementValues();
-
-    for (int i = 0; i < values.length; i++) {
-
-      buffer.append("\t");
-      buffer.append(values[i]);
-    }
-    buffer.append("\n");
-
-    if (buffer.length() > WRITE_BUFFER_LEN) {
-      writer.append(buffer.toString());
-      buffer.setLength(0);
-    }
+    if ((id % 100000 == 0))
+      out.reset();
   }
 
   /**
@@ -103,9 +90,8 @@ public final class FileSequenceMeasurementsWriter implements
    */
   public void close() throws IOException {
 
-    writer.append(buffer.toString());
-    this.writer.close();
-    this.writer = null;
+    this.out.close();
+    this.out = null;
   }
 
   //
@@ -114,15 +100,15 @@ public final class FileSequenceMeasurementsWriter implements
 
   /**
    * Public constructor.
-   * @param file file to write
+   * @param outputFile file to write
    */
-  public FileSequenceMeasurementsWriter(final File file)
-      throws FileNotFoundException {
+  public FilteredSequenceMeasurementsWriter(final File outputFile)
+      throws IOException {
 
-    if (file == null)
+    if (outputFile == null)
       throw new NullPointerException("File is null");
 
-    this.writer = FileUtils.createBufferedWriter(file);
+    this.out = FileUtils.createObjectOutputWriter(outputFile);
   }
 
 }

@@ -32,21 +32,25 @@ import fr.ens.transcriptome.teolenn.SequenceMeasurements;
  */
 public interface SequenceMeasurementsReader {
 
-  
   /**
    * Get the next sequence measurement.
    * @return the next sequence measurement
    * @throws IOException if an error occurs while reading measurements
    */
-   SequenceMeasurements next() throws IOException;
-  
+  SequenceMeasurements next() throws IOException;
+
   /**
    * Get the next sequence measurement. This version of the next method allow to
    * reuse previous sequence measurement object to save time and memory.
    * @return the next sequence measurement
    * @throws IOException if an error occurs while reading measurements
    */
-   SequenceMeasurements next(final SequenceMeasurements sm)
-      throws IOException;
+  SequenceMeasurements next(final SequenceMeasurements sm) throws IOException;
+
+  /**
+   * Close the reader.
+   * @throws IOException if an error occurs while closing the reader
+   */
+  public void close() throws IOException;
 
 }

@@ -22,46 +22,37 @@
 
 package fr.ens.transcriptome.teolenn.measurement.io;
 
-import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
-import java.util.regex.Pattern;
+import java.io.ObjectInputStream;
+import java.util.logging.Logger;
 
+import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.SequenceMeasurements;
-import fr.ens.transcriptome.teolenn.measurement.Measurement;
-import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
-/**
- * This class in implements a reader for SequenceMeasurement based on simple
- * text files.
- * @author Laurent Jourdren
- */
-public final class FileSequenceMeasurementsReader implements
+public class FilteredSequenceMeasurementsReader implements
     SequenceMeasurementsReader {
 
-  private BufferedReader br;
-  private String infoCurrentFile;
-  private Measurement[] ms;
+  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
+  private static final String SERIALIZED_FORMAT_VERSION =
+      "TEOLENN__FILTERED_MES_1";
 
-  private static final Pattern tabPattern = Pattern.compile("\t");
+  private SequenceMeasurementsReader reader;
+  private ObjectInputStream in;
 
+  /**
+   * Read the header of the file.
+   * @throws IOException if an error occurs while reading the header of the file
+   */
   private void readHeader() throws IOException {
 
-    final String line = br.readLine();
-
-    if (line == null)
-      throw new IOException("File is empty" + this.infoCurrentFile == null
-          ? "" : this.infoCurrentFile);
-
-    final String[] mNames = tabPattern.split(line);
-    this.ms = new Measurement[mNames.length - 1];
-
-    for (int i = 1; i < mNames.length; i++) {
-      Measurement m = MeasurementRegistery.getMeasurement(mNames[i]);
-      if (m == null)
-        throw new RuntimeException("Unknown measurement: " + mNames[i]);
-      ms[i - 1] = m;
+    // Read cookie
+    final String cookie = this.in.readUTF();
+    if (!SERIALIZED_FORMAT_VERSION.equals(cookie)) {
+      logger.severe("Invalid measurement version file");
+      throw new IOException("Invalid measurement version file");
     }
 
   }
@@ -85,30 +76,30 @@ public final class FileSequenceMeasurementsReader implements
   public SequenceMeasurements next(final SequenceMeasurements sm)
       throws IOException {
 
-    final SequenceMeasurements result;
+    SequenceMeasurements result = sm;
 
-    if (sm == null) {
+    final int nextId;
 
-      result = new SequenceMeasurements();
-      for (int i = 0; i < ms.length; i++)
-        result.addMesurement(ms[i]);
-      result.setArrayMeasurementValues(new Object[ms.length]);
+    // Read the id
+    try {
+      nextId = in.readInt();
+    } catch (EOFException e) {
 
-    } else
-      result = sm;
-
-    final String line = br.readLine();
-
-    if (line == null)
       return null;
+    }
 
-    final String[] tokens = tabPattern.split(line);
+    int readId = -1;
 
-    result.setId(Integer.parseInt(tokens[0]));
-    final Object[] values = result.getArrayMeasurementValues();
+    while (readId != nextId) {
 
-    for (int i = 0; i < this.ms.length; i++)
-      values[i] = ms[i].parse(tokens[i + 1]);
+      result = this.reader.next(result);
+
+      // Test end of file
+      if (result == null)
+        return null;
+
+      readId = result.getId();
+    }
 
     return result;
   }
@@ -118,10 +109,11 @@ public final class FileSequenceMeasurementsReader implements
    * @throws IOException if an error occurs while closing the reader
    */
   public void close() throws IOException {
-    
-    this.br.close();    
+
+    this.reader.close();
+    this.in.close();
   }
-  
+
   //
   // Constructor
   //
@@ -130,13 +122,16 @@ public final class FileSequenceMeasurementsReader implements
    * Public constructor.
    * @param file Sequence measurement file to parse
    */
-  public FileSequenceMeasurementsReader(final File file) throws IOException {
+  public FilteredSequenceMeasurementsReader(final File file,
+      final SequenceMeasurementsReader reader) throws IOException {
 
     if (file == null)
       throw new NullPointerException("File is null");
+    if (reader == null)
+      throw new NullPointerException("Measurement file is null");
 
-    this.infoCurrentFile = file.getName();
-    this.br = FileUtils.createBufferedReader(file);
+    this.in = FileUtils.createObjectInputReader(file);
+    this.reader = reader;
 
     readHeader();
   }
