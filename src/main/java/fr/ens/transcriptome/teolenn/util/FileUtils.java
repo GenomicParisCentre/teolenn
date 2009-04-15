@@ -31,6 +31,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.channels.Channels;
@@ -44,13 +46,13 @@ import java.util.zip.GZIPOutputStream;
  */
 public final class FileUtils {
 
-  /**
-   * The default size of the buffer.
-   */
+  /** The default size of the buffer. */
   private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+  /** The charset to use. */
+  private static final String CHARSET = "ISO-8859-1";
 
   /**
-   * Utility class to create fast BufferedReader.
+   * Utility method to create fast BufferedReader.
    * @param file File to read
    * @return a BufferedReader
    * @throws FileNotFoundException if the file is not found
@@ -66,11 +68,10 @@ public final class FileUtils {
 
     return new BufferedReader(new InputStreamReader(Channels
         .newInputStream(inChannel)));
-
   }
 
   /**
-   * Utility class to create fast BufferedWriter. Warning the buffer is not
+   * Utility method to create fast BufferedWriter. Warning the buffer is not
    * safe-thread. The created file use ISO-8859-1 encoding.
    * @param file File to write
    * @return a BufferedWriter
@@ -89,12 +90,11 @@ public final class FileUtils {
     final FileChannel outChannel = outFile.getChannel();
 
     return new UnSynchronizedBufferedWriter(new OutputStreamWriter(Channels
-        .newOutputStream(outChannel), Charset.forName("ISO-8859-1")));
-
+        .newOutputStream(outChannel), Charset.forName(CHARSET)));
   }
 
   /**
-   * Utility class to create fast BufferedWriter. Warning the buffer is not
+   * Utility method to create fast BufferedWriter. Warning the buffer is not
    * safe-thread. The created file use ISO-8859-1 encoding.
    * @param file File to write
    * @return a BufferedWriter
@@ -113,8 +113,45 @@ public final class FileUtils {
         new GZIPOutputStream(Channels.newOutputStream(outChannel));
 
     return new UnSynchronizedBufferedWriter(new OutputStreamWriter(gzos,
-        Charset.forName("ISO-8859-1")));
+        Charset.forName(CHARSET)));
+  }
 
+  /**
+   * Utility method to create fast ObjectOutput.
+   * @param file File to write
+   * @return a ObjectOutput
+   * @throws IOException if an error occurs while creating the Writer
+   */
+  public static final ObjectOutputStream createObjectOutputWriter(
+      final File file) throws IOException {
+
+    if (file == null)
+      return null;
+
+    final FileOutputStream outFile = new FileOutputStream(file);
+    final FileChannel outChannel = outFile.getChannel();
+
+    // return new ObjectOutputStream(new GZIPOutputStream(Channels
+    // .newOutputStream(outChannel)));
+    return new ObjectOutputStream(Channels.newOutputStream(outChannel));
+  }
+
+  /**
+   * Utility method to create fast ObjectInputStream.
+   * @param file File to read
+   * @return a ObjectInputStream
+   * @throws IOException if an error occurs while creating the reader
+   */
+  public static final ObjectInputStream createObjectInputReader(final File file)
+      throws IOException {
+
+    if (file == null)
+      return null;
+
+    final FileInputStream inFile = new FileInputStream(file);
+    final FileChannel inChannel = inFile.getChannel();
+
+    return new ObjectInputStream(Channels.newInputStream(inChannel));
   }
 
   /**
@@ -200,12 +237,12 @@ public final class FileUtils {
    * Set executable bits on file on *nix.
    * @param file File to handle
    * @param executable If true, sets the access permission to allow execute
-   *            operations; if false to disallow execute operations
+   *          operations; if false to disallow execute operations
    * @param ownerOnly If true, the execute permission applies only to the
-   *            owner's execute permission; otherwise, it applies to everybody.
-   *            If the underlying file system can not distinguish the owner's
-   *            execute permission from that of others, then the permission will
-   *            apply to everybody, regardless of this value.
+   *          owner's execute permission; otherwise, it applies to everybody. If
+   *          the underlying file system can not distinguish the owner's execute
+   *          permission from that of others, then the permission will apply to
+   *          everybody, regardless of this value.
    * @return true if and only if the operation succeeded
    * @throws IOException
    */
@@ -230,10 +267,10 @@ public final class FileUtils {
    * Set executable bits on file on *nix.
    * @param file File to handle
    * @param ownerOnly If true, the execute permission applies only to the
-   *            owner's execute permission; otherwise, it applies to everybody.
-   *            If the underlying file system can not distinguish the owner's
-   *            execute permission from that of others, then the permission will
-   *            apply to everybody, regardless of this value.
+   *          owner's execute permission; otherwise, it applies to everybody. If
+   *          the underlying file system can not distinguish the owner's execute
+   *          permission from that of others, then the permission will apply to
+   *          everybody, regardless of this value.
    * @return true if and only if the operation succeeded
    * @throws IOException
    */
