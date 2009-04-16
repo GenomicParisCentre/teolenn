@@ -41,12 +41,7 @@ public final class OligoStartMeasurement extends IntegerMeasurement {
    */
   protected int calcIntMeasurement(final Sequence sequence) {
 
-    String seqName = sequence.getName();
-
-    int startPos = seqName.indexOf(":subseq(");
-    int endPos = seqName.indexOf(",", startPos);
-
-    return Integer.parseInt(seqName.substring(startPos + 8, endPos));
+    return sequence.getStartPositionOligo();
   }
 
   /**

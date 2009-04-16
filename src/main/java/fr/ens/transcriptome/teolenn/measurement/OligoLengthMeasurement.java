@@ -37,13 +37,7 @@ public final class OligoLengthMeasurement extends IntegerMeasurement {
    */
   protected int calcIntMeasurement(final Sequence sequence) {
 
-    String seqName = sequence.getName();
-
-    int startPos = seqName.indexOf(":subseq(");
-    int startPos2 = seqName.indexOf(",", startPos);
-    int endPos = seqName.indexOf(")", startPos2);
-
-    return Integer.parseInt(seqName.substring(startPos2 + 1, endPos));
+    return sequence.getLengthOligo();
   }
 
   /**

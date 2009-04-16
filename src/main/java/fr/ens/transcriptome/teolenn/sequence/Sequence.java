@@ -119,6 +119,34 @@ public class Sequence {
     return (float) count / (float) len;
   }
 
+  /**
+   * Get the start position of the oligonucleotide.
+   * @return the start position of the oligonucleotide
+   */
+  public int getStartPositionOligo() {
+
+    if (this.name == null)
+      return -1;
+
+    int startPos = this.name.indexOf(":subseq(");
+    int endPos = this.name.indexOf(",", startPos);
+
+    return Integer.parseInt(this.name.substring(startPos + 8, endPos));
+  }
+
+  /**
+   * Get the length of the oligonucleotide.
+   * @return the length of the oligonucleotide
+   */
+  public int getLengthOligo() {
+
+    int startPos = this.name.indexOf(":subseq(");
+    int startPos2 = this.name.indexOf(",", startPos);
+    int endPos = this.name.indexOf(")", startPos2);
+
+    return Integer.parseInt(this.name.substring(startPos2 + 1, endPos));
+  }
+
   //
   // Constructors
   //
