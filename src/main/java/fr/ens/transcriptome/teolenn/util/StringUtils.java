@@ -107,4 +107,32 @@ public final class StringUtils {
     return String.format("%02d:%02d.%03d", min, sec, mili);
   }
 
+  /**
+   * Split a string. \t is the separator character.
+   * @param s the String to split
+   * @param array The result array.
+   * @return the array with the new values
+   */
+  public static final String[] fastSplit(final String s, final String[] array) {
+
+    if (array == null || s == null)
+      return null;
+
+    int lastPos = 0;
+    final int len = array.length - 1;
+
+    for (int i = 0; i < len; i++) {
+
+      final int pos = s.indexOf("\t", lastPos);
+
+      if (pos == -1)
+        throw new ArrayIndexOutOfBoundsException();
+      array[i] = s.substring(lastPos, pos);
+      lastPos = pos + 1;
+    }
+    array[len] = s.substring(lastPos, s.length());
+
+    return array;
+  }
+
 }

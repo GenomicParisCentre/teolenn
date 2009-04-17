@@ -31,6 +31,7 @@ import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
+import fr.ens.transcriptome.teolenn.util.StringUtils;
 
 /**
  * This class in implements a reader for SequenceMeasurement based on simple
@@ -43,6 +44,7 @@ public final class FileSequenceMeasurementsReader implements
   private BufferedReader br;
   private String infoCurrentFile;
   private Measurement[] ms;
+  private String[] tokens;
 
   private static final Pattern tabPattern = Pattern.compile("\t");
 
@@ -93,7 +95,7 @@ public final class FileSequenceMeasurementsReader implements
       for (int i = 0; i < ms.length; i++)
         result.addMesurement(ms[i]);
       result.setArrayMeasurementValues(new Object[ms.length]);
-
+      this.tokens = new String[ms.length + 1];
     } else
       result = sm;
 
@@ -102,7 +104,7 @@ public final class FileSequenceMeasurementsReader implements
     if (line == null)
       return null;
 
-    final String[] tokens = tabPattern.split(line);
+    StringUtils.fastSplit(line, tokens); // tabPattern.split(line);
 
     result.setId(Integer.parseInt(tokens[0]));
     final Object[] values = result.getArrayMeasurementValues();
@@ -118,10 +120,10 @@ public final class FileSequenceMeasurementsReader implements
    * @throws IOException if an error occurs while closing the reader
    */
   public void close() throws IOException {
-    
-    this.br.close();    
+
+    this.br.close();
   }
-  
+
   //
   // Constructor
   //
