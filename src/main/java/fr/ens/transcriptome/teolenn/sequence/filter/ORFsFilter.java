@@ -188,13 +188,4 @@ public class ORFsFilter implements SequenceFilter {
 
   }
 
-  public static void main(String[] args) {
-
-    ORF o = new ORF(100, 200);
-
-    for (int i = 60; i < 240; i += 20)
-      System.out.println(i + ":" + o.isOligoInsideORF(i, i + 60));
-
-  }
-
 }
