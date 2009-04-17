@@ -78,8 +78,9 @@ public abstract class StringMeasurement extends SimpleMeasurement {
 
   /**
    * Run the initialization phase of the parameter.
+   * @throws IOException if an error occurs while the initialization phase
    */
-  public void init() {
+  public void init() throws IOException {
   }
 
 }

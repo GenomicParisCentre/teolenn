@@ -20,7 +20,7 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.measurement;
+package fr.ens.transcriptome.teolenn.measurement.resource;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
@@ -39,11 +40,7 @@ import java.util.regex.Pattern;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
-/**
- * This class define a measurement that return if the sequence is in an ORf.
- * @author Laurent Jourdren
- */
-public class ORFsMeasurement extends BooleanMeasurement {
+public class ORFResource {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
@@ -51,14 +48,42 @@ public class ORFsMeasurement extends BooleanMeasurement {
   private static final Pattern seqNamePattern =
       Pattern.compile("^(.*):subseq\\((\\d+),(\\d+)\\)$");
 
-  private File orfsFile;
   private Map<String, Set<ORF>> orfs = new HashMap<String, Set<ORF>>();
   private final Set<ORF> orfsToRemove = new HashSet<ORF>();
   private Set<ORF> lastOrfsChr = null;
 
+  private String currentSequenceName;
+  private ORF currentORF;
+
+  public static ORFResource getRessource(final Properties properties)
+      throws IOException {
+
+    final MeasurementResources rs = MeasurementResources.getResources();
+
+    if (rs.isResource("orf"))
+      return (ORFResource) rs.getResource("orf");
+
+    if (!properties.containsKey("orfsfile"))
+      throw new IOException("No orfsFile");
+
+    final File orfsFile = new File(properties.getProperty("orfsfile"));
+    final boolean start1;
+
+    if (properties.containsKey("start1"))
+      start1 = Boolean.parseBoolean(properties.getProperty("start1"));
+    else
+      start1 = false;
+
+    final ORFResource result = new ORFResource(orfsFile, start1);
+
+    rs.setResource("orf", result);
+
+    return result;
+  }
 
   public static final class ORF implements Comparable<ORF> {
 
+    public String name;
     public int start;
     public int end;
     public boolean wattsonStrand;
@@ -73,10 +98,11 @@ public class ORFsMeasurement extends BooleanMeasurement {
       return this.start - orf.start;
     }
 
-    public ORF(final int start, final int end) {
+    public ORF(final int start, final int end, final String name) {
 
       this.start = start;
       this.end = end;
+      this.name = name;
     }
 
     public String toString() {
@@ -85,17 +111,33 @@ public class ORFsMeasurement extends BooleanMeasurement {
     }
   }
 
-  /**
-   * Calc the measurement of a sequence.
-   * @param sequence the sequence to use for the measurement
-   * @return an int value
-   */
-  protected boolean calcBooleanMeasurement(final Sequence sequence) {
+  public ORF getORf(final Sequence sequence) {
+
+    if (sequence == null)
+      return null;
+
+    final String seqName = sequence.getName();
+
+    if (seqName == null)
+      return null;
+
+    if (seqName.equals(this.currentSequenceName))
+      return this.currentORF;
+
+    final ORF orf = nextORF(sequence);
+
+    this.currentSequenceName = seqName;
+    this.currentORF = orf;
+
+    return orf;
+  }
+
+  private ORF nextORF(final Sequence sequence) {
 
     final String sequenceName = sequence.getName();
 
     if (sequenceName == null)
-      return false;
+      return null;
 
     final Matcher m = seqNamePattern.matcher(sequenceName);
 
@@ -127,84 +169,60 @@ public class ORFsMeasurement extends BooleanMeasurement {
       }
 
       if (o.isOligoInsideORF(start, end))
-        return true;
+        return o;
     }
 
-    return false;
+    return null;
   }
 
-  /**
-   * Get the description of the measurement.
-   * @return the description of the measurement
-   */
-  public String getDescription() {
-
-    return "Get if an ORF is in an ORF";
-  }
-
-  /**
-   * Get the name of the measurement.
-   * @return the name of the measurement
-   */
-  public String getName() {
-
-    return "inORF";
-  }
-
-  /**
-   * Set a parameter for the filter.
-   * @param key key for the parameter
-   * @param value value of the parameter
-   */
-  public void setInitParameter(final String key, final String value) {
-
-    if ("orfsfile".equals(key))
-      this.orfsFile = new File(value);
-  }
+  //
+  // Constructor
+  //
 
   /**
    * Run the initialization phase of the parameter.
+   * @param orfsFile File with orfs to read
+   * @param start1 true if the first position on sequence is 1
    * @throws IOException if an error occurs while reading data
    */
-  public void init() throws IOException {
-    
+  private ORFResource(final File orfsFile, final boolean start1)
+      throws IOException {
+
     final BufferedReader br =
-      new BufferedReader(new InputStreamReader(new FileInputStream(
-          this.orfsFile)));
+        new BufferedReader(new InputStreamReader(new FileInputStream(orfsFile)));
 
-  final Pattern p = Pattern.compile("\t");
+    final Pattern p = Pattern.compile("\t");
 
-  String line = null;
+    String line = null;
 
-  while ((line = br.readLine()) != null) {
+    while ((line = br.readLine()) != null) {
 
-    // Handle comments
-    if (line.startsWith("#"))
-      continue;
+      // Handle comments
+      if (line.startsWith("#"))
+        continue;
 
-    final String[] fields = p.split(line);
-    final String chr = fields[1];
-    final int start = Integer.parseInt(fields[2]);
-    final int end = Integer.parseInt(fields[3]);
+      final String[] fields = p.split(line);
+      final String orfName = fields[0];
+      final String chr = fields[1];
+      final int start = Integer.parseInt(fields[2]) + (start1 ? -1 : 0);
+      final int end = Integer.parseInt(fields[3]) + (start1 ? -1 : 0);
 
-    final Set<ORF> chrORFs;
+      final Set<ORF> chrORFs;
 
-    if (!this.orfs.containsKey(chr)) {
-      chrORFs = new TreeSet<ORF>();
-      this.orfs.put(chr, chrORFs);
-    } else
-      chrORFs = this.orfs.get(chr);
+      if (!this.orfs.containsKey(chr)) {
+        chrORFs = new TreeSet<ORF>();
+        this.orfs.put(chr, chrORFs);
+      } else
+        chrORFs = this.orfs.get(chr);
 
-    chrORFs.add(new ORF(start, end));
-  }
+      chrORFs.add(new ORF(start, end, orfName));
+    }
 
-  int count = 0;
-  for (String k : this.orfs.keySet())
-    count += this.orfs.get(k).size();
+    int count = 0;
+    for (String k : this.orfs.keySet())
+      count += this.orfs.get(k).size();
 
-  logger.info("Orfs readed: " + count);
-
-    
+    logger.info("Orfs readed: " + count);
   }
 
 }
