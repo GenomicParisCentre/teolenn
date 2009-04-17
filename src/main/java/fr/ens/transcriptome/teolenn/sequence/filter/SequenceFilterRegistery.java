@@ -122,6 +122,9 @@ public class SequenceFilterRegistery {
       System.err.println("Unable to instantiate "
           + name
           + " filter. Maybe this filter doesn't have a void constructor.");
+      logger.severe("Unable to instantiate "
+          + name
+          + " filter. Maybe this filter doesn't have a void constructor.");
       return null;
     } catch (IllegalAccessException e) {
       return null;

@@ -122,7 +122,12 @@ public class MeasurementRegistery {
       return (Measurement) clazz.newInstance();
 
     } catch (InstantiationException e) {
-
+      System.err.println("Unable to instantiate "
+          + name
+          + " filter. Maybe this filter doesn't have a void constructor.");
+      logger.severe("Unable to instantiate "
+          + name
+          + " filter. Maybe this filter doesn't have a void constructor.");
       return null;
     } catch (IllegalAccessException e) {
 
@@ -147,6 +152,12 @@ public class MeasurementRegistery {
     addMeasurementType("position", PositionMeasurement.class);
     addMeasurementType("tm", TmMeasurement.class);
     addMeasurementType("unicity", UnicityMeasurement.class);
+    addMeasurementType("inorf", InORFMeasurement.class);
+    addMeasurementType("oligoposfromorfend",
+        OligoPosFromORFEndMeasurement.class);
+    addMeasurementType("oligoposfromorfstart",
+        OligoPosFromORFStartMeasurement.class);
+    addMeasurementType("orfname", ORFNameMeasurement.class);
   }
 
 }

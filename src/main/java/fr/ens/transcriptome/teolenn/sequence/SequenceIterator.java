@@ -25,7 +25,9 @@ package fr.ens.transcriptome.teolenn.sequence;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
+import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
 /**
@@ -34,6 +36,8 @@ import fr.ens.transcriptome.teolenn.util.FileUtils;
  */
 public class SequenceIterator extends Sequence {
 
+  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
+  
   private final StringBuilder sequence = new StringBuilder();
   private final BufferedReader br;
   private String nextSequenceName;
@@ -79,6 +83,7 @@ public class SequenceIterator extends Sequence {
     } catch (IOException e) {
 
       System.err.println(e.getMessage());
+      logger.severe(e.getMessage());
       return null;
     }
 
