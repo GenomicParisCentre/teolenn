@@ -425,9 +425,7 @@ public class Design {
       if (pass) {
         sm.addMesurementsToStats();
         smw.writeSequenceMesurement(sm);
-      } else
-        System.out.println(sm.getId()
-            + "\t" + Arrays.toString(sm.getArrayMeasurementValues()));
+      }
 
       last = sm;
     }
@@ -570,8 +568,10 @@ public class Design {
     logStartPhase("calc measurements");
 
     // Initialize the measurements
-    for (Measurement m : listMeasurements)
+    for (Measurement m : listMeasurements) {
+      logger.fine("init measurement: " + m.getName());
       m.init();
+    }
 
     // Get the list of filtered oligos files to process
     final File[] oligoFilteredFiles =
