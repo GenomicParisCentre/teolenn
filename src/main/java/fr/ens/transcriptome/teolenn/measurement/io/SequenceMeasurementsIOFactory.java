@@ -25,14 +25,14 @@ package fr.ens.transcriptome.teolenn.measurement.io;
 import java.io.File;
 import java.io.IOException;
 
+import fr.ens.transcriptome.teolenn.Settings;
+
 /**
  * This class define a factory to create SequenceMeasurementsReader or
  * SequenceMeasurementsWriter objects.
  * @author Laurent Jourdren
  */
 public class SequenceMeasurementsIOFactory {
-
-  private static boolean serializedFiles = true;
 
   /**
    * Create a new SequenceMeasurementsReader object.
@@ -43,7 +43,7 @@ public class SequenceMeasurementsIOFactory {
   public static final SequenceMeasurementsReader createSequenceMeasurementsReader(
       final File file) throws IOException {
 
-    if (serializedFiles)
+    if (Settings.isMeasurementFileSerialized())
       return new SerializedSequenceMeasurementsReader(file);
 
     return new FileSequenceMeasurementsReader(file);
@@ -58,7 +58,7 @@ public class SequenceMeasurementsIOFactory {
   public static final SequenceMeasurementsWriter createSequenceMeasurementsWriter(
       final File file) throws IOException {
 
-    if (serializedFiles)
+    if (Settings.isMeasurementFileSerialized())
       return new SerializedSequenceMeasurementsWriter(file);
 
     return new FileSequenceMeasurementsWriter(file);
@@ -74,7 +74,7 @@ public class SequenceMeasurementsIOFactory {
   public static final SequenceMeasurementsReader createSequenceMeasurementsFilteredReader(
       final File filteredFile, final File originalFile) throws IOException {
 
-    if (serializedFiles)
+    if (Settings.isMeasurementFileSerialized())
       return new FilteredSequenceMeasurementsReader(filteredFile,
           createSequenceMeasurementsReader(originalFile));
 
@@ -91,7 +91,7 @@ public class SequenceMeasurementsIOFactory {
   public static final SequenceMeasurementsWriter createSequenceMeasurementsFilteredWriter(
       final File filteredFile, final File originalFile) throws IOException {
 
-    if (serializedFiles)
+    if (Settings.isMeasurementFileSerialized())
       return new FilteredSequenceMeasurementsWriter(filteredFile);
 
     return createSequenceMeasurementsWriter(filteredFile);
@@ -106,7 +106,7 @@ public class SequenceMeasurementsIOFactory {
   public static final SequenceMeasurementsWriter createSequenceMeasurementsSelectWriter(
       final File file) throws IOException {
 
-    return createSequenceMeasurementsWriter(file);
+    return new FileSequenceMeasurementsWriter(file);
   }
 
 }
