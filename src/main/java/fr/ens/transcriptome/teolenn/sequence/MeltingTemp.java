@@ -22,6 +22,11 @@
 
 package fr.ens.transcriptome.teolenn.sequence;
 
+/**
+ * This class define a method to compute tm for oligonucletides.
+ * @author Laurent Jourdren
+ * @author Sebastian Bassi <sbassi@genesdigitales.com>
+ */
 public class MeltingTemp {
 
   // universal gas constant in Cal/degrees C*Mol
