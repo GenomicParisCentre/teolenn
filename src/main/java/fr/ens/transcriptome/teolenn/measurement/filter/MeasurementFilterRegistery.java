@@ -139,8 +139,11 @@ public class MeasurementFilterRegistery {
 
   static {
 
-    addMeasurementFilterType("floatrange", FloatRangeFilter.class);
-    addMeasurementFilterType("booleanfilter", BooleanFilter.class);
+    addMeasurementFilterType(FloatRangeFilter.MEASUREMENT_FILTER_NAME,
+        FloatRangeFilter.class);
+    addMeasurementFilterType(BooleanFilter.MEASUREMENT_FILTER_NAME,
+        BooleanFilter.class);
+    addMeasurementFilterType(ORFsFilter.MEASUREMENT_FILTER_NAME, ORFsFilter.class);
   }
 
 }
