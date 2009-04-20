@@ -65,6 +65,14 @@ public class Design {
       "filtered.stats";
   private static final String SELECTED_FILE = "select.mes";
 
+  public static final String GENOME_FILE_PARAMETER_NAME = "_genomefile";
+  public static final String GENOME_MASKED_FILE_PARAMETER_NAME =
+      "_genomemaskedfile";
+  public static final String OUTPUT_DIR_PARAMETER_NAME = "_outputdir";
+  public static final String WINDOW_SIZE_PARAMETER_NAME = "_windowsize";
+  public static final String OLIGO_LENGTH_PARAMETER_NAME = "_oligolength";
+  public static final String EXTENSION_FILTER_PARAMETER_NAME = "_extensionfilter";
+
   private int windowLength = WINDOW_LEN_DEFAULT;
   private int oligoLength = OLIGO_LEN_DEFAULT;
   private int windowStep = WINDOW_STEP_DEFAULT;
@@ -395,50 +403,58 @@ public class Design {
    * @param filteredMeasurementsFile output file
    * @param statsFile statFile to create (optional)
    * @param filters Filters to applys
+   * @throws TeolennException if an error occurs while filtering
    * @throws IOException if an error occurs while filtering
    */
   public static final void filterMeasurementsFile(final File measurementsFile,
       final File filteredMeasurementsFile, final File statsFile,
-      final List<MeasurementFilter> filters) throws IOException {
+      final List<MeasurementFilter> filters) throws TeolennException {
 
-    final SequenceMeasurementsReader smr =
-        SequenceMeasurementsIOFactory
-            .createSequenceMeasurementsReader(measurementsFile);
+    try {
+      final SequenceMeasurementsReader smr =
+          SequenceMeasurementsIOFactory
+              .createSequenceMeasurementsReader(measurementsFile);
 
-    final SequenceMeasurementsWriter smw =
-        SequenceMeasurementsIOFactory.createSequenceMeasurementsFilteredWriter(
-            filteredMeasurementsFile, measurementsFile);
+      final SequenceMeasurementsWriter smw =
+          SequenceMeasurementsIOFactory
+              .createSequenceMeasurementsFilteredWriter(
+                  filteredMeasurementsFile, measurementsFile);
 
-    SequenceMeasurements sm = null;
-    SequenceMeasurements last = null;
+      SequenceMeasurements sm = null;
+      SequenceMeasurements last = null;
 
-    while ((sm = smr.next(sm)) != null) {
+      while ((sm = smr.next(sm)) != null) {
 
-      boolean pass = true;
+        boolean pass = true;
 
-      for (MeasurementFilter filter : filters)
-        if (!filter.accept(sm)) {
-          pass = false;
-          break;
+        for (MeasurementFilter filter : filters)
+          if (!filter.accept(sm)) {
+            pass = false;
+            break;
+          }
+
+        if (pass) {
+          sm.addMesurementsToStats();
+          smw.writeSequenceMesurement(sm);
         }
 
-      if (pass) {
-        sm.addMesurementsToStats();
-        smw.writeSequenceMesurement(sm);
+        last = sm;
       }
 
-      last = sm;
-    }
+      smr.close();
+      smw.close();
 
-    smr.close();
-    smw.close();
+      // Create a stat file if needed
+      if (statsFile != null) {
+        SequenceMeasurementsStatWriter smsw =
+            new SequenceMeasurementsStatWriter(statsFile);
 
-    // Create a stat file if needed
-    if (statsFile != null) {
-      SequenceMeasurementsStatWriter smsw =
-          new SequenceMeasurementsStatWriter(statsFile);
+        smsw.write(last);
+      }
+    } catch (IOException e) {
 
-      smsw.write(last);
+      throw new TeolennException("IO Error while filtering measurements: "
+          + e.getMessage());
     }
 
   }
@@ -603,7 +619,7 @@ public class Design {
    */
   public void phase4FilterMeasurements(
       final List<MeasurementFilter> listMeasurementFilters,
-      final boolean overvriteStatFile) throws IOException {
+      final boolean overvriteStatFile) throws TeolennException {
 
     if (isSkipPhase4())
       return;

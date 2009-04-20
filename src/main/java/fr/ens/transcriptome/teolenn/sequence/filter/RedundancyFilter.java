@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.ens.transcriptome.teolenn.Design;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.Settings;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
@@ -205,13 +206,13 @@ public class RedundancyFilter implements SequenceFilter {
    */
   public void setInitParameter(final String key, final String value) {
 
-    if ("_genomefile".equals(key))
+    if (Design.GENOME_FILE_PARAMETER_NAME.equals(key))
       this.referenceFile = new File(value);
 
-    if ("_outputdir".equals(key))
+    if (Design.OUTPUT_DIR_PARAMETER_NAME.equals(key))
       this.baseDir = new File(value);
 
-    if ("_extensionfilter".equals(key)) {
+    if (Design.EXTENSION_FILTER_PARAMETER_NAME.equals(key)) {
 
       this.oligosFiles = this.baseDir.listFiles(new FilenameFilter() {
 

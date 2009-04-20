@@ -77,12 +77,13 @@ public class Main {
    * @param genomeFile The genome file
    * @param genomeMaskedFile The genome masked file
    * @param outputDir The output dir
+   * @throws TeolennException if an error occurs while computing the design
    * @throws IOException if an error occurs while reading the design file
    * @throws DocumentException if an error occurs while parsing the design file
    */
   public void readDesign(final File designFile, final File genomeFile,
-      final File genomeMaskedFile, File outputDir) throws IOException,
-      DocumentException {
+      final File genomeMaskedFile, File outputDir) throws TeolennException,
+      IOException, DocumentException {
 
     logger.info(Globals.APP_NAME
         + " version " + Globals.APP_VERSION + " (" + Globals.APP_BUILD_NUMBER
@@ -299,12 +300,18 @@ public class Main {
 
     // Set the initialization parameter of the sequence filters
     for (SequenceFilter sq : list) {
-      sq.setInitParameter("_genomefile", genomeFile.getAbsolutePath());
-      sq.setInitParameter("_genomemaskedfile", genomeFile.getAbsolutePath());
-      sq.setInitParameter("_outputdir", outputDir.getAbsolutePath());
-      sq.setInitParameter("_windowsize", Integer.toString(windowSize));
-      sq.setInitParameter("_oligolength", Integer.toString(oligoSize));
-      sq.setInitParameter("_extensionfilter", Design.OLIGO_SUFFIX);
+      sq.setInitParameter(Design.GENOME_FILE_PARAMETER_NAME, genomeFile
+          .getAbsolutePath());
+      sq.setInitParameter(Design.GENOME_MASKED_FILE_PARAMETER_NAME, genomeFile
+          .getAbsolutePath());
+      sq.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
+          .getAbsolutePath());
+      sq.setInitParameter(Design.WINDOW_SIZE_PARAMETER_NAME, Integer
+          .toString(windowSize));
+      sq.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
+          .toString(oligoSize));
+      sq.setInitParameter(Design.EXTENSION_FILTER_PARAMETER_NAME,
+          Design.OLIGO_SUFFIX);
     }
 
     return list;
@@ -388,11 +395,16 @@ public class Main {
 
     // Set the initialization parameters of the measurements
     for (Measurement m : list) {
-      m.setInitParameter("_genomefile", genomeFile.getAbsolutePath());
-      m.setInitParameter("_genomemaskedfile", genomeFile.getAbsolutePath());
-      m.setInitParameter("_outputdir", outputDir.getAbsolutePath());
-      m.setInitParameter("_windowsize", Integer.toString(windowSize));
-      m.setInitParameter("_oligolength", Integer.toString(oligoSize));
+      m.setInitParameter(Design.GENOME_FILE_PARAMETER_NAME, genomeFile
+          .getAbsolutePath());
+      m.setInitParameter(Design.GENOME_MASKED_FILE_PARAMETER_NAME, genomeFile
+          .getAbsolutePath());
+      m.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
+          .getAbsolutePath());
+      m.setInitParameter(Design.WINDOW_SIZE_PARAMETER_NAME, Integer
+          .toString(windowSize));
+      m.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
+          .toString(oligoSize));
     }
 
     return list;
@@ -465,11 +477,16 @@ public class Main {
 
     // Set the initialization parameters of the measurements filters
     for (MeasurementFilter mf : list) {
-      mf.setInitParameter("_genomefile", genomeFile.getAbsolutePath());
-      mf.setInitParameter("_genomemaskedfile", genomeFile.getAbsolutePath());
-      mf.setInitParameter("_outputdir", outputDir.getAbsolutePath());
-      mf.setInitParameter("_windowsize", Integer.toString(windowSize));
-      mf.setInitParameter("_oligolength", Integer.toString(oligoSize));
+      mf.setInitParameter(Design.GENOME_FILE_PARAMETER_NAME, genomeFile
+          .getAbsolutePath());
+      mf.setInitParameter(Design.GENOME_MASKED_FILE_PARAMETER_NAME, genomeFile
+          .getAbsolutePath());
+      mf.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
+          .getAbsolutePath());
+      mf.setInitParameter(Design.WINDOW_SIZE_PARAMETER_NAME, Integer
+          .toString(windowSize));
+      mf.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
+          .toString(oligoSize));
     }
 
     return list;

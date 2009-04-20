@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.ens.transcriptome.teolenn.Design;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.Settings;
 import fr.ens.transcriptome.teolenn.sequence.FastaExplode;
@@ -375,11 +376,11 @@ public final class UnicityMeasurement extends FloatMeasurement {
    */
   public void setInitParameter(final String key, final String value) {
 
-    if ("oligolength".equals(key))
+    if (Design.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
       this.oligoLength = Integer.parseInt(value);
-    else if ("_genomefile".equals(key))
+    else if (Design.GENOME_FILE_PARAMETER_NAME.equals(key))
       this.genomeFile = new File(value);
-    else if ("_outputdir".equals(key))
+    else if (Design.OUTPUT_DIR_PARAMETER_NAME.equals(key))
       this.baseDir = new File(value);
     else if ("maxprefixlength".equals(key))
       this.maxPrefixLength = Integer.parseInt(value);
