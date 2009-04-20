@@ -69,9 +69,7 @@ public class ORFsFilter implements SequenceFilter {
     final int start = Integer.parseInt(m.group(2));
     final int len = Integer.parseInt(m.group(3));
 
-    final String sequenceKey = chr + "\t" + start + "\t" + len;
-
-    return this.ressource.getORf(sequenceKey) != null;
+    return this.ressource.getORF(chr, start, len) != null;
   }
 
   /**

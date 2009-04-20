@@ -24,9 +24,7 @@ package fr.ens.transcriptome.teolenn.measurement.resource;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,7 +36,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.ens.transcriptome.teolenn.Globals;
+import fr.ens.transcriptome.teolenn.util.FileUtils;
 
+/**
+ * This class define a resource that get the of a sequene if exists.
+ * @author Laurent Jourdren
+ */
 public class ORFResource {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
@@ -55,6 +58,12 @@ public class ORFResource {
   private String currentSequenceName;
   private ORF currentORF;
 
+  /**
+   * Static method to get the singleton of the ressource
+   * @param properties Properties used to configure the resource
+   * @return an ORFResource object
+   * @throws IOException if an error occurs while reading the orfs file
+   */
   public static ORFResource getRessource(final Properties properties)
       throws IOException {
 
@@ -81,6 +90,10 @@ public class ORFResource {
     return result;
   }
 
+  /**
+   * This class define an ORF.
+   * @author Laurent Jourdren
+   */
   public static final class ORF implements Comparable<ORF> {
 
     public String name;
@@ -88,6 +101,12 @@ public class ORFResource {
     public int end;
     public boolean wattsonStrand;
 
+    /**
+     * Test if a sequence is in the ORF
+     * @param start start position of the ORF
+     * @param end end position of the ORF
+     * @return true if the sequence is in the ORF
+     */
     public final boolean isOligoInsideORF(final int start, final int end) {
 
       return start >= this.start && end <= this.end;
@@ -98,20 +117,51 @@ public class ORFResource {
       return this.start - orf.start;
     }
 
-    public ORF(final int start, final int end, final String name) {
-
-      this.start = start;
-      this.end = end;
-      this.name = name;
-    }
-
+    /**
+     * Overide toString()
+     * @return a String with the start and end position of the ORF
+     */
     public String toString() {
 
       return this.start + "," + this.end;
     }
+
+    //
+    // Constructor
+    //
+
+    /**
+     * Public constructor.
+     * @param start Start position of the ORF
+     * @param end End position of the ORF
+     * @param name Name of the ORF
+     * @param wattsonStrand true if the ORF is in the Wattson strand
+     */
+    public ORF(final int start, final int end, final String name,
+        final boolean wattsonStrand) {
+
+      this.start = start;
+      this.end = end;
+      this.name = name;
+      this.wattsonStrand = wattsonStrand;
+    }
+
   }
 
-  public ORF getORf(final String sequenceKey) {
+  /**
+   * Get the associated ORF to a sequence.
+   * @param chromosome Chromosome
+   * @param oligoStart the start position of the sequence
+   * @param oligoLength the length of the sequence
+   * @return the associated ORF if exists or null
+   */
+  public ORF getORF(final String chromosome, final int oligoStart,
+      final int oligoLength) {
+
+    return getORF(chromosome + "\t" + oligoStart + "\t" + oligoLength);
+  }
+
+  private final ORF getORF(final String sequenceKey) {
 
     if (sequenceKey == null)
       return null;
@@ -127,7 +177,7 @@ public class ORFResource {
     return orf;
   }
 
-  private ORF nextORF(final String sequenceKey) {
+  private final ORF nextORF(final String sequenceKey) {
 
     if (sequenceKey == null)
       return null;
@@ -182,8 +232,7 @@ public class ORFResource {
   private ORFResource(final File orfsFile, final boolean start1)
       throws IOException {
 
-    final BufferedReader br =
-        new BufferedReader(new InputStreamReader(new FileInputStream(orfsFile)));
+    final BufferedReader br = FileUtils.createBufferedReader(orfsFile);
 
     final Pattern p = Pattern.compile("\t");
 
@@ -198,6 +247,8 @@ public class ORFResource {
       final String[] fields = p.split(line);
       final String orfName = fields[0];
       final String chr = fields[1];
+      final boolean wattsonStrand = "W".equals(fields[4].toUpperCase());
+
       final int start = Integer.parseInt(fields[2]) + (start1 ? -1 : 0);
       final int end = Integer.parseInt(fields[3]) + (start1 ? -1 : 0);
 
@@ -209,14 +260,14 @@ public class ORFResource {
       } else
         chrORFs = this.orfs.get(chr);
 
-      chrORFs.add(new ORF(start, end, orfName));
+      chrORFs.add(new ORF(start, end, orfName, wattsonStrand));
     }
 
     int count = 0;
     for (String k : this.orfs.keySet())
       count += this.orfs.get(k).size();
 
-    logger.info("Orfs readed: " + count);
+    logger.fine("Orfs readed: " + count);
   }
 
 }

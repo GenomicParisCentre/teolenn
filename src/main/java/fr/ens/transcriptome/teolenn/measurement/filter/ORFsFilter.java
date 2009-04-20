@@ -81,9 +81,7 @@ public class ORFsFilter implements MeasurementFilter {
     final String chr = (String) values[this.colChromosome];
     final int pos = (Integer) values[this.colOligoStart];
 
-    final String key = chr + "\t" + pos + "\t" + this.oligoLength;
-
-    return this.ressource.getORf(key) != null;
+    return this.ressource.getORF(chr, pos, this.oligoLength) != null;
   }
 
   /**
