@@ -162,14 +162,6 @@ public class MeasurementRegistery {
     addMeasurementType(TmMeasurement.MEASUREMENT_NAME, TmMeasurement.class);
     addMeasurementType(UnicityMeasurement.MEASUREMENT_NAME,
         UnicityMeasurement.class);
-    addMeasurementType(InORFMeasurement.MEASUREMENT_NAME,
-        InORFMeasurement.class);
-    addMeasurementType(OligoPosFromORFEndMeasurement.MEASUREMENT_NAME,
-        OligoPosFromORFEndMeasurement.class);
-    addMeasurementType(OligoPosFromORFStartMeasurement.MEASUREMENT_NAME,
-        OligoPosFromORFStartMeasurement.class);
-    addMeasurementType(ORFNameMeasurement.MEASUREMENT_NAME,
-        ORFNameMeasurement.class);
   }
 
 }
