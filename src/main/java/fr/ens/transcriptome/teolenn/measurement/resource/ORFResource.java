@@ -50,6 +50,7 @@ public class ORFResource {
   private Map<String, Set<ORF>> orfs = new HashMap<String, Set<ORF>>();
   private final Set<ORF> orfsToRemove = new HashSet<ORF>();
   private Set<ORF> lastOrfsChr = null;
+  private Set<ORF> currentChrORFs = null;
 
   private String currentSequenceName;
   private ORF currentORF;
@@ -145,15 +146,16 @@ public class ORFResource {
     final Set<ORF> chrORFs = this.orfs.get(chr);
 
     // Remove no more used ORFs
-    if (chrORFs != this.lastOrfsChr)
+    if (chrORFs != this.lastOrfsChr) {
       this.lastOrfsChr = chrORFs;
-    else
+      this.currentChrORFs = new TreeSet<ORF>(chrORFs);
+    } else
       for (ORF o : this.orfsToRemove)
-        chrORFs.remove(o);
+        this.currentChrORFs.remove(o);
 
     this.orfsToRemove.clear();
 
-    for (ORF o : chrORFs) {
+    for (ORF o : this.currentChrORFs) {
 
       if (end > o.end) {
         orfsToRemove.add(o);
