@@ -31,6 +31,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
  */
 public class RemoveXSequenceFilter implements SequenceFilter {
 
+  /** Sequence filter name. */
+  public static final String SEQUENCE_FILTER_NAME = "removex";
+  
   /**
    * Tests whether or not the specified sequence should be accepted.
    * @param sequence Sequence to test

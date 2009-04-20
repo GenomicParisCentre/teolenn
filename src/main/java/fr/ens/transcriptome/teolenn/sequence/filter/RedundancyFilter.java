@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 import fr.ens.transcriptome.teolenn.Design;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.Settings;
+import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.util.BinariesInstaller;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
@@ -52,6 +53,9 @@ import fr.ens.transcriptome.teolenn.util.StringUtils;
 public class RedundancyFilter implements SequenceFilter {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
+
+  /** Sequence filter name. */
+  public static final String SEQUENCE_FILTER_NAME = "redundancy";
 
   private static final String SOAP_ARGS = " -s 12 -v 5 -r 1 -w 1000 -p ";
 
@@ -227,34 +231,38 @@ public class RedundancyFilter implements SequenceFilter {
 
   /**
    * Run the initialization phase of the parameter.
-   * @throws IOException
+   * @throws TeolennException
    */
-  public void init() throws IOException {
+  public void init() throws TeolennException {
 
-    // Install soap if needed
-    if (Settings.getSoapPath() == null)
-      Settings.setSoapPath(BinariesInstaller.install("soap"));
+    try {
 
-    // Create the parameter file
-    File paramFile = File.createTempFile("soap-", ".param");
-    createParameterFile(paramFile, this.oligosFiles);
+      // Install soap if needed
+      if (Settings.getSoapPath() == null)
+        Settings.setSoapPath(BinariesInstaller.install("soap"));
 
-    // Define the commande line
-    final String cmd =
-        Settings.getSoapPath()
-            + " -d " + this.referenceFile.getAbsolutePath() + " "
-            + paramFile.getAbsolutePath();
+      // Create the parameter file
+      File paramFile = File.createTempFile("soap-", ".param");
+      createParameterFile(paramFile, this.oligosFiles);
 
-    // Execute Soap
-    ProcessUtils.exec(cmd, Settings.isStandardOutputForExecutable());
+      // Define the commande line
+      final String cmd =
+          Settings.getSoapPath()
+              + " -d " + this.referenceFile.getAbsolutePath() + " "
+              + paramFile.getAbsolutePath();
 
-    // remove the parameter file
-    if (!Globals.DEBUG && !paramFile.delete())
-      logger.warning("Can't remove redundancy parameter file: "
-          + paramFile.getAbsolutePath());
+      // Execute Soap
+      ProcessUtils.exec(cmd, Settings.isStandardOutputForExecutable());
 
-    // Save the base directory
-    // this.baseDir = this.oligosFiles[0].getParentFile();
+      // remove the parameter file
+      if (!Globals.DEBUG && !paramFile.delete())
+        logger.warning("Can't remove redundancy parameter file: "
+            + paramFile.getAbsolutePath());
+    } catch (IOException e) {
+
+      throw new TeolennException("Error while initialize "
+          + SEQUENCE_FILTER_NAME + " sequence filter: " + e.getMessage());
+    }
 
   }
 
@@ -266,19 +274,6 @@ public class RedundancyFilter implements SequenceFilter {
    * Public constructor.
    */
   public RedundancyFilter() {
-  }
-
-  /**
-   * Public constructor.
-   * @param referenceFile Full genome
-   * @param oligo files to handle
-   */
-  public RedundancyFilter(final File referenceFile, final File[] oligosFiles)
-      throws IOException {
-
-    this.referenceFile = referenceFile;
-    this.baseDir = referenceFile.getParentFile();
-    this.oligosFiles = oligosFiles;
   }
 
 }

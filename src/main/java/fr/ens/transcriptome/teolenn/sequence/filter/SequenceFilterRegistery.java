@@ -49,7 +49,11 @@ public class SequenceFilterRegistery {
     if (name == null || clazz == null)
       return;
 
-    registery.put(name.toLowerCase(), clazz);
+    if (testClassType(clazz)) {
+      registery.put(name.toLowerCase(), clazz);
+      logger.finest("Add " + name + " to Sequence filters registery");
+    } else
+      logger.warning("Addon " + name + " is not a sequence filter class");
   }
 
   /**
@@ -138,11 +142,15 @@ public class SequenceFilterRegistery {
 
   static {
 
-    addSequenceFilterType("redundancy", RedundancyFilter.class);
-    addSequenceFilterType("removex", RemoveXSequenceFilter.class);
-    addSequenceFilterType("sequencexn", SequenceXNFilter.class);
-    addSequenceFilterType("notatgc", SequenceNotATGCFilter.class);
-    addSequenceFilterType("orfs", ORFsFilter.class);
+    addSequenceFilterType(RedundancyFilter.SEQUENCE_FILTER_NAME,
+        RedundancyFilter.class);
+    addSequenceFilterType(RemoveXSequenceFilter.SEQUENCE_FILTER_NAME,
+        RemoveXSequenceFilter.class);
+    addSequenceFilterType(SequenceXNFilter.SEQUENCE_FILTER_NAME,
+        SequenceXNFilter.class);
+    addSequenceFilterType(SequenceNotATGCFilter.SEQUENCE_FILTER_NAME,
+        SequenceNotATGCFilter.class);
+    addSequenceFilterType(ORFsFilter.SEQUENCE_FILTER_NAME, ORFsFilter.class);
 
   }
 

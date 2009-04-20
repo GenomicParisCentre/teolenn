@@ -71,7 +71,8 @@ public class Design {
   public static final String OUTPUT_DIR_PARAMETER_NAME = "_outputdir";
   public static final String WINDOW_SIZE_PARAMETER_NAME = "_windowsize";
   public static final String OLIGO_LENGTH_PARAMETER_NAME = "_oligolength";
-  public static final String EXTENSION_FILTER_PARAMETER_NAME = "_extensionfilter";
+  public static final String EXTENSION_FILTER_PARAMETER_NAME =
+      "_extensionfilter";
 
   private int windowLength = WINDOW_LEN_DEFAULT;
   private int oligoLength = OLIGO_LEN_DEFAULT;
@@ -548,7 +549,7 @@ public class Design {
    * @throws IOException if an error occus while filtering
    */
   public void phase2FilterAllOligos(
-      final List<SequenceFilter> listSequenceFilters) throws IOException {
+      final List<SequenceFilter> listSequenceFilters) throws TeolennException {
 
     if (isSkipPhase2())
       return;
@@ -564,8 +565,14 @@ public class Design {
         FileUtils.listFilesByExtension(this.outputDir, Design.OLIGO_SUFFIX);
     Arrays.sort(oligoFiles);
 
-    Design.filterSequencesFiles(oligoFiles, listSequenceFilters,
-        isGenomeMaskedFile());
+    try {
+      Design.filterSequencesFiles(oligoFiles, listSequenceFilters,
+          isGenomeMaskedFile());
+    } catch (IOException e) {
+
+      throw new TeolennException("Error while filtering sequence: "
+          + e.getMessage());
+    }
 
     logEndPhase("filter oligos");
   }

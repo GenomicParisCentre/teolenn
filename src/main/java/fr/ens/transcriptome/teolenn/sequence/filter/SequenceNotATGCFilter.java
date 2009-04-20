@@ -31,6 +31,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
  */
 public class SequenceNotATGCFilter implements SequenceFilter {
 
+  /** Sequence filter name. */
+  public static final String SEQUENCE_FILTER_NAME = "notatgc";
+  
   /**
    * Tests whether or not the specified sequence should be accepted.
    * @param sequence Sequence to test
