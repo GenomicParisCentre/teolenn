@@ -580,10 +580,10 @@ public class Design {
   /**
    * In this phase, compute all the measurements of the oligos.
    * @param listMeasurements list of measurements to compute
-   * @throws IOException if an error occus while filtering
+   * @throws TeolennException if an error occus while filtering
    */
   public void phase3CalcMeasurements(final List<Measurement> listMeasurements)
-      throws IOException {
+      throws TeolennException {
 
     if (isSkipPhase3())
       return;
@@ -611,9 +611,15 @@ public class Design {
     }
 
     // Calc oligos measurements
-    File oligoMeasurementsFile = new File(outputDir, OLIGO_MEASUREMENTS_FILE);
-    Design.createMeasurementsFile(oligoFilteredFiles, oligoMeasurementsFile,
-        listMeasurements, null);
+    try {
+      File oligoMeasurementsFile = new File(outputDir, OLIGO_MEASUREMENTS_FILE);
+      Design.createMeasurementsFile(oligoFilteredFiles, oligoMeasurementsFile,
+          listMeasurements, null);
+    } catch (IOException e) {
+
+      throw new TeolennException("Unable to create measurement file: "
+          + e.getMessage());
+    }
 
     logEndPhase("calc measurements");
   }

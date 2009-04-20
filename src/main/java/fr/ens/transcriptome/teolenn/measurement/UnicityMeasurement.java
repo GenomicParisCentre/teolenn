@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 import fr.ens.transcriptome.teolenn.Design;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.Settings;
+import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.sequence.FastaExplode;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.util.BinariesInstaller;
@@ -388,46 +389,52 @@ public final class UnicityMeasurement extends FloatMeasurement {
 
   /**
    * Run the initialization phase of the parameter.
-   * @throws IOException
+   * @throws TeolennException if an error occurs while initialize the
+   *           measurement
    */
-  public void init() throws IOException {
+  public void init() throws TeolennException {
 
-    // Install genometools if needed
-    if (Settings.getGenomeToolsPath() == null)
-      Settings.setGenomeToolsPath(BinariesInstaller.install("gt"));
+    try {
+      // Install genometools if needed
+      if (Settings.getGenomeToolsPath() == null)
+        Settings.setGenomeToolsPath(BinariesInstaller.install("gt"));
 
-    // Create gtdata directory if not exists
-    final File gtDataDir =
-        new File((new File(Settings.getGenomeToolsPath())).getParent(),
-            "gtdata");
-    if (!gtDataDir.exists())
-      gtDataDir.mkdirs();
+      // Create gtdata directory if not exists
+      final File gtDataDir =
+          new File((new File(Settings.getGenomeToolsPath())).getParent(),
+              "gtdata");
+      if (!gtDataDir.exists())
+        gtDataDir.mkdirs();
 
-    final Level l = logger.getLevel();
-    if (l.equals(Level.FINE)
-        || l.equals(Level.FINER) || l.equals(Level.FINEST)
-        || l.equals(Level.INFO))
-      logger.info("genometools version: " + getGenomeToolsVersion());
+      final Level l = logger.getLevel();
+      if (l.equals(Level.FINE)
+          || l.equals(Level.FINER) || l.equals(Level.FINEST)
+          || l.equals(Level.INFO))
+        logger.info("genometools version: " + getGenomeToolsVersion());
 
-    // Reset Histogram
-    this.resetHistogram(0, this.oligoLength);
+      // Reset Histogram
+      this.resetHistogram(0, this.oligoLength);
 
-    // Create sequence files without X
-    FastaExplode.fastaExplode(genomeFile, this.baseDir, "",
-        SEQ_GZ_WITHOUT_X_EXTENSION, true, true);
+      // Create sequence files without X
+      FastaExplode.fastaExplode(genomeFile, this.baseDir, "",
+          SEQ_GZ_WITHOUT_X_EXTENSION, true, true);
 
-    // Get the list of sequences files created
-    final File[] files =
-        FileUtils
-            .listFilesByExtension(this.baseDir, SEQ_GZ_WITHOUT_X_EXTENSION);
+      // Get the list of sequences files created
+      final File[] files =
+          FileUtils.listFilesByExtension(this.baseDir,
+              SEQ_GZ_WITHOUT_X_EXTENSION);
 
-    Arrays.sort(files);
+      Arrays.sort(files);
 
-    // Build fmindex
-    build_fmindex(files);
+      // Build fmindex
+      build_fmindex(files);
 
-    // Build unique sub
-    run_uniquesub(files, FileUtils.getPrefix(files), this.maxPrefixLength);
+      // Build unique sub
+      run_uniquesub(files, FileUtils.getPrefix(files), this.maxPrefixLength);
+    } catch (IOException e) {
+      throw new TeolennException("Unable to inittialize "
+          + MEASUREMENT_NAME + " measurement: " + e.getMessage());
+    }
   }
 
   /**
@@ -470,39 +477,6 @@ public final class UnicityMeasurement extends FloatMeasurement {
   public UnicityMeasurement() {
 
     super(0, 1);
-  }
-
-  /**
-   * Public constructor.
-   * @param genomeFile Genome file to use
-   * @param oligoLength the oligo length
-   * @throws IOException if an error occurs while creating data
-   */
-  public UnicityMeasurement(final File genomeFile, final int oligoLength)
-      throws IOException {
-
-    this(genomeFile, oligoLength, 15);
-  }
-
-  /**
-   * Public constructor.
-   * @param genomeFile Genome file to use
-   * @param oligoLength the oligo length
-   * @param maxPrefixLength Maximal prefix length
-   * @throws IOException if an error occurs while creating data
-   */
-  public UnicityMeasurement(final File genomeFile, final int oligoLength,
-      final int maxPrefixLength) throws IOException {
-
-    super(0, oligoLength);
-
-    // Set the oligo length
-    this.oligoLength = oligoLength;
-    this.genomeFile = genomeFile;
-    this.baseDir = genomeFile.getAbsoluteFile().getParentFile();
-    this.maxPrefixLength = maxPrefixLength;
-
-    init();
   }
 
 }

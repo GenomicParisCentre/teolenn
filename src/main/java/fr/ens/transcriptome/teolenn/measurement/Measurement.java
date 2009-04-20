@@ -22,9 +22,9 @@
 
 package fr.ens.transcriptome.teolenn.measurement;
 
-import java.io.IOException;
 import java.util.Properties;
 
+import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
@@ -104,8 +104,8 @@ public interface Measurement {
 
   /**
    * Run the initialization phase of the parameter.
-   * @throws IOException if an error occurs while the initialization phase
+   * @throws TeolennException if an error occurs while the initialization phase
    */
-  void init() throws IOException;
+  void init() throws TeolennException;
 
 }

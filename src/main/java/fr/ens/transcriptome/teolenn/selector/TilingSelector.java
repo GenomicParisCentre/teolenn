@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Globals;
+import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.SimpleMeasurement;
@@ -90,9 +91,10 @@ public class TilingSelector implements SequenceSelector {
 
     /**
      * Run the initialization phase of the parameter.
-     * @throws IOException if an error occurs while the initialization phase
+     * @throws TeolennException if an error occurs while the initialization
+     *           phase
      */
-    public void init() throws IOException {
+    public void init() throws TeolennException {
     }
 
     /**

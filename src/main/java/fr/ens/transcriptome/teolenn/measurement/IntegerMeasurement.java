@@ -22,8 +22,7 @@
 
 package fr.ens.transcriptome.teolenn.measurement;
 
-import java.io.IOException;
-
+import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
@@ -81,9 +80,9 @@ public abstract class IntegerMeasurement extends SimpleMeasurement {
 
   /**
    * Run the initialization phase of the parameter.
-   * @throws IOException if an error occurs while the initialization phase
+   * @throws TeolennException if an error occurs while the initialization phase
    */
-  public void init() throws IOException {
+  public void init() throws TeolennException {
   }
 
 }
