@@ -38,7 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.ens.transcriptome.teolenn.Globals;
-import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 public class ORFResource {
 
@@ -46,7 +45,7 @@ public class ORFResource {
 
   // Regex to retrieve chromosome, startPos and len of a sequence from its name
   private static final Pattern seqNamePattern =
-      Pattern.compile("^(.*):subseq\\((\\d+),(\\d+)\\)$");
+      Pattern.compile("^(.+)\t(\\d+)\t(\\d+)$");
 
   private Map<String, Set<ORF>> orfs = new HashMap<String, Set<ORF>>();
   private final Set<ORF> orfsToRemove = new HashSet<ORF>();
@@ -111,39 +110,32 @@ public class ORFResource {
     }
   }
 
-  public ORF getORf(final Sequence sequence) {
+  public ORF getORf(final String sequenceKey) {
 
-    if (sequence == null)
+    if (sequenceKey == null)
       return null;
 
-    final String seqName = sequence.getName();
-
-    if (seqName == null)
-      return null;
-
-    if (seqName.equals(this.currentSequenceName))
+    if (sequenceKey.equals(this.currentSequenceName))
       return this.currentORF;
 
-    final ORF orf = nextORF(sequence);
+    final ORF orf = nextORF(sequenceKey);
 
-    this.currentSequenceName = seqName;
+    this.currentSequenceName = sequenceKey;
     this.currentORF = orf;
 
     return orf;
   }
 
-  private ORF nextORF(final Sequence sequence) {
+  private ORF nextORF(final String sequenceKey) {
 
-    final String sequenceName = sequence.getName();
-
-    if (sequenceName == null)
+    if (sequenceKey == null)
       return null;
 
-    final Matcher m = seqNamePattern.matcher(sequenceName);
+    final Matcher m = seqNamePattern.matcher(sequenceKey);
 
     if (!m.matches())
       throw new RuntimeException("Unable to parse sequence name: "
-          + sequenceName);
+          + sequenceKey);
 
     final String chr = m.group(1);
     final int start = Integer.parseInt(m.group(2));
