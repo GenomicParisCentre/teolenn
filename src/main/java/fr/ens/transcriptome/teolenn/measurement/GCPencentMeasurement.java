@@ -30,6 +30,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
  */
 public final class GCPencentMeasurement extends FloatMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "%GC";
+
   /**
    * Calc the measurement of a sequence.
    * @param sequence the sequence to use for the measurement
@@ -55,7 +58,7 @@ public final class GCPencentMeasurement extends FloatMeasurement {
    */
   public String getName() {
 
-    return "%GC";
+    return MEASUREMENT_NAME;
   }
 
   /**

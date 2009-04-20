@@ -31,6 +31,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 public class InORFMeasurement extends BooleanMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "inorf";
+
   private ORFResource ressource;
   private Properties ressourceProperties = new Properties();
 
@@ -53,7 +56,7 @@ public class InORFMeasurement extends BooleanMeasurement {
 
   public String getName() {
 
-    return "inorf";
+    return MEASUREMENT_NAME;
   }
 
   /**

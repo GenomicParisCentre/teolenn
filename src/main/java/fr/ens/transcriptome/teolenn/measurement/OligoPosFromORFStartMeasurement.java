@@ -31,6 +31,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 public class OligoPosFromORFStartMeasurement extends IntegerMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "OligoPosFromORFStart";
+
   private ORFResource ressource;
   private Properties ressourceProperties = new Properties();
 
@@ -59,7 +62,7 @@ public class OligoPosFromORFStartMeasurement extends IntegerMeasurement {
 
   public String getName() {
 
-    return "OligoPosFromORFStart";
+    return MEASUREMENT_NAME;
   }
 
   /**

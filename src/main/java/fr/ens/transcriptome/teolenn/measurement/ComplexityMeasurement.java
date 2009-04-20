@@ -37,6 +37,9 @@ import fr.ens.transcriptome.teolenn.util.StringUtils;
  */
 public class ComplexityMeasurement extends FloatMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "Complexity";
+
   private SequenceIterator si;
   private static final Pattern subseqPattern = Pattern.compile("subseq");
 
@@ -132,7 +135,7 @@ public class ComplexityMeasurement extends FloatMeasurement {
    */
   public String getName() {
 
-    return "Complexity";
+    return MEASUREMENT_NAME;
   }
 
   /**

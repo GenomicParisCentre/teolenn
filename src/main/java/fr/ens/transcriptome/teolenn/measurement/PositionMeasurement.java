@@ -31,6 +31,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
  */
 public final class PositionMeasurement extends SimpleMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "Position";
+
   private int windowSize = -1;
   private int windowBestPosition;
   private boolean first = true;
@@ -82,7 +85,7 @@ public final class PositionMeasurement extends SimpleMeasurement {
    */
   public String getName() {
 
-    return "Position";
+    return MEASUREMENT_NAME;
   }
 
   /**

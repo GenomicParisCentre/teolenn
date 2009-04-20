@@ -51,6 +51,9 @@ public final class UnicityMeasurement extends FloatMeasurement {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "Unicity";
+
   private static final String SEQ_GZ_WITHOUT_X_EXTENSION = ".seqX.fa.gz";
   private static final String MUP_EXTENSION = ".mup";
   private static final String MUP_DIR = "mup";
@@ -114,7 +117,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
    */
   public String getName() {
 
-    return "Unicity";
+    return MEASUREMENT_NAME;
   }
 
   /**

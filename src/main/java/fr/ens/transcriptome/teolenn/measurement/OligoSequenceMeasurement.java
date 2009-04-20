@@ -31,6 +31,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
  */
 public final class OligoSequenceMeasurement extends StringMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "OligoSequence";
+
   /**
    * Calc the measurement of a sequence.
    * @param sequence the sequence to use for the measurement
@@ -56,7 +59,7 @@ public final class OligoSequenceMeasurement extends StringMeasurement {
    */
   public String getName() {
 
-    return "OligoSequence";
+    return MEASUREMENT_NAME;
   }
 
 }

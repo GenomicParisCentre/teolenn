@@ -31,6 +31,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
  */
 public class TmMeasurement extends FloatMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "Tm";
+
   /**
    * Calc the measurement of a sequence.
    * @param sequence the sequence to use for the measurement
@@ -47,7 +50,7 @@ public class TmMeasurement extends FloatMeasurement {
    */
   public String getName() {
 
-    return "Tm";
+    return MEASUREMENT_NAME;
   }
 
   /**

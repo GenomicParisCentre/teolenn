@@ -28,6 +28,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 public class DummyMeasurement extends IntegerMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "Dummy";
+
   private static Random random = new Random(System.currentTimeMillis());
 
   /**
@@ -46,7 +49,7 @@ public class DummyMeasurement extends IntegerMeasurement {
    */
   public String getName() {
 
-    return "Dummy";
+    return MEASUREMENT_NAME;
   }
 
   /**

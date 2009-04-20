@@ -31,6 +31,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 public class ORFNameMeasurement extends StringMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "orfname";
+
   private ORFResource ressource;
   private Properties ressourceProperties = new Properties();
 
@@ -56,7 +59,7 @@ public class ORFNameMeasurement extends StringMeasurement {
 
   public String getName() {
 
-    return "orfname";
+    return MEASUREMENT_NAME;
   }
 
   /**

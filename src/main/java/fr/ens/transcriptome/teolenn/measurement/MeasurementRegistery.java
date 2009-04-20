@@ -49,9 +49,10 @@ public class MeasurementRegistery {
     if (name == null || clazz == null)
       return;
 
-    if (testClassType(clazz))
+    if (testClassType(clazz)) {
       registery.put(name.toLowerCase(), clazz);
-    else
+      logger.finest("Add " + name + " to Measurements registery");
+    } else
       logger.warning("Addon " + name + " is not a measurement class");
   }
 
@@ -142,22 +143,33 @@ public class MeasurementRegistery {
 
   static {
 
-    addMeasurementType("chromosome", ChromosomeMeasurement.class);
-    addMeasurementType("complexity", ComplexityMeasurement.class);
-    addMeasurementType("%gc", GCPencentMeasurement.class);
-    addMeasurementType("oligoLength", OligoLengthMeasurement.class);
-    addMeasurementType("oligoname", OligoNameMeasurement.class);
-    addMeasurementType("oligosequence", OligoSequenceMeasurement.class);
-    addMeasurementType("oligostart", OligoStartMeasurement.class);
-    addMeasurementType("position", PositionMeasurement.class);
-    addMeasurementType("tm", TmMeasurement.class);
-    addMeasurementType("unicity", UnicityMeasurement.class);
-    addMeasurementType("inorf", InORFMeasurement.class);
-    addMeasurementType("oligoposfromorfend",
+    addMeasurementType(ChromosomeMeasurement.MEASUREMENT_NAME,
+        ChromosomeMeasurement.class);
+    addMeasurementType(ComplexityMeasurement.MEASUREMENT_NAME,
+        ComplexityMeasurement.class);
+    addMeasurementType(GCPencentMeasurement.MEASUREMENT_NAME,
+        GCPencentMeasurement.class);
+    addMeasurementType(OligoLengthMeasurement.MEASUREMENT_NAME,
+        OligoLengthMeasurement.class);
+    addMeasurementType(OligoNameMeasurement.MEASUREMENT_NAME,
+        OligoNameMeasurement.class);
+    addMeasurementType(OligoSequenceMeasurement.MEASUREMENT_NAME,
+        OligoSequenceMeasurement.class);
+    addMeasurementType(OligoStartMeasurement.MEASUREMENT_NAME,
+        OligoStartMeasurement.class);
+    addMeasurementType(PositionMeasurement.MEASUREMENT_NAME,
+        PositionMeasurement.class);
+    addMeasurementType(TmMeasurement.MEASUREMENT_NAME, TmMeasurement.class);
+    addMeasurementType(UnicityMeasurement.MEASUREMENT_NAME,
+        UnicityMeasurement.class);
+    addMeasurementType(InORFMeasurement.MEASUREMENT_NAME,
+        InORFMeasurement.class);
+    addMeasurementType(OligoPosFromORFEndMeasurement.MEASUREMENT_NAME,
         OligoPosFromORFEndMeasurement.class);
-    addMeasurementType("oligoposfromorfstart",
+    addMeasurementType(OligoPosFromORFStartMeasurement.MEASUREMENT_NAME,
         OligoPosFromORFStartMeasurement.class);
-    addMeasurementType("orfname", ORFNameMeasurement.class);
+    addMeasurementType(ORFNameMeasurement.MEASUREMENT_NAME,
+        ORFNameMeasurement.class);
   }
 
 }
