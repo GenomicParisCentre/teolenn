@@ -22,8 +22,7 @@
 
 package fr.ens.transcriptome.teolenn.measurement.filter;
 
-import java.io.IOException;
-
+import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
 /**
@@ -36,8 +35,10 @@ public interface MeasurementFilter {
    * Filter a SequenceMeasurements.
    * @param sm SequenceMeasurements to test
    * @return true if the test allow to keep SequenceMeasurements values
+   * @throws TeolennException if an error occurs while testing a
+   *           SequenceMeasurement
    */
-  boolean accept(SequenceMeasurements sm);
+  boolean accept(SequenceMeasurements sm) throws TeolennException;
 
   /**
    * Set a parameter for the filter.
@@ -48,8 +49,8 @@ public interface MeasurementFilter {
 
   /**
    * Run the initialization phase of the parameter.
-   * @throws IOException if an error occurs while the initialization phase
+   * @throws TeolennException if an error occurs while the initialization phase
    */
-  void init() throws IOException;
+  void init() throws TeolennException;
 
 }

@@ -22,9 +22,9 @@
 
 package fr.ens.transcriptome.teolenn.measurement.filter;
 
-import java.io.IOException;
 import java.security.InvalidParameterException;
 
+import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
 /**
@@ -32,6 +32,9 @@ import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
  * @author Laurent Jourdren
  */
 public class BooleanFilter implements MeasurementFilter {
+
+  /** Measurement filter name. */
+  public static final String MEASUREMENT_FILTER_NAME = "booleanfilter";
 
   private String field;
   private int index = -1;
@@ -73,12 +76,13 @@ public class BooleanFilter implements MeasurementFilter {
 
   /**
    * Run the initialization phase of the parameter.
-   * @throws IOException if an error occurs while the initialization phase
+   * @throws TeolennException if an error occurs while the initialization phase
    */
-  public void init() throws IOException {
+  public void init() throws TeolennException {
 
     if (this.field == null)
-      throw new InvalidParameterException("field value is unknown");
+      throw new InvalidParameterException("The field value is unknown for "
+          + MEASUREMENT_FILTER_NAME+ " filter.");
   }
 
   //
