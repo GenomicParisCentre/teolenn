@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import fr.ens.transcriptome.teolenn.Design;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.sequence.SequenceIterator;
 import fr.ens.transcriptome.teolenn.util.StringUtils;
@@ -149,7 +150,7 @@ public class ComplexityMeasurement extends FloatMeasurement {
       return;
 
     // Get the current oligo file
-    if ("currentOligoFile".equals(key)) {
+    if (Design.CURRENT_OLIGO_FILE_PARAMETER_NAME.equals(key)) {
 
       final String ext =
           ".filtered.oligo".equals(StringUtils.extension(value))
