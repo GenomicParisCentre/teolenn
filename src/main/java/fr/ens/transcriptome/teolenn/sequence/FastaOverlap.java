@@ -52,11 +52,12 @@ public class FastaOverlap {
    * @param outputDir output directory
    * @param extension Name of the extension
    * @param windowSize size of the window
+   * @param start1 true if the first position on sequence is 1
    * @throws IOException if an error occurs while executing fastaoverlap
    */
   public static final void fastaOverlap(final File inputFile,
-      final File outputDir, final String extension, final int windowSize)
-      throws IOException {
+      final File outputDir, final String extension, final int windowSize,
+      final boolean start1) throws IOException {
 
     BufferedReader br = null;
     try {
@@ -78,7 +79,9 @@ public class FastaOverlap {
 
     final StringBuilder subSeq = new StringBuilder(windowSize);
 
-    int offset = 0;
+    final int firstPosition = start1 ? 1 : 0;
+
+    int offset = firstPosition;
 
     while ((line = br.readLine()) != null) {
 
@@ -90,7 +93,7 @@ public class FastaOverlap {
 
           writeAllSubSeq(subSeq, os, offset, windowSize, headerOutput, true);
 
-          offset = 0;
+          offset = firstPosition;
           countInternal = subSeq.length();
         } else
           first = false;

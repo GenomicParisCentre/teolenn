@@ -112,21 +112,31 @@ public class Main {
     // constants element
     this.constants = getElementConstants(designElement);
 
+    for (Iterator i2 = designElement.elementIterator("startPosition"); i2
+        .hasNext();) {
+
+      final String sp = ((Element) i2.next()).getTextTrim();
+      if ("1".equals(sp))
+        this.design.setStart1(true);
+      else
+        this.design.setStart1(false);
+    }
+
     // windowlength element
-    for (Iterator i2 = designElement.elementIterator("windowlength"); i2
+    for (Iterator i3 = designElement.elementIterator("windowlength"); i3
         .hasNext();)
-      this.design.setWindowLength(Integer.parseInt(getValue(i2)));
+      this.design.setWindowLength(Integer.parseInt(getValue(i3)));
 
     // oligolength element
-    for (Iterator i3 = designElement.elementIterator("oligolength"); i3
+    for (Iterator i4 = designElement.elementIterator("oligolength"); i4
         .hasNext();)
-      this.design.setOligoLength(Integer.parseInt(getValue(i3)));
+      this.design.setOligoLength(Integer.parseInt(getValue(i4)));
 
     // windowstep element
     int windowstep = -1;
-    for (Iterator i4 = designElement.elementIterator("windowstep"); i4
+    for (Iterator i5 = designElement.elementIterator("windowstep"); i5
         .hasNext();)
-      windowstep = Integer.parseInt(getValue(i4));
+      windowstep = Integer.parseInt(getValue(i5));
     this.design.setWindowStep(windowstep == -1
         ? this.design.getWindowLength() : windowstep);
 
@@ -134,17 +144,17 @@ public class Main {
     if (genomeFile != null)
       this.design.setGenomeFile(genomeFile);
     else
-      for (Iterator i5 = designElement.elementIterator("genomefile"); i5
+      for (Iterator i6 = designElement.elementIterator("genomefile"); i6
           .hasNext();)
-        this.design.setGenomeFile(new File(getValue(i5)));
+        this.design.setGenomeFile(new File(getValue(i6)));
 
     // genomemakedfile element
     if (genomeMaskedFile != null)
       this.design.setGenomeMaskedFile(genomeMaskedFile);
     else
-      for (Iterator i6 = designElement.elementIterator("genomemaskedfile"); i6
+      for (Iterator i7 = designElement.elementIterator("genomemaskedfile"); i7
           .hasNext();) {
-        final String filename = getValue(i6);
+        final String filename = getValue(i7);
         if (!"".equals(filename))
           this.design.setGenomeMaskedFile(new File(filename));
       }
@@ -153,9 +163,9 @@ public class Main {
     if (outputDir != null)
       this.design.setOutputDir(outputDir);
     else
-      for (Iterator i7 = designElement.elementIterator("outputdir"); i7
+      for (Iterator i8 = designElement.elementIterator("outputdir"); i8
           .hasNext();) {
-        final String path = getValue(i7);
+        final String path = getValue(i8);
         if (!"".equals(path))
           this.design.setOutputDir((new File(path)).getCanonicalFile());
       }
@@ -312,6 +322,8 @@ public class Main {
           .toString(oligoSize));
       sq.setInitParameter(Design.EXTENSION_FILTER_PARAMETER_NAME,
           Design.OLIGO_SUFFIX);
+      sq.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
+          .toString(this.design.isStart1()));
     }
 
     return list;
@@ -395,6 +407,7 @@ public class Main {
 
     // Set the initialization parameters of the measurements
     for (Measurement m : list) {
+
       m.setInitParameter(Design.GENOME_FILE_PARAMETER_NAME, genomeFile
           .getAbsolutePath());
       m.setInitParameter(Design.GENOME_MASKED_FILE_PARAMETER_NAME, genomeFile
@@ -405,6 +418,8 @@ public class Main {
           .toString(windowSize));
       m.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
           .toString(oligoSize));
+      m.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
+          .toString(this.design.isStart1()));
     }
 
     return list;
@@ -487,6 +502,8 @@ public class Main {
           .toString(windowSize));
       mf.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
           .toString(oligoSize));
+      mf.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
+          .toString(this.design.isStart1()));
     }
 
     return list;

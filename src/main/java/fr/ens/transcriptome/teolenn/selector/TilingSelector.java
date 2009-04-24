@@ -26,15 +26,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import fr.ens.transcriptome.teolenn.Design;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
-import fr.ens.transcriptome.teolenn.measurement.SimpleMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
-import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurementsStatReader;
 
@@ -53,68 +52,7 @@ public class TilingSelector implements SequenceSelector {
   private File outputFile;
   private int windowLength;
   private int windowStep;
-
-  private static class GlobalScoreMeasurement extends SimpleMeasurement {
-
-    /**
-     * Calc the measurement of a sequence.
-     * @param sequence the sequence to use for the measurement
-     * @return an object as result
-     */
-    public Object calcMesurement(final Sequence sequence) {
-      return null;
-    }
-
-    /**
-     * Get the description of the measurement.
-     * @return the description of the measurement
-     */
-    public String getDescription() {
-      return "Global Score";
-    }
-
-    /**
-     * Get the name of the measurement.
-     * @return the name of the measurement
-     */
-    public String getName() {
-      return "GlobalScore";
-    }
-
-    /**
-     * Get the type of the result of calcMeasurement.
-     * @return the type of the measurement
-     */
-    public Object getType() {
-      return Float.class;
-    }
-
-    /**
-     * Run the initialization phase of the parameter.
-     * @throws TeolennException if an error occurs while the initialization
-     *           phase
-     */
-    public void init() throws TeolennException {
-    }
-
-    /**
-     * Parse a string to an object return as calcMeasurement.
-     * @param s String to parse
-     * @return an object
-     */
-    public Object parse(String s) {
-      return null;
-    }
-
-    /**
-     * Set a parameter for the filter.
-     * @param key key for the parameter
-     * @param value value of the parameter
-     */
-    public void setInitParameter(String key, String value) {
-    }
-
-  }
+  private boolean start1;
 
   /**
    * Set a parameter for the filter.
@@ -122,6 +60,9 @@ public class TilingSelector implements SequenceSelector {
    * @param value value of the parameter
    */
   public void setInitParameter(String key, String value) {
+
+    if (Design.START_1_PARAMETER_NAME.equals(key))
+      this.start1 = Boolean.parseBoolean(value);
 
     if ("_filteredMesFile".equals(key))
       this.filteredFile = new File(value);
@@ -153,13 +94,30 @@ public class TilingSelector implements SequenceSelector {
   /**
    * Proceed to the oligonucleotide selection.
    * @param weightsSetters Weight to apply on measurements
-   * @throws IOException if an error occurs while reading/writing input/output
-   *           files
+   * @throws TeolennException if an error occurs while selecting sequences
    */
-  public void select(final WeightsSetter weightsSetters) throws IOException {
+  public void select(final WeightsSetter weightsSetters)
+      throws TeolennException {
+
+    try {
+      select2(weightsSetters);
+    } catch (IOException e) {
+
+      throw new TeolennException("Error while selecting: " + e.getMessage());
+    }
+
+  }
+
+  /**
+   * Proceed to the oligonucleotide selection.
+   * @param weightsSetters Weight to apply on measurements
+   * @throws TeolennException if an error occurs while selecting sequences
+   */
+  private void select2(final WeightsSetter weightsSetters) throws IOException {
 
     final int windowLength = this.windowLength;
     final int windowStep = this.windowStep;
+    final boolean start1 = this.start1;
 
     // Open measurement file
     final SequenceMeasurementsReader smr =
@@ -180,8 +138,8 @@ public class TilingSelector implements SequenceSelector {
     int infoCountWindows = 1;
     int infoCountSelectedOligos = 0;
 
-    int endWindow = windowLength;
-    int startWindow = 0;
+    int endWindow = windowLength + (start1 ? 1 : 0);
+    int startWindow = start1 ? 1 : 0;
 
     float bestScore = MIN_SCORE;
     float nextBestScore = MIN_SCORE;
@@ -275,8 +233,8 @@ public class TilingSelector implements SequenceSelector {
         infoCountSelectedOligos = 0;
 
         currentScafold = chromosome;
-        endWindow = windowLength;
-        startWindow = 0;
+        endWindow = windowLength + (start1 ? 1 : 0);
+        startWindow = start1 ? 1 : 0;
         infoCountWindows = 1;
 
         while (pos >= endWindow) {
@@ -318,7 +276,8 @@ public class TilingSelector implements SequenceSelector {
 
           bestScore = nextBestScore;
 
-          // Test if the best score is also the best score for next next window
+          // Test if the best score is also the best score for next next
+          // window
           if (posNextBestScore < startWindow + windowStep)
             nextBestScore = MIN_SCORE;
         }

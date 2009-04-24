@@ -22,6 +22,7 @@
 
 package fr.ens.transcriptome.teolenn.measurement;
 
+import fr.ens.transcriptome.teolenn.Design;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
@@ -37,6 +38,7 @@ public final class PositionMeasurement extends SimpleMeasurement {
   private int windowSize = -1;
   private int windowBestPosition;
   private boolean first = true;
+  private int startOffset;
 
   /**
    * Calc the measurement of a sequence.
@@ -59,18 +61,17 @@ public final class PositionMeasurement extends SimpleMeasurement {
     if (this.first) {
 
       final int endPos2 = seqName.indexOf(")", startPos);
-      final int lenPos =
-          Integer.parseInt(seqName.substring(endPos1 + 1, endPos2));
+      final int len = Integer.parseInt(seqName.substring(endPos1 + 1, endPos2));
 
       this.windowBestPosition =
-          (int) Math.ceil(((this.windowSize - lenPos) / 2.0f));
+          (int) Math.ceil(((this.windowSize - len) / 2.0f));
 
       this.first = false;
     }
 
     final int windowStart =
         (int) (Math.floor((float) seqStart / (float) this.windowSize)
-            * this.windowSize - 1);
+            * this.windowSize + this.startOffset);
     final int oligo2Window = seqStart - windowStart;
 
     final float result =
@@ -130,22 +131,22 @@ public final class PositionMeasurement extends SimpleMeasurement {
   }
 
   /**
-   * Clear the results and the current statistics.
-   */
-  public void clear() {
-
-    this.first = false;
-  }
-
-  /**
    * Set a parameter for the filter.
    * @param key key for the parameter
    * @param value value of the parameter
    */
   public void setInitParameter(final String key, final String value) {
 
-    if ("_windowsize".equals(key))
+    if (Design.START_1_PARAMETER_NAME.equals(key)) {
+
+      final boolean start1 = Boolean.parseBoolean(value);
+      if (start1)
+        this.startOffset = 0;
+      else
+        this.startOffset = -1;
+    } else if (Design.WINDOW_SIZE_PARAMETER_NAME.equals(key))
       this.windowSize = Integer.parseInt(value);
+
   }
 
   /**

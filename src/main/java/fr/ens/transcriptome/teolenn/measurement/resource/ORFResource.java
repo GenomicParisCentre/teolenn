@@ -75,15 +75,28 @@ public class ORFResource {
     if (!properties.containsKey("orfsfile"))
       throw new IOException("No orfsFile");
 
+    // Get the orfs file
     final File orfsFile = new File(properties.getProperty("orfsfile"));
-    final boolean start1;
 
+    // Compute the offset to apply on orfs positions
+    final int oligoStart1 =
+        Boolean.parseBoolean(properties.getProperty("_start1")) ? 1 : 0;
+
+    final int orfStart1;
     if (properties.containsKey("start1"))
-      start1 = Boolean.parseBoolean(properties.getProperty("start1"));
+      orfStart1 =
+          Boolean.parseBoolean(properties.getProperty("start1")) ? 1 : 0;
     else
-      start1 = false;
+      orfStart1 = 0;
 
-    final ORFResource result = new ORFResource(orfsFile, start1);
+    int startOffset = 0;
+
+    if (oligoStart1 == orfStart1)
+      startOffset = 0;
+    else
+      startOffset = oligoStart1 - orfStart1;
+
+    final ORFResource result = new ORFResource(orfsFile, startOffset);
 
     rs.setResource("orf", result);
 
@@ -226,10 +239,11 @@ public class ORFResource {
   /**
    * Run the initialization phase of the parameter.
    * @param orfsFile File with orfs to read
-   * @param start1 true if the first position on sequence is 1
+   * @param startOffset the offset to apply to have the same coordinate that the
+   *          oligonucleotides sequences
    * @throws IOException if an error occurs while reading data
    */
-  private ORFResource(final File orfsFile, final boolean start1)
+  private ORFResource(final File orfsFile, final int startOffset)
       throws IOException {
 
     final BufferedReader br = FileUtils.createBufferedReader(orfsFile);
@@ -249,8 +263,8 @@ public class ORFResource {
       final String chr = fields[1];
       final boolean wattsonStrand = "W".equals(fields[4].toUpperCase());
 
-      final int start = Integer.parseInt(fields[2]) + (start1 ? -1 : 0);
-      final int end = Integer.parseInt(fields[3]) + (start1 ? -1 : 0);
+      final int start = Integer.parseInt(fields[2]) + startOffset;
+      final int end = Integer.parseInt(fields[3]) + startOffset;
 
       final Set<ORF> chrORFs;
 

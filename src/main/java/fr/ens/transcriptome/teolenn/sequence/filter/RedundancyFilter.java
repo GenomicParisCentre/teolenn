@@ -66,6 +66,7 @@ public class RedundancyFilter implements SequenceFilter {
   private File baseDir;
   private BufferedReader br;
   private String currentChr;
+  private int startOffset;
 
   // Soap results for current chromosome
   private final Map<Integer, Integer> currentChrResult =
@@ -160,7 +161,7 @@ public class RedundancyFilter implements SequenceFilter {
         final int matchLen = s.nextInt();
         final String matchStrand = s.next();
         final String matchChr = s.next();
-        final int matchStart = s.nextInt() - 1;
+        final int matchStart = s.nextInt() + this.startOffset;
         final int matchType = s.nextInt();
 
         // add result in memory only if oligo match at the right position
@@ -209,6 +210,15 @@ public class RedundancyFilter implements SequenceFilter {
    * @param value value of the parameter
    */
   public void setInitParameter(final String key, final String value) {
+
+    if (Design.START_1_PARAMETER_NAME.equals(key)) {
+
+      final boolean start1 = Boolean.parseBoolean(value);
+      if (start1)
+        this.startOffset = 0;
+      else
+        this.startOffset = -1;
+    }
 
     if (Design.GENOME_FILE_PARAMETER_NAME.equals(key))
       this.referenceFile = new File(value);

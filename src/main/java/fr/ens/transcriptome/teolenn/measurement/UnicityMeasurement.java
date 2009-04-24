@@ -71,6 +71,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
   private String currentChr;
   private Map<Integer, Integer> mupDict = new HashMap<Integer, Integer>();
   private double uniquenessMax;
+  private int startOffset = 0;
 
   /* Dictionary to store mup en positions. Here only for speed optimization */
   private final Map<Integer, Integer> mupEnd = new HashMap<Integer, Integer>();
@@ -110,7 +111,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
           + e.getMessage());
     }
 
-    return uscoreCalculation(startPos); // this.mup_dict.get(startPos);
+    return uscoreCalculation(startPos + this.startOffset);
   }
 
   /**
@@ -342,7 +343,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
     // Load the minimum unique prefix file in a list
     mupDict.clear();
 
-    BufferedReader br = FileUtils.createBufferedReader(file);
+    final BufferedReader br = FileUtils.createBufferedReader(file);
     String line = null;
 
     // final Pattern line_test = Pattern.compile("^\\d+\\s");
@@ -377,7 +378,14 @@ public final class UnicityMeasurement extends FloatMeasurement {
    */
   public void setInitParameter(final String key, final String value) {
 
-    if (Design.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
+    if (Design.START_1_PARAMETER_NAME.equals(key)) {
+
+      final boolean start1 = Boolean.parseBoolean(value);
+      if (start1)
+        this.startOffset = -1;
+      else
+        this.startOffset = 0;
+    } else if (Design.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
       this.oligoLength = Integer.parseInt(value);
     else if (Design.GENOME_FILE_PARAMETER_NAME.equals(key))
       this.genomeFile = new File(value);

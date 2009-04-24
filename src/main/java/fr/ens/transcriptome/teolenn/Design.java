@@ -71,6 +71,7 @@ public class Design {
   public static final String OUTPUT_DIR_PARAMETER_NAME = "_outputdir";
   public static final String WINDOW_SIZE_PARAMETER_NAME = "_windowsize";
   public static final String OLIGO_LENGTH_PARAMETER_NAME = "_oligolength";
+  public static final String START_1_PARAMETER_NAME = "_start1";
   public static final String EXTENSION_FILTER_PARAMETER_NAME =
       "_extensionfilter";
 
@@ -81,6 +82,7 @@ public class Design {
   private File genomeFile;
   private File genomeMaskedFile;
   private File outputDir = (new File("")).getAbsoluteFile();
+  private boolean start1 = false;
 
   private boolean skipSequenceFilters;
   private boolean skipMeasurementsComputation;
@@ -172,6 +174,14 @@ public class Design {
   public boolean isGenomeMaskedFile() {
 
     return this.genomeMaskedFile != null;
+  }
+
+  /**
+   * Test if the position of the sequences starts at 1 (and not at 0).
+   * @return true if the position of the sequences starts at 1
+   */
+  public boolean isStart1() {
+    return start1;
   }
 
   //
@@ -267,6 +277,15 @@ public class Design {
    */
   public void setSkipMeasurementsFilters(final boolean skipMeasurementsFilters) {
     this.skipMeasurementsFilters = skipMeasurementsFilters;
+  }
+
+  /**
+   * Set if the position of the sequences starts at 1 (and not at 0).
+   * @param start1 true if the position of the sequences starts at 1
+   */
+  public void setStart1(final boolean start1) {
+
+    this.start1 = start1;
   }
 
   //
@@ -534,11 +553,11 @@ public class Design {
     logStartPhase("create oligos");
 
     FastaOverlap.fastaOverlap(this.genomeFile, outputDir, Design.OLIGO_SUFFIX,
-        this.oligoLength);
+        this.oligoLength, isStart1());
 
     if (isGenomeMaskedFile())
       FastaOverlap.fastaOverlap(this.genomeMaskedFile, outputDir,
-          Design.OLIGO_MASKED_SUFFIX, this.oligoLength);
+          Design.OLIGO_MASKED_SUFFIX, this.oligoLength, isStart1());
 
     logEndPhase("create oligos");
   }
@@ -658,9 +677,9 @@ public class Design {
   /**
    * In this phase, select the oligos.
    * @param wSetter weight of selection
-   * @throws IOException if an error occurs while selecting
+   * @throws TeolennException if an error occurs while selecting
    */
-  public void phase5Select(final WeightsSetter wSetter) throws IOException {
+  public void phase5Select(final WeightsSetter wSetter) throws TeolennException {
 
     logStartPhase("select");
 
@@ -689,7 +708,11 @@ public class Design {
     selector.setInitParameter("_windowlength", "" + this.windowLength);
     selector.setInitParameter("_windowStep", "" + this.windowStep);
 
-    selector.init();
+    try {
+      selector.init();
+    } catch (IOException e) {
+      throw new TeolennException("Error while selecting: " + e.getMessage());
+    }
 
     selector.select(wSetter);
 
