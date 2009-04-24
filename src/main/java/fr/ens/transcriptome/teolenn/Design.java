@@ -74,6 +74,13 @@ public class Design {
   public static final String START_1_PARAMETER_NAME = "_start1";
   public static final String EXTENSION_FILTER_PARAMETER_NAME =
       "_extensionfilter";
+  public static final String CURRENT_OLIGO_FILE_PARAMETER_NAME =
+      "currentOligoFile";
+  public static final String MEASUREMENT_FILE_PARAMETER_NAME = "_oriMesFile";
+  public static final String FILTERED_MEASUREMENT_FILE_PARAMETER_NAME =
+      "_filteredMesFile";
+  public static final String STATS_FILE_PARAMETER_NAME = "_statsFile";
+  public static final String SELECTED_FILE_PARAMETER_NAME = "_selectedFile";
 
   private int windowLength = WINDOW_LEN_DEFAULT;
   private int oligoLength = OLIGO_LEN_DEFAULT;
@@ -343,7 +350,8 @@ public class Design {
     int count = idStart;
 
     for (Measurement m : sm.getMeasurements())
-      m.setProperty("currentOligoFile", inputFile.getAbsolutePath());
+      m.setProperty(CURRENT_OLIGO_FILE_PARAMETER_NAME, inputFile
+          .getAbsolutePath());
 
     while (si.hasNext()) {
 
@@ -698,13 +706,14 @@ public class Design {
     }
 
     SequenceSelector selector = new TilingSelector();
-    selector.setInitParameter("_oriMesFile", oligoMeasurementsFile
+    selector.setInitParameter(MEASUREMENT_FILE_PARAMETER_NAME,
+        oligoMeasurementsFile.getAbsolutePath());
+    selector.setInitParameter(FILTERED_MEASUREMENT_FILE_PARAMETER_NAME,
+        filteredOligoMeasurementsFile.getAbsolutePath());
+    selector.setInitParameter(STATS_FILE_PARAMETER_NAME, statsFile
         .getAbsolutePath());
-    selector.setInitParameter("_filteredMesFile", filteredOligoMeasurementsFile
+    selector.setInitParameter(SELECTED_FILE_PARAMETER_NAME, selectedOligos
         .getAbsolutePath());
-    selector.setInitParameter("_statsFile", statsFile.getAbsolutePath());
-    selector
-        .setInitParameter("_selectedFile", selectedOligos.getAbsolutePath());
     selector.setInitParameter("_windowlength", "" + this.windowLength);
     selector.setInitParameter("_windowStep", "" + this.windowStep);
 
@@ -725,5 +734,4 @@ public class Design {
         + StringUtils.toTimeHumanReadable(endTimeDesign - this.startTimeDesign)
         + " ms.");
   }
-
 }

@@ -64,23 +64,23 @@ public class TilingSelector implements SequenceSelector {
     if (Design.START_1_PARAMETER_NAME.equals(key))
       this.start1 = Boolean.parseBoolean(value);
 
-    if ("_filteredMesFile".equals(key))
+    else if (Design.FILTERED_MEASUREMENT_FILE_PARAMETER_NAME.equals(key))
       this.filteredFile = new File(value);
-    if ("_oriMesFile".equals(key))
+
+    else if (Design.MEASUREMENT_FILE_PARAMETER_NAME.equals(key))
       this.oriFile = new File(value);
 
-    if ("_statsFile".equals(key))
+    else if (Design.STATS_FILE_PARAMETER_NAME.equals(key))
       this.statsFile = new File(value);
 
-    if ("_selectedFile".equals(key))
+    else if (Design.SELECTED_FILE_PARAMETER_NAME.equals(key))
       this.outputFile = new File(value);
 
-    if ("_windowLength".equals(key))
+    else if ("_windowLength".equals(key))
       this.windowLength = Integer.parseInt(value.trim());
 
-    if ("_windowStep".equals(key))
+    else if ("_windowStep".equals(key))
       this.windowStep = Integer.parseInt(value.trim());
-
   }
 
   /**
