@@ -106,6 +106,10 @@ public final class FileUtils {
     if (file == null)
       return null;
 
+    // Remove file if exists
+    if (file.exists())
+      file.delete();
+
     final FileOutputStream outFile = new FileOutputStream(file);
     final FileChannel outChannel = outFile.getChannel();
 
@@ -127,6 +131,10 @@ public final class FileUtils {
 
     if (file == null)
       return null;
+
+    // Remove file if exists
+    if (file.exists())
+      file.delete();
 
     final FileOutputStream outFile = new FileOutputStream(file);
     final FileChannel outChannel = outFile.getChannel();
