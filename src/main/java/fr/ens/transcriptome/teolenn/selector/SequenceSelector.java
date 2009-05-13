@@ -26,6 +26,8 @@ import java.io.IOException;
 
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
+import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
 
 /**
  * This interface define a Sequence selector.
@@ -48,9 +50,13 @@ public interface SequenceSelector {
 
   /**
    * Proceed to the oligo selection.
+   * @param measurementReader SequenceMeasurement reader
+   * @param measurementWriter SequenceMeasurement writer
    * @param weightsSetters Weight to apply on measurements
    * @throws TeolennException if an error occurs while selecting sequences
    */
-  void select(final WeightsSetter weightsSetters) throws TeolennException;
+  void select(SequenceMeasurementsReader measurementReader,
+      SequenceMeasurementsWriter measurementWriter, WeightsSetter weightsSetters)
+      throws TeolennException;
 
 }

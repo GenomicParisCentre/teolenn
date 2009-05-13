@@ -31,7 +31,6 @@ import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
-import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
@@ -46,10 +45,7 @@ public class TilingSelector implements SequenceSelector {
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
   private static final float MIN_SCORE = -1 * Float.MAX_VALUE;
 
-  private File oriFile;
-  private File filteredFile;
   private File statsFile;
-  private File outputFile;
   private int windowLength;
   private int windowStep;
   private boolean start1;
@@ -64,17 +60,8 @@ public class TilingSelector implements SequenceSelector {
     if (Design.START_1_PARAMETER_NAME.equals(key))
       this.start1 = Boolean.parseBoolean(value);
 
-    else if (Design.FILTERED_MEASUREMENT_FILE_PARAMETER_NAME.equals(key))
-      this.filteredFile = new File(value);
-
-    else if (Design.MEASUREMENT_FILE_PARAMETER_NAME.equals(key))
-      this.oriFile = new File(value);
-
     else if (Design.STATS_FILE_PARAMETER_NAME.equals(key))
       this.statsFile = new File(value);
-
-    else if (Design.SELECTED_FILE_PARAMETER_NAME.equals(key))
-      this.outputFile = new File(value);
 
     else if ("_windowLength".equals(key))
       this.windowLength = Integer.parseInt(value.trim());
@@ -93,14 +80,17 @@ public class TilingSelector implements SequenceSelector {
 
   /**
    * Proceed to the oligonucleotide selection.
+   * @param measurementReader SequenceMeasurement reader
+   * @param measurementWriter SequenceMeasurement writer
    * @param weightsSetters Weight to apply on measurements
    * @throws TeolennException if an error occurs while selecting sequences
    */
-  public void select(final WeightsSetter weightsSetters)
-      throws TeolennException {
+  public void select(final SequenceMeasurementsReader measurementReader,
+      final SequenceMeasurementsWriter measurementWriter,
+      final WeightsSetter weightsSetters) throws TeolennException {
 
     try {
-      select2(weightsSetters);
+      select2(measurementReader, measurementWriter, weightsSetters);
     } catch (IOException e) {
 
       throw new TeolennException("Error while selecting: " + e.getMessage());
@@ -110,19 +100,18 @@ public class TilingSelector implements SequenceSelector {
 
   /**
    * Proceed to the oligonucleotide selection.
+   * @param measurementReader SequenceMeasurement reader
+   * @param measurementWriter SequenceMeasurement writer
    * @param weightsSetters Weight to apply on measurements
    * @throws TeolennException if an error occurs while selecting sequences
    */
-  private void select2(final WeightsSetter weightsSetters) throws IOException {
+  private void select2(final SequenceMeasurementsReader measurementReader,
+      final SequenceMeasurementsWriter measurementWriter,
+      final WeightsSetter weightsSetters) throws IOException {
 
     final int windowLength = this.windowLength;
     final int windowStep = this.windowStep;
     final boolean start1 = this.start1;
-
-    // Open measurement file
-    final SequenceMeasurementsReader smr =
-        SequenceMeasurementsIOFactory.createSequenceMeasurementsFilteredReader(
-            filteredFile, this.oriFile);
 
     // Object used to read oligo measurement
     SequenceMeasurements sm = null;
@@ -151,12 +140,7 @@ public class TilingSelector implements SequenceSelector {
 
     final SequenceMeasurements nextSmToWrite = new SequenceMeasurements();
 
-    // Open output file
-    final SequenceMeasurementsWriter smw =
-        SequenceMeasurementsIOFactory
-            .createSequenceMeasurementsSelectWriter(this.outputFile);
-
-    while ((sm = smr.next(sm)) != null) {
+    while ((sm = measurementReader.next(sm)) != null) {
 
       if (first) {
 
@@ -212,7 +196,7 @@ public class TilingSelector implements SequenceSelector {
           // Prevent writing the same oligo more than one time
           if (lastSelected != smToWrite.getId()) {
 
-            smw.writeSequenceMesurement(smToWrite);
+            measurementWriter.writeSequenceMesurement(smToWrite);
             lastSelected = smToWrite.getId();
             infoCountSelectedOligos++;
           }
@@ -254,7 +238,7 @@ public class TilingSelector implements SequenceSelector {
 
           // Prevent writing the same oligo more than one time
           if (lastSelected != smToWrite.getId()) {
-            smw.writeSequenceMesurement(smToWrite);
+            measurementWriter.writeSequenceMesurement(smToWrite);
             lastSelected = smToWrite.getId();
             infoCountSelectedOligos++;
           }
@@ -334,7 +318,7 @@ public class TilingSelector implements SequenceSelector {
 
       // Prevent writing the same oligo more than one time
       if (lastSelected != smToWrite.getId())
-        smw.writeSequenceMesurement(smToWrite);
+        measurementWriter.writeSequenceMesurement(smToWrite);
     }
 
     logger
@@ -347,7 +331,7 @@ public class TilingSelector implements SequenceSelector {
                 infoCountSelectedOligos, infoLastIndexStartPosition,
                 windowLength, windowStep));
 
-    smr.close();
-    smw.close();
+    measurementReader.close();
+    measurementWriter.close();
   }
 }

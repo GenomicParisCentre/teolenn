@@ -723,7 +723,25 @@ public class Design {
       throw new TeolennException("Error while selecting: " + e.getMessage());
     }
 
-    selector.select(wSetter);
+    try {
+
+      // Open measurement file
+      final SequenceMeasurementsReader measurementReader =
+          SequenceMeasurementsIOFactory
+              .createSequenceMeasurementsFilteredReader(
+                  filteredOligoMeasurementsFile, oligoMeasurementsFile);
+
+      // Open output file
+      final SequenceMeasurementsWriter measurementWriter =
+          SequenceMeasurementsIOFactory
+              .createSequenceMeasurementsSelectWriter(selectedOligos);
+
+      // Launch selection
+      selector.select(measurementReader, measurementWriter, wSetter);
+
+    } catch (IOException e) {
+      throw new TeolennException(e);
+    }
 
     // Select.select(filteredOligoMeasurementsFile, statsFile, selectedOligos,
     // wSetter, this.windowLength, this.windowStep);
