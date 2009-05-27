@@ -40,6 +40,9 @@ public class ComplexityMeasurement extends FloatMeasurement {
 
   /** Measurement name. */
   public static final String MEASUREMENT_NAME = "Complexity";
+  
+  /* The list that contain the bases count as masked */
+  private final static char[] MASK_BASES = {'a', 'c', 'g', 't', 'n', 'N', 'x', 'X'};
 
   private SequenceIterator si;
   private static final Pattern subseqPattern = Pattern.compile("subseq");
@@ -85,14 +88,13 @@ public class ComplexityMeasurement extends FloatMeasurement {
 
     final String s = si.getSequence();
 
-    // The list that contain the bases count as masked
-    final char[] maskBase = {'a', 'c', 'g', 't', 'n', 'N', 'x', 'X'};
+    
 
     int maskNumber = 0;
 
     // Count the number of masked bases
-    for (int i = 0; i < maskBase.length; i++)
-      maskNumber += countChar(s, maskBase[i]);
+    for (int i = 0; i < MASK_BASES.length; i++)
+      maskNumber += countChar(s, MASK_BASES[i]);
 
     // Calculate a complexity score
     float result = 1.0f - ((float) maskNumber / (float) s.length());
