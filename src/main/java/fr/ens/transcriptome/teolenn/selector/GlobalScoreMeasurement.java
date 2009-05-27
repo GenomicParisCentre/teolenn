@@ -23,22 +23,21 @@
 package fr.ens.transcriptome.teolenn.selector;
 
 import fr.ens.transcriptome.teolenn.TeolennException;
-import fr.ens.transcriptome.teolenn.measurement.SimpleMeasurement;
-import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
  * This class define an internal measurement for selectors that contains the
  * global score of an oligonucleotide.
  * @author Laurent Jourdren
  */
-public class GlobalScoreMeasurement extends SimpleMeasurement {
+public class GlobalScoreMeasurement extends SimpleSelectorMeasurement {
 
   /**
    * Calc the measurement of a sequence.
-   * @param sequence the sequence to use for the measurement
+   * @param chromosome the chromosome of sequence to use for the measurement
+   * @param startPos the start position of sequence to use for the measurement
    * @return an object as result
    */
-  public Object calcMesurement(final Sequence sequence) {
+  public Object calcMesurement(final String chromosome, final int startPos) {
     return null;
   }
 
@@ -78,7 +77,7 @@ public class GlobalScoreMeasurement extends SimpleMeasurement {
    * @param s String to parse
    * @return an object
    */
-  public Object parse(String s) {
+  public Object parse(final String s) {
     return null;
   }
 
@@ -87,7 +86,7 @@ public class GlobalScoreMeasurement extends SimpleMeasurement {
    * @param key key for the parameter
    * @param value value of the parameter
    */
-  public void setInitParameter(String key, String value) {
+  public void setInitParameter(final String key, final String value) {
   }
 
 }
