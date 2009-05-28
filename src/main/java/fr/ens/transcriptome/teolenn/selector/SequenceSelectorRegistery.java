@@ -56,7 +56,7 @@ public class SequenceSelectorRegistery {
    * @param name name of the sequence selector
    * @param className Name of of the sequence selector
    */
-  public static void addMeasurementFilterType(final String name,
+  public static void addSequenceSelectorType(final String name,
       final String className) {
 
     if (name == null || "".equals(name) || className == null)
@@ -67,14 +67,14 @@ public class SequenceSelectorRegistery {
 
       addSequenceSelectorType(name.toLowerCase(), clazz);
 
-      logger.info("Add external measurement: " + name);
+      logger.info("Add external selector: " + name);
 
     } catch (ClassNotFoundException e) {
 
       logger.severe("Cannot find "
-          + className + " for " + name + " measurement addon");
+          + className + " for " + name + " selector addon");
       throw new RuntimeException("Cannot find "
-          + className + " for " + name + " measurement addon");
+          + className + " for " + name + " selector addon");
 
     }
   }
