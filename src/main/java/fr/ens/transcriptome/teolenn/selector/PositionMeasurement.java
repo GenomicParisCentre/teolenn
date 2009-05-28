@@ -22,7 +22,6 @@
 
 package fr.ens.transcriptome.teolenn.selector;
 
-import fr.ens.transcriptome.teolenn.Design;
 
 /**
  * This class define a measurement that returns
@@ -135,15 +134,6 @@ public final class PositionMeasurement extends SimpleSelectorMeasurement {
    * @param value value of the parameter
    */
   public void setInitParameter(final String key, final String value) {
-
-    if (Design.START_1_PARAMETER_NAME.equals(key))
-      this.start1 = Boolean.parseBoolean(value);
-
-    else if (Design.WINDOW_SIZE_PARAMETER_NAME.equals(key))
-      this.windowLength = Integer.parseInt(value);
-    else if (Design.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
-      this.oligoLength = Integer.parseInt(value);
-
   }
 
   /**
@@ -170,10 +160,6 @@ public final class PositionMeasurement extends SimpleSelectorMeasurement {
    */
   public PositionMeasurement(final boolean start1, final int oligoLength,
       final int windowSize) {
-
-    System.out.println("start1=" + start1);
-    System.out.println("oligoLength=" + oligoLength);
-    System.out.println("windowSize=" + oligoLength);
 
     this.start1 = start1;
     this.oligoLength = oligoLength;
