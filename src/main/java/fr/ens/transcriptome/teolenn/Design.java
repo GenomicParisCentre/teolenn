@@ -34,7 +34,6 @@ import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
-import fr.ens.transcriptome.teolenn.selector.TilingSelector;
 import fr.ens.transcriptome.teolenn.sequence.FastaOverlap;
 import fr.ens.transcriptome.teolenn.sequence.SequenceIterator;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
@@ -48,8 +47,6 @@ public class Design {
 
   private static final Logger logger = Logger.getLogger(Globals.APP_NAME);
 
-  private static final int WINDOW_LEN_DEFAULT = 140; // 141;
-  private static final int WINDOW_STEP_DEFAULT = 140;
   private static final int OLIGO_LEN_DEFAULT = 60;
 
   // private static final int UNICITY_MAX_PREFIX_LEN = 30;
@@ -69,7 +66,6 @@ public class Design {
   public static final String GENOME_MASKED_FILE_PARAMETER_NAME =
       "_genomemaskedfile";
   public static final String OUTPUT_DIR_PARAMETER_NAME = "_outputdir";
-  public static final String WINDOW_SIZE_PARAMETER_NAME = "_windowsize";
   public static final String OLIGO_LENGTH_PARAMETER_NAME = "_oligolength";
   public static final String START_1_PARAMETER_NAME = "_start1";
   public static final String EXTENSION_FILTER_PARAMETER_NAME =
@@ -82,9 +78,7 @@ public class Design {
   public static final String STATS_FILE_PARAMETER_NAME = "_statsFile";
   public static final String SELECTED_FILE_PARAMETER_NAME = "_selectedFile";
 
-  private int windowLength = WINDOW_LEN_DEFAULT;
   private int oligoLength = OLIGO_LEN_DEFAULT;
-  private int windowStep = WINDOW_STEP_DEFAULT;
 
   private File genomeFile;
   private File genomeMaskedFile;
@@ -94,6 +88,7 @@ public class Design {
   private boolean skipSequenceFilters;
   private boolean skipMeasurementsComputation;
   private boolean skipMeasurementsFilters;
+  private boolean skipSelector;
 
   private long startTimeCurrentPhase;
   private long startTimeDesign;
@@ -101,22 +96,6 @@ public class Design {
   //
   // Getters
   //
-
-  /**
-   * Get the window length of the design.
-   * @return the window length
-   */
-  public int getWindowLength() {
-    return windowLength;
-  }
-
-  /**
-   * Get the window step of the design.
-   * @return the window step
-   */
-  public int getWindowStep() {
-    return windowStep;
-  }
 
   /**
    * Set the oligo length for the design
@@ -175,6 +154,14 @@ public class Design {
   }
 
   /**
+   * Get if the selector phase must be skipped.
+   * @return true if the selector computation phase must be skipped.
+   */
+  public boolean isSkipSelector() {
+    return skipSelector;
+  }
+
+  /**
    * Test if genome masked file is set.
    * @return true if genome masked file is set
    */
@@ -194,32 +181,6 @@ public class Design {
   //
   // Setters
   //
-
-  /**
-   * Set the window length.
-   * @param windowLength the window length to set
-   */
-  public void setWindowLength(final int windowLength) {
-
-    if (windowLength <= 0)
-      throw new IllegalArgumentException("Invalid window length value: "
-          + windowLength);
-
-    this.windowLength = windowLength;
-  }
-
-  /**
-   * Set the window step.
-   * @param windowStep the window step to set
-   */
-  public void setWindowStep(final int windowStep) {
-
-    if (windowStep <= 0)
-      throw new IllegalArgumentException("Invalid window step value: "
-          + windowStep);
-
-    this.windowStep = windowStep;
-  }
 
   /**
    * Set the olgo length
@@ -284,6 +245,14 @@ public class Design {
    */
   public void setSkipMeasurementsFilters(final boolean skipMeasurementsFilters) {
     this.skipMeasurementsFilters = skipMeasurementsFilters;
+  }
+
+  /**
+   * Set if the selector phase must be skipped.
+   * @param skipSelector if the selector phase must be skipped.
+   */
+  public void setSkipSelector(final boolean skipSelector) {
+    this.skipSelector = skipSelector;
   }
 
   /**
@@ -532,6 +501,11 @@ public class Design {
     return isSkipMeasurementsFilters();
   }
 
+  public boolean isSkipPhase5() {
+
+    return isSkipSelector();
+  }
+
   /**
    * In this the initialization phase of the design.
    */
@@ -539,8 +513,6 @@ public class Design {
 
     logger.info("Java version: " + System.getProperty("java.version"));
     logger.info("Log level:" + logger.getLevel());
-    logger.info("Window length: " + this.windowLength);
-    logger.info("Window step: " + this.windowStep);
     logger.info("Oligo length: " + this.oligoLength);
     logger.info("Genome file: " + this.genomeFile);
     logger.info("Genome masked file: " + this.genomeMaskedFile);
@@ -684,10 +656,12 @@ public class Design {
 
   /**
    * In this phase, select the oligos.
+   * @param selector SequenceSelector to use
    * @param wSetter weight of selection
    * @throws TeolennException if an error occurs while selecting
    */
-  public void phase5Select(final WeightsSetter wSetter) throws TeolennException {
+  public void phase5Select(final SequenceSelector selector,
+      final WeightsSetter wSetter) throws TeolennException {
 
     logStartPhase("select");
 
@@ -705,8 +679,7 @@ public class Design {
       throw new RuntimeException("No stats file found.");
     }
 
-    SequenceSelector selector = new TilingSelector();
-    selector.setInitParameter(Design.START_1_PARAMETER_NAME, "" + isStart1());
+    // Set additional parameters
     selector.setInitParameter(MEASUREMENT_FILE_PARAMETER_NAME,
         oligoMeasurementsFile.getAbsolutePath());
     selector.setInitParameter(FILTERED_MEASUREMENT_FILE_PARAMETER_NAME,
@@ -716,16 +689,8 @@ public class Design {
     selector.setInitParameter(SELECTED_FILE_PARAMETER_NAME, selectedOligos
         .getAbsolutePath());
 
-    selector.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, ""
-        + getOligoLength());
-    selector.setInitParameter("_windowLength", "" + this.windowLength);
-    selector.setInitParameter("_windowStep", "" + this.windowStep);
-
-    try {
-      selector.init();
-    } catch (IOException e) {
-      throw new TeolennException("Error while selecting: " + e.getMessage());
-    }
+    // Initialize the selector
+    selector.init();
 
     try {
 

@@ -55,6 +55,8 @@ import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilterRegistery;
+import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
+import fr.ens.transcriptome.teolenn.selector.SequenceSelectorRegistery;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilter;
 import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilterRegistery;
@@ -122,39 +124,26 @@ public class Main {
         this.design.setStart1(false);
     }
 
-    // windowlength element
-    for (Iterator i3 = designElement.elementIterator("windowlength"); i3
-        .hasNext();)
-      this.design.setWindowLength(Integer.parseInt(getValue(i3)));
-
     // oligolength element
-    for (Iterator i4 = designElement.elementIterator("oligolength"); i4
+    for (Iterator i3 = designElement.elementIterator("oligolength"); i3
         .hasNext();)
-      this.design.setOligoLength(Integer.parseInt(getValue(i4)));
-
-    // windowstep element
-    int windowstep = -1;
-    for (Iterator i5 = designElement.elementIterator("windowstep"); i5
-        .hasNext();)
-      windowstep = Integer.parseInt(getValue(i5));
-    this.design.setWindowStep(windowstep == -1
-        ? this.design.getWindowLength() : windowstep);
+      this.design.setOligoLength(Integer.parseInt(getValue(i3)));
 
     // genomefile element
     if (genomeFile != null)
       this.design.setGenomeFile(genomeFile);
     else
-      for (Iterator i6 = designElement.elementIterator("genomefile"); i6
+      for (Iterator i4 = designElement.elementIterator("genomefile"); i4
           .hasNext();)
-        this.design.setGenomeFile(new File(getValue(i6)));
+        this.design.setGenomeFile(new File(getValue(i4)));
 
     // genomemakedfile element
     if (genomeMaskedFile != null)
       this.design.setGenomeMaskedFile(genomeMaskedFile);
     else
-      for (Iterator i7 = designElement.elementIterator("genomemaskedfile"); i7
+      for (Iterator i5 = designElement.elementIterator("genomemaskedfile"); i5
           .hasNext();) {
-        final String filename = getValue(i7);
+        final String filename = getValue(i5);
         if (!"".equals(filename))
           this.design.setGenomeMaskedFile(new File(filename));
       }
@@ -163,9 +152,9 @@ public class Main {
     if (outputDir != null)
       this.design.setOutputDir(outputDir);
     else
-      for (Iterator i8 = designElement.elementIterator("outputdir"); i8
+      for (Iterator i6 = designElement.elementIterator("outputdir"); i6
           .hasNext();) {
-        final String path = getValue(i8);
+        final String path = getValue(i6);
         if (!"".equals(path))
           this.design.setOutputDir((new File(path)).getCanonicalFile());
       }
@@ -200,6 +189,7 @@ public class Main {
         "measurements"));
     d.setSkipMeasurementsFilters(isSkipElementEnable(designElement,
         "measurementfilters"));
+    d.setSkipSelector(isSkipElementEnable(designElement, "selector"));
 
     // Start the computation
     d.phase0();
@@ -216,7 +206,9 @@ public class Main {
     if (!d.isSkipPhase4())
       d.phase4FilterMeasurements(parseMeasurementFilters(designElement), true);
 
-    d.phase5Select(parseSelectWeights(designElement));
+    if (!d.isSkipPhase5())
+      d.phase5Select(parseSelector(designElement),
+          parseSelectWeights(designElement));
   }
 
   private String getValue(final Iterator i) {
@@ -305,8 +297,7 @@ public class Main {
 
     final File genomeFile = this.design.getGenomeFile();
     final File outputDir = this.design.getOutputDir();
-    final int windowSize = this.design.getWindowLength();
-    final int oligoSize = this.design.getOligoLength();
+    final int oligoLength = this.design.getOligoLength();
 
     // Set the initialization parameter of the sequence filters
     for (SequenceFilter sq : list) {
@@ -316,10 +307,8 @@ public class Main {
           .getAbsolutePath());
       sq.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
           .getAbsolutePath());
-      sq.setInitParameter(Design.WINDOW_SIZE_PARAMETER_NAME, Integer
-          .toString(windowSize));
       sq.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
-          .toString(oligoSize));
+          .toString(oligoLength));
       sq.setInitParameter(Design.EXTENSION_FILTER_PARAMETER_NAME,
           Design.OLIGO_SUFFIX);
       sq.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
@@ -402,8 +391,7 @@ public class Main {
 
     final File genomeFile = this.design.getGenomeFile();
     final File outputDir = this.design.getOutputDir();
-    final int windowSize = this.design.getWindowLength();
-    final int oligoSize = this.design.getOligoLength();
+    final int oligoLength = this.design.getOligoLength();
 
     // Set the initialization parameters of the measurements
     for (Measurement m : list) {
@@ -414,10 +402,8 @@ public class Main {
           .getAbsolutePath());
       m.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
           .getAbsolutePath());
-      m.setInitParameter(Design.WINDOW_SIZE_PARAMETER_NAME, Integer
-          .toString(windowSize));
       m.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
-          .toString(oligoSize));
+          .toString(oligoLength));
       m.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
           .toString(this.design.isStart1()));
     }
@@ -487,8 +473,7 @@ public class Main {
 
     final File genomeFile = this.design.getGenomeFile();
     final File outputDir = this.design.getOutputDir();
-    final int windowSize = this.design.getWindowLength();
-    final int oligoSize = this.design.getOligoLength();
+    final int oligoLength = this.design.getOligoLength();
 
     // Set the initialization parameters of the measurements filters
     for (MeasurementFilter mf : list) {
@@ -498,15 +483,77 @@ public class Main {
           .getAbsolutePath());
       mf.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
           .getAbsolutePath());
-      mf.setInitParameter(Design.WINDOW_SIZE_PARAMETER_NAME, Integer
-          .toString(windowSize));
       mf.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
-          .toString(oligoSize));
+          .toString(oligoLength));
       mf.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
           .toString(this.design.isStart1()));
     }
 
     return list;
+  }
+
+  /**
+   * Parse the "selector" element of the DOM.
+   * @param rootElement root element of the document
+   * @return a selector objects
+   * @throws TeolennException if an error occurs while parsing
+   */
+  private SequenceSelector parseSelector(final Element rootElement)
+      throws TeolennException {
+
+    for (Iterator i = rootElement.elementIterator("selector"); i.hasNext();) {
+
+      final Element selector = (Element) i.next();
+
+      String selectorName = null;
+
+      for (Iterator i1 = selector.elementIterator("name"); i1.hasNext();) {
+        final Element name = (Element) i1.next();
+        selectorName = name.getTextTrim();
+      }
+
+      // Add the selector to registery if it is a plug in
+      for (Iterator i2 = selector.elementIterator("class"); i2.hasNext();) {
+        final Element clazz = (Element) i2.next();
+        String selectorClass = clazz.getTextTrim();
+        SequenceSelectorRegistery.addSequenceSelectorType(selectorName,
+            selectorClass);
+      }
+
+      // Get the parameters of the measurement
+      final Properties properties = getElementParameters(selector);
+
+      SequenceSelector s =
+          SequenceSelectorRegistery.getSequenceSelector(selectorName);
+
+      if (s == null) {
+        logger.warning("Unknown selector: " + selectorName);
+        throw new TeolennException("Unknown selector: " + selectorName);
+      }
+
+      // Set the initialization parameters for the selector
+      for (Map.Entry<Object, Object> entry : properties.entrySet())
+        s.setInitParameter((String) entry.getKey(), (String) entry.getValue());
+
+      final File genomeFile = this.design.getGenomeFile();
+      final File outputDir = this.design.getOutputDir();
+      final int oligolength = this.design.getOligoLength();
+
+      s.setInitParameter(Design.GENOME_FILE_PARAMETER_NAME, genomeFile
+          .getAbsolutePath());
+      s.setInitParameter(Design.GENOME_MASKED_FILE_PARAMETER_NAME, genomeFile
+          .getAbsolutePath());
+      s.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
+          .getAbsolutePath());
+      s.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
+          .toString(oligolength));
+      s.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
+          .toString(this.design.isStart1()));
+
+      return s;
+    }
+
+    throw new TeolennException("No selector found.");
   }
 
   /**
@@ -525,7 +572,7 @@ public class Main {
     final Map<String, Properties> selectProperties =
         new HashMap<String, Properties>();
 
-    for (Iterator i = rootElement.elementIterator("select"); i.hasNext();) {
+    for (Iterator i = rootElement.elementIterator("selector"); i.hasNext();) {
       final Element select = (Element) i.next();
 
       for (Iterator i2 = select.elementIterator("measurement"); i2.hasNext();) {
@@ -617,16 +664,12 @@ public class Main {
           final Element value = (Element) i7.next();
           pValue = value.getTextTrim();
 
-          if ("${windowlength}".equals(pValue))
-            pValue = Integer.toString(this.design.getWindowLength());
-          else if ("${genomefile}".equals(pValue))
+          if ("${genomefile}".equals(pValue))
             pValue = this.design.getGenomeFile().getAbsolutePath();
           else if ("${genomemaskedfile}".equals(pValue))
             pValue = this.design.getGenomeMaskedFile().getAbsolutePath();
           else if ("${oligolength}".equals(pValue))
             pValue = Integer.toString(this.design.getOligoLength());
-          else if ("${windowstep}".equals(pValue))
-            pValue = Integer.toString(this.design.getWindowStep());
 
           pValue = getValue(pValue);
         }
@@ -690,7 +733,11 @@ public class Main {
     for (Iterator i = rootElement.elementIterator(elementName); i.hasNext();) {
       final Element e = (Element) i.next();
 
-      result = Boolean.parseBoolean(e.attributeValue("skip").trim());
+      final String value = e.attributeValue("skip");
+      if (value == null)
+        return false;
+
+      result = Boolean.parseBoolean(value.trim());
     }
 
     return result;

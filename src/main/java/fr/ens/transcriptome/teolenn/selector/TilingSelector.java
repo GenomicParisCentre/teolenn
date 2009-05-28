@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Design;
 import fr.ens.transcriptome.teolenn.Globals;
+import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
@@ -39,8 +40,8 @@ public class TilingSelector extends SimpleSelector {
 
   private boolean start1;
   private int oligoLength;
-  private int windowLength;
-  private int windowStep;
+  private int windowLength = -1;
+  private int windowStep = -1;
 
   /**
    * Set a parameter for the filter.
@@ -55,16 +56,24 @@ public class TilingSelector extends SimpleSelector {
     else if (Design.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
       this.oligoLength = Integer.parseInt(value.trim());
 
-    else if ("_windowLength".equals(key))
+    else if ("windowLength".equals(key))
       this.windowLength = Integer.parseInt(value.trim());
 
-    else if ("_windowStep".equals(key))
+    else if ("windowStep".equals(key))
       this.windowStep = Integer.parseInt(value.trim());
 
     super.setInitParameter(key, value);
   }
 
-  public void init() throws IOException {
+  public void init() throws TeolennException {
+
+    if (this.windowLength < 1)
+      throw new TeolennException("Invalid window length: " + this.windowLength);
+
+    if (this.windowStep == -1)
+      this.windowStep = this.windowLength;
+    else if (this.windowStep < 1)
+      throw new TeolennException("Invalid window step: " + this.windowStep);
 
     addMeasurement(new PositionMeasurement(this.start1, this.oligoLength,
         this.windowLength));

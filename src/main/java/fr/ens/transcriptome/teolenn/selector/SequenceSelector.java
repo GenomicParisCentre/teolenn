@@ -22,8 +22,6 @@
 
 package fr.ens.transcriptome.teolenn.selector;
 
-import java.io.IOException;
-
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
@@ -44,9 +42,9 @@ public interface SequenceSelector {
 
   /**
    * Run the initialization phase of the parameter.
-   * @throws IOException if an error occurs while the initialization phase
+   * @throws TeolennException if an error occurs while the initialization phase
    */
-  void init() throws IOException;
+  void init() throws TeolennException;
 
   /**
    * Proceed to the oligo selection.
