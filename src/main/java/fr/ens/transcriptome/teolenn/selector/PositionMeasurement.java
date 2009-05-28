@@ -20,62 +20,61 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.measurement;
+package fr.ens.transcriptome.teolenn.selector;
 
 import fr.ens.transcriptome.teolenn.Design;
-import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
  * This class define a measurement that returns
  * @author Stéphane Le Crom
  * @author Laurent Jourdren
  */
-public final class PositionMeasurement extends SimpleMeasurement {
+public final class PositionMeasurement extends SimpleSelectorMeasurement {
 
   /** Measurement name. */
   public static final String MEASUREMENT_NAME = "Position";
 
-  private int windowSize = -1;
+  private boolean start1;
+  private int windowLength = -1;
   private int windowBestPosition;
   private boolean first = true;
-  private int startOffset;
+
+  private int oligoLength;
 
   /**
    * Calc the measurement of a sequence.
-   * @param sequence the sequence to use for the measurement
+   * @param chromosome the chromosome of sequence to use for the measurement
+   * @param startPos the start position of sequence to use for the measurement
    * @return an object as result
    */
-  public Object calcMesurement(final Sequence sequence) {
+  public Object calcMesurement(final String chromosome, final int startPos) {
 
-    if (this.windowSize == -1)
+    if (this.windowLength == -1)
       throw new RuntimeException("Window size is undefined.");
-
-    String seqName = sequence.getName();
-
-    final int startPos = seqName.indexOf(":subseq(");
-    final int endPos1 = seqName.indexOf(",", startPos);
-
-    final int seqStart =
-        Integer.parseInt(seqName.substring(startPos + 8, endPos1));
 
     if (this.first) {
 
-      final int endPos2 = seqName.indexOf(")", startPos);
-      final int len = Integer.parseInt(seqName.substring(endPos1 + 1, endPos2));
-
       this.windowBestPosition =
-          (int) Math.ceil(((this.windowSize - len) / 2.0f));
+          (int) Math.ceil(((this.windowLength - this.oligoLength) / 2.0f));
 
       this.first = false;
     }
 
+    // The first pos for the sequence for computation is always 0
+    final int internalStartPos;
+    if (this.start1)
+      internalStartPos = startPos - 1;
+    else
+      internalStartPos = startPos;
+
     final int windowStart =
-        (int) (Math.floor((float) seqStart / (float) this.windowSize)
-            * this.windowSize + this.startOffset);
-    final int oligo2Window = seqStart - windowStart;
+        (int) (Math.floor((float) internalStartPos / (float) this.windowLength)
+            * this.windowLength - 1);
+
+    final int oligo2Window = internalStartPos - windowStart;
 
     final float result =
-        1 - (Math.abs(this.windowBestPosition - oligo2Window) / ((float) this.windowSize - (float) this.windowBestPosition));
+        1 - (Math.abs(this.windowBestPosition - oligo2Window) / ((float) this.windowLength - (float) this.windowBestPosition));
 
     return result;
   }
@@ -137,15 +136,13 @@ public final class PositionMeasurement extends SimpleMeasurement {
    */
   public void setInitParameter(final String key, final String value) {
 
-    if (Design.START_1_PARAMETER_NAME.equals(key)) {
+    if (Design.START_1_PARAMETER_NAME.equals(key))
+      this.start1 = Boolean.parseBoolean(value);
 
-      final boolean start1 = Boolean.parseBoolean(value);
-      if (start1)
-        this.startOffset = 0;
-      else
-        this.startOffset = -1;
-    } else if (Design.WINDOW_SIZE_PARAMETER_NAME.equals(key))
-      this.windowSize = Integer.parseInt(value);
+    else if (Design.WINDOW_SIZE_PARAMETER_NAME.equals(key))
+      this.windowLength = Integer.parseInt(value);
+    else if (Design.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
+      this.oligoLength = Integer.parseInt(value);
 
   }
 
@@ -167,11 +164,19 @@ public final class PositionMeasurement extends SimpleMeasurement {
 
   /**
    * Public constructor.
+   * @param start1 true if the position of the first base of the sequence is 1
+   * @param oligoLength The length of the oligos
    * @param windowSize The size of the window
    */
-  public PositionMeasurement(final int windowSize) {
+  public PositionMeasurement(final boolean start1, final int oligoLength,
+      final int windowSize) {
 
-    this.windowSize = windowSize;
+    System.out.println("start1=" + start1);
+    System.out.println("oligoLength=" + oligoLength);
+    System.out.println("windowSize=" + oligoLength);
+
+    this.start1 = start1;
+    this.oligoLength = oligoLength;
+    this.windowLength = windowSize;
   }
-
 }

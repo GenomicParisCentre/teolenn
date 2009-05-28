@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Globals;
+import fr.ens.transcriptome.teolenn.selector.PositionMeasurement;
 
 /**
  * This class define a registery that contains the list of available
@@ -157,8 +158,6 @@ public class MeasurementRegistery {
         OligoSequenceMeasurement.class);
     addMeasurementType(OligoStartMeasurement.MEASUREMENT_NAME,
         OligoStartMeasurement.class);
-    addMeasurementType(PositionMeasurement.MEASUREMENT_NAME,
-        PositionMeasurement.class);
     addMeasurementType(TmMeasurement.MEASUREMENT_NAME, TmMeasurement.class);
     addMeasurementType(UnicityMeasurement.MEASUREMENT_NAME,
         UnicityMeasurement.class);

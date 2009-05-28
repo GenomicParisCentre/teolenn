@@ -27,7 +27,9 @@ import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Design;
 import fr.ens.transcriptome.teolenn.Globals;
+import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
+import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
 public class TilingSelector extends SimpleSelector {
@@ -36,6 +38,7 @@ public class TilingSelector extends SimpleSelector {
   private static final float MIN_SCORE = -1 * Float.MAX_VALUE;
 
   private boolean start1;
+  private int oligoLength;
   private int windowLength;
   private int windowStep;
 
@@ -49,6 +52,9 @@ public class TilingSelector extends SimpleSelector {
     if (Design.START_1_PARAMETER_NAME.equals(key))
       this.start1 = Boolean.parseBoolean(value);
 
+    else if (Design.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
+      this.oligoLength = Integer.parseInt(value.trim());
+
     else if ("_windowLength".equals(key))
       this.windowLength = Integer.parseInt(value.trim());
 
@@ -59,6 +65,10 @@ public class TilingSelector extends SimpleSelector {
   }
 
   public void init() throws IOException {
+
+    addMeasurement(new PositionMeasurement(this.start1, this.oligoLength,
+        this.windowLength));
+    addMeasurement(new TilingZoneMeasurement());
   }
 
   public void doSelection() throws IOException {
@@ -66,6 +76,7 @@ public class TilingSelector extends SimpleSelector {
     boolean first = true;
     int indexScaffold = -1;
     int indexStartPosition = -1;
+    int indexTilingZoneMeasurement = -1;
 
     String currentScafold = null;
     int infoLastIndexStartPosition = -1;
@@ -73,8 +84,9 @@ public class TilingSelector extends SimpleSelector {
     int infoCountSelectedOligos = 0;
 
     final int windowLength = this.windowLength;
-    int endWindow = windowLength + (start1 ? 1 : 0);
+    int endWindow = windowLength - 1 + (start1 ? 1 : 0);
     int startWindow = start1 ? 1 : 0;
+    String tilingZone = "[" + startWindow + "-" + endWindow + "]";
 
     float bestScore = MIN_SCORE;
     float nextBestScore = MIN_SCORE;
@@ -93,8 +105,12 @@ public class TilingSelector extends SimpleSelector {
 
       if (first) {
 
-        indexScaffold = sm.getIndexMeasurment("chromosome");
-        indexStartPosition = sm.getIndexMeasurment("oligostart");
+        indexScaffold =
+            sm.getIndexMeasurment(ChromosomeMeasurement.MEASUREMENT_NAME);
+        indexStartPosition =
+            sm.getIndexMeasurment(OligoStartMeasurement.MEASUREMENT_NAME);
+        indexTilingZoneMeasurement =
+            sm.getIndexMeasurment(TilingZoneMeasurement.MEASUREMENT_NAME);
         values = sm.getArrayMeasurementValues();
 
         for (Measurement m : sm.getMeasurements()) {
@@ -115,10 +131,6 @@ public class TilingSelector extends SimpleSelector {
       final int pos = (Integer) values[indexStartPosition];
 
       final int id = sm.getId();
-
-      // System.out.println("id="
-      // + id + "\tpos=" + pos + "\t" + endWindow + "\tbest=" + bestScore
-      // + "\t" + MIN_SCORE + "\tlastSelected=" + lastSelected);
 
       if (currentScafold == null)
         currentScafold = chromosome;
@@ -152,7 +164,7 @@ public class TilingSelector extends SimpleSelector {
         infoCountSelectedOligos = 0;
 
         currentScafold = chromosome;
-        endWindow = windowLength + (start1 ? 1 : 0);
+        endWindow = windowLength - 1 + (start1 ? 1 : 0);
         startWindow = start1 ? 1 : 0;
         infoCountWindows = 1;
 
@@ -161,6 +173,7 @@ public class TilingSelector extends SimpleSelector {
           endWindow += windowStep;
           infoCountWindows++;
         }
+        tilingZone = "[" + startWindow + "-" + endWindow + "]";
 
         bestScore = MIN_SCORE;
         nextBestScore = MIN_SCORE;
@@ -190,6 +203,7 @@ public class TilingSelector extends SimpleSelector {
           endWindow += windowStep;
           infoCountWindows++;
         }
+        tilingZone = "[" + startWindow + "-" + endWindow + "]";
 
         // Test if the best score is also the best score for next window
         if (endWindow - windowStep == previousEndWindow) {
@@ -211,6 +225,7 @@ public class TilingSelector extends SimpleSelector {
 
         bestScore = score;
         smToWrite.setId(id);
+        values[indexTilingZoneMeasurement] = tilingZone;
 
         // Add the global score
         final Object[] valuesToWrite = new Object[valuesLength];
@@ -232,6 +247,8 @@ public class TilingSelector extends SimpleSelector {
           nextSmToWrite.setArrayMeasurementValues(smToWrite
               .getArrayMeasurementValues());
         } else {
+
+          values[indexTilingZoneMeasurement] = tilingZone;
 
           // Add the global score
           final Object[] valuesToWrite = new Object[valuesLength];

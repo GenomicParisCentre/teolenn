@@ -706,6 +706,7 @@ public class Design {
     }
 
     SequenceSelector selector = new TilingSelector();
+    selector.setInitParameter(Design.START_1_PARAMETER_NAME, "" + isStart1());
     selector.setInitParameter(MEASUREMENT_FILE_PARAMETER_NAME,
         oligoMeasurementsFile.getAbsolutePath());
     selector.setInitParameter(FILTERED_MEASUREMENT_FILE_PARAMETER_NAME,
@@ -714,7 +715,10 @@ public class Design {
         .getAbsolutePath());
     selector.setInitParameter(SELECTED_FILE_PARAMETER_NAME, selectedOligos
         .getAbsolutePath());
-    selector.setInitParameter("_windowlength", "" + this.windowLength);
+
+    selector.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, ""
+        + getOligoLength());
+    selector.setInitParameter("_windowLength", "" + this.windowLength);
     selector.setInitParameter("_windowStep", "" + this.windowStep);
 
     try {
