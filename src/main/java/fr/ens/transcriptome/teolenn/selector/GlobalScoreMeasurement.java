@@ -31,6 +31,9 @@ import fr.ens.transcriptome.teolenn.TeolennException;
  */
 public class GlobalScoreMeasurement extends SimpleSelectorMeasurement {
 
+  /** Measurement name. */
+  public static final String MEASUREMENT_NAME = "GlobalScore";
+  
   /**
    * Calc the measurement of a sequence.
    * @param chromosome the chromosome of sequence to use for the measurement
@@ -54,7 +57,7 @@ public class GlobalScoreMeasurement extends SimpleSelectorMeasurement {
    * @return the name of the measurement
    */
   public String getName() {
-    return "GlobalScore";
+    return MEASUREMENT_NAME;
   }
 
   /**
