@@ -74,9 +74,9 @@ public class MeasurementFilterRegistery {
     } catch (ClassNotFoundException e) {
 
       logger.severe("Cannot find "
-          + className + " for " + name + " measurement addon");
+          + className + " for " + name + " measurement filter addon");
       throw new RuntimeException("Cannot find "
-          + className + " for " + name + " measurement addon");
+          + className + " for " + name + " measurement filter addon");
 
     }
   }
