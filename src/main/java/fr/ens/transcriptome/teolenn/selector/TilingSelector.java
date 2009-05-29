@@ -82,6 +82,11 @@ public class TilingSelector extends SimpleSelector {
 
   public void doSelection() throws IOException {
 
+    logger.info("TilingSelector, windowLength=" + this.windowLength);
+    logger.info("TilingSelector, windowStep=" + this.windowStep);
+    logger.finest("TilingSelector, start1=" + this.start1);
+    logger.finest("TilingSelector, oligoLength=" + this.oligoLength);
+
     boolean first = true;
     int indexScaffold = -1;
     int indexStartPosition = -1;
