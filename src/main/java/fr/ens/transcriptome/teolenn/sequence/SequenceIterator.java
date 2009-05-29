@@ -37,7 +37,8 @@ import fr.ens.transcriptome.teolenn.util.FileUtils;
 public class SequenceIterator extends Sequence {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
-  
+
+  private File inputFile;
   private final StringBuilder sequence = new StringBuilder();
   private final BufferedReader br;
   private String nextSequenceName;
@@ -82,8 +83,10 @@ public class SequenceIterator extends Sequence {
 
     } catch (IOException e) {
 
-      System.err.println(e.getMessage());
-      logger.severe(e.getMessage());
+      System.err.println("Error while reading fasta file ("
+          + inputFile + "): " + e.getMessage());
+      logger.severe("Error while reading fasta file ("
+          + inputFile + "): " + e.getMessage());
       return null;
     }
 
@@ -113,9 +116,18 @@ public class SequenceIterator extends Sequence {
    */
   public SequenceIterator(final File inputFile) throws IOException {
 
+    this.inputFile = inputFile;
     this.br = FileUtils.createBufferedReader(inputFile);
 
-    this.nextSequenceName = extractSequenceName(br.readLine());
+    try {
+      this.nextSequenceName = extractSequenceName(br.readLine());
+    } catch (IOException e) {
+      System.err.println("Error while reading first line of the fasta file ("
+          + inputFile + "): " + e.getMessage());
+      throw new IOException(
+          "Error while reading first line of the fasta file ("
+              + inputFile + "): " + e.getMessage());
+    }
   }
 
 }
