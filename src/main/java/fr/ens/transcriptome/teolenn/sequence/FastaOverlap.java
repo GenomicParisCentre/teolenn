@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Globals;
@@ -55,9 +57,11 @@ public class FastaOverlap {
    * @param start1 true if the first position on sequence is 1
    * @throws IOException if an error occurs while executing fastaoverlap
    */
-  public static final void fastaOverlap(final File inputFile,
+  public static final Map<String, Integer> fastaOverlap(final File inputFile,
       final File outputDir, final String extension, final int windowSize,
       final boolean start1) throws IOException {
+
+    final Map<String, Integer> result = new HashMap<String, Integer>();
 
     BufferedReader br = null;
     try {
@@ -76,6 +80,7 @@ public class FastaOverlap {
     Writer os = null;
 
     int countInternal = 0;
+    int count = 0;
 
     final StringBuilder subSeq = new StringBuilder(windowSize);
 
@@ -92,7 +97,9 @@ public class FastaOverlap {
         if (!first) {
 
           writeAllSubSeq(subSeq, os, offset, windowSize, headerOutput, true);
+          result.put(outputFilename, count);
 
+          count = 0;
           offset = firstPosition;
           countInternal = subSeq.length();
         } else
@@ -117,6 +124,7 @@ public class FastaOverlap {
 
         subSeq.append(line);
         countInternal += lineLength;
+        count += lineLength;
 
         if (countInternal > windowSize) {
 
@@ -131,8 +139,10 @@ public class FastaOverlap {
     }
 
     writeAllSubSeq(subSeq, os, offset, windowSize, headerOutput, true);
-
+    result.put(outputFilename, count);
     br.close();
+
+    return result;
   }
 
   private static final int writeAllSubSeq(final StringBuilder sb,

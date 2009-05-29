@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
@@ -525,21 +526,69 @@ public class Design {
    * In this phase, create all the oligos.
    * @throws IOException if an error occurs while creating all oligos
    */
-  public void phase1CreateAllOligos() throws IOException {
+  public void phase1CreateAllOligos() throws TeolennException {
 
     if (isSkipPhase1())
       return;
 
     logStartPhase("create oligos");
 
-    FastaOverlap.fastaOverlap(this.genomeFile, outputDir, Design.OLIGO_SUFFIX,
-        this.oligoLength, isStart1());
+    Map<String, Integer> chrOligo = null;
+    Map<String, Integer> chrMasked = null;
+
+    try {
+      chrOligo =
+          FastaOverlap.fastaOverlap(this.genomeFile, outputDir,
+              Design.OLIGO_SUFFIX, this.oligoLength, isStart1());
+
+      if (isGenomeMaskedFile())
+        chrMasked =
+            FastaOverlap.fastaOverlap(this.genomeMaskedFile, outputDir,
+                Design.OLIGO_MASKED_SUFFIX, this.oligoLength, isStart1());
+    } catch (IOException e) {
+      throw new TeolennException(e);
+    }
 
     if (isGenomeMaskedFile())
-      FastaOverlap.fastaOverlap(this.genomeMaskedFile, outputDir,
-          Design.OLIGO_MASKED_SUFFIX, this.oligoLength, isStart1());
+      verifyChromosomeLengths(chrOligo, chrMasked);
 
     logEndPhase("create oligos");
+  }
+
+  /**
+   * Verify that the names and the length of the chromosomes are the same in the
+   * maked genome and the non masked genome.
+   * @param chrOligo map with values for non maked genome
+   * @param chrMasked map with values for non maked genome
+   * @throws TeolennException if the name, the number or the length of the
+   *           chromosomes are not the same
+   */
+  private void verifyChromosomeLengths(final Map<String, Integer> chrOligo,
+      final Map<String, Integer> chrMasked) throws TeolennException {
+
+    if (chrOligo == null)
+      throw new TeolennException("chrOligo is null");
+    if (chrMasked == null)
+      throw new TeolennException("chrOligo is null");
+
+    if (chrOligo.size() != chrMasked.size())
+      throw new TeolennException(
+          "The number of chromosomes in sequences masked and non masked are not the same.");
+
+    for (Map.Entry<String, Integer> e : chrOligo.entrySet()) {
+
+      final String key = e.getKey();
+
+      if (!chrMasked.containsKey(key))
+        throw new TeolennException("Unknown masked chromosome: " + key);
+      if (chrMasked.get(key).intValue() != e.getValue().intValue())
+        throw new TeolennException(
+            "The length of the "
+                + key
+                + " chromosome is not the same in masked sequence masked and non masked : "
+                + e.getValue() + " bp / " + chrMasked.get(key) + " bp (masked)");
+    }
+
   }
 
   /**
