@@ -73,7 +73,8 @@ public class BinariesInstaller {
     is.close();
     fos.close();
 
-    FileUtils.setExecutable(outputFile, true);
+    FileUtils.setExecutable(outputFile, false);
+    FileUtils.setReadable(outputFile, false);    
   }
 
   /**
