@@ -22,6 +22,7 @@
 
 package fr.ens.transcriptome.teolenn.selector;
 
+import fr.ens.transcriptome.teolenn.Module;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
@@ -31,20 +32,7 @@ import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
  * This interface define a Sequence selector.
  * @author Laurent Jourdren
  */
-public interface SequenceSelector {
-
-  /**
-   * Set a parameter for the filter.
-   * @param key key for the parameter
-   * @param value value of the parameter
-   */
-  void setInitParameter(String key, String value);
-
-  /**
-   * Run the initialization phase of the parameter.
-   * @throws TeolennException if an error occurs while the initialization phase
-   */
-  void init() throws TeolennException;
+public interface SequenceSelector extends Module {
 
   /**
    * Proceed to the oligo selection.

@@ -36,6 +36,10 @@ import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 public class TilingSelector extends SimpleSelector {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
+
+  /** Selector name. */
+  public static final String SELECTOR_NAME = "tiling";
+
   private static final float MIN_SCORE = -1 * Float.MAX_VALUE;
 
   private boolean start1;
@@ -44,7 +48,25 @@ public class TilingSelector extends SimpleSelector {
   private int windowStep = -1;
 
   /**
-   * Set a parameter for the filter.
+   * Get the name of the selector.
+   * @return the name of the selector
+   */
+  public String getName() {
+
+    return SELECTOR_NAME;
+  }
+
+  /**
+   * Get the description of the selector.
+   * @return the description of the selector
+   */
+  public String getDescription() {
+
+    return "A Selector for tiling design";
+  }
+
+  /**
+   * Set a parameter for the selector.
    * @param key key for the parameter
    * @param value value of the parameter
    */

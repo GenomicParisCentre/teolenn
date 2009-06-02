@@ -137,7 +137,7 @@ public class SequenceSelectorRegistery {
 
   static {
 
-    addSequenceSelectorType("tiling", TilingSelector.class);
+    addSequenceSelectorType(, TilingSelector.class);
   }
 
 }
