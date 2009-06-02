@@ -309,25 +309,9 @@ public class Main {
 
     }
 
-    final File genomeFile = this.design.getGenomeFile();
-    final File outputDir = this.design.getOutputDir();
-    final int oligoLength = this.design.getOligoLength();
-
-    // Set the initialization parameter of the sequence filters
-    for (SequenceFilter sq : list) {
-      sq.setInitParameter(Design.GENOME_FILE_PARAMETER_NAME, genomeFile
-          .getAbsolutePath());
-      sq.setInitParameter(Design.GENOME_MASKED_FILE_PARAMETER_NAME, genomeFile
-          .getAbsolutePath());
-      sq.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
-          .getAbsolutePath());
-      sq.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
-          .toString(oligoLength));
-      sq.setInitParameter(Design.EXTENSION_FILTER_PARAMETER_NAME,
-          Design.OLIGO_SUFFIX);
-      sq.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
-          .toString(this.design.isStart1()));
-    }
+    // Set the defaults initialization parameters of the sequence filters
+    for (SequenceFilter sq : list)
+      this.design.setDefaultModuleInitParameters(sq);
 
     return list;
   }
@@ -403,24 +387,9 @@ public class Main {
 
     }
 
-    final File genomeFile = this.design.getGenomeFile();
-    final File outputDir = this.design.getOutputDir();
-    final int oligoLength = this.design.getOligoLength();
-
-    // Set the initialization parameters of the measurements
-    for (Measurement m : list) {
-
-      m.setInitParameter(Design.GENOME_FILE_PARAMETER_NAME, genomeFile
-          .getAbsolutePath());
-      m.setInitParameter(Design.GENOME_MASKED_FILE_PARAMETER_NAME, genomeFile
-          .getAbsolutePath());
-      m.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
-          .getAbsolutePath());
-      m.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
-          .toString(oligoLength));
-      m.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
-          .toString(this.design.isStart1()));
-    }
+    // Set the default initialization parameters of the measurements
+    for (Measurement m : list)
+      this.design.setDefaultModuleInitParameters(m);
 
     return list;
   }
@@ -485,23 +454,9 @@ public class Main {
 
     }
 
-    final File genomeFile = this.design.getGenomeFile();
-    final File outputDir = this.design.getOutputDir();
-    final int oligoLength = this.design.getOligoLength();
-
-    // Set the initialization parameters of the measurements filters
-    for (MeasurementFilter mf : list) {
-      mf.setInitParameter(Design.GENOME_FILE_PARAMETER_NAME, genomeFile
-          .getAbsolutePath());
-      mf.setInitParameter(Design.GENOME_MASKED_FILE_PARAMETER_NAME, genomeFile
-          .getAbsolutePath());
-      mf.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
-          .getAbsolutePath());
-      mf.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
-          .toString(oligoLength));
-      mf.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
-          .toString(this.design.isStart1()));
-    }
+    // Set the defaults initialization parameters of the measurements filters
+    for (MeasurementFilter mf : list)
+      this.design.setDefaultModuleInitParameters(mf);
 
     return list;
   }
@@ -549,20 +504,8 @@ public class Main {
       for (Map.Entry<Object, Object> entry : properties.entrySet())
         s.setInitParameter((String) entry.getKey(), (String) entry.getValue());
 
-      final File genomeFile = this.design.getGenomeFile();
-      final File outputDir = this.design.getOutputDir();
-      final int oligolength = this.design.getOligoLength();
-
-      s.setInitParameter(Design.GENOME_FILE_PARAMETER_NAME, genomeFile
-          .getAbsolutePath());
-      s.setInitParameter(Design.GENOME_MASKED_FILE_PARAMETER_NAME, genomeFile
-          .getAbsolutePath());
-      s.setInitParameter(Design.OUTPUT_DIR_PARAMETER_NAME, outputDir
-          .getAbsolutePath());
-      s.setInitParameter(Design.OLIGO_LENGTH_PARAMETER_NAME, Integer
-          .toString(oligolength));
-      s.setInitParameter(Design.START_1_PARAMETER_NAME, Boolean
-          .toString(this.design.isStart1()));
+      // Set defaults parameters
+      this.design.setDefaultModuleInitParameters(s);
 
       return s;
     }
@@ -679,7 +622,7 @@ public class Main {
           System.out.println(value.getTextTrim());
           pValue = getValue(value.getTextTrim());
         }
-        
+
         if (pKey != null && pValue != null)
           result.setProperty(pKey, pValue);
       }

@@ -63,10 +63,12 @@ public class RedundancyFilter implements SequenceFilter {
   private File referenceFile;
   private File[] oligosFiles;
 
-  private File baseDir;
+  private File oligosDir;
+  private File tempDir;
   private BufferedReader br;
   private String currentChr;
   private int startOffset;
+  private String extensionFilter;
 
   // Soap results for current chromosome
   private final Map<Integer, Integer> currentChrResult =
@@ -93,7 +95,7 @@ public class RedundancyFilter implements SequenceFilter {
 
     return "Filter the redundancy of oligos using SOAP";
   }
-  
+
   /**
    * Tests whether or not the specified sequence should be accepted.
    * @param sequence Sequence to test
@@ -150,7 +152,7 @@ public class RedundancyFilter implements SequenceFilter {
       this.br.close();
 
     this.br =
-        FileUtils.createBufferedReader(new File(this.baseDir, chrSequence
+        FileUtils.createBufferedReader(new File(this.tempDir, chrSequence
             .replace(' ', '_')
             + ".sop"));
 
@@ -213,7 +215,9 @@ public class RedundancyFilter implements SequenceFilter {
       final String oligoFile = oligosFiles[i].getAbsolutePath();
       fw.append(oligoFile);
       fw.append(" -o ");
-      fw.append(StringUtils.basename(oligoFile) + ".sop");
+      fw.append(this.tempDir.getAbsolutePath());
+      fw.append(File.separatorChar);
+      fw.append(StringUtils.basename(oligosFiles[i].getName()) + ".sop");
       fw.append(SOAP_ARGS + Settings.getMaxThreads());
       fw.append("\n");
 
@@ -236,24 +240,14 @@ public class RedundancyFilter implements SequenceFilter {
         this.startOffset = 0;
       else
         this.startOffset = -1;
-    }
-
-    if (Design.GENOME_FILE_PARAMETER_NAME.equals(key))
+    } else if (Design.GENOME_FILE_PARAMETER_NAME.equals(key))
       this.referenceFile = new File(value);
-
-    if (Design.OUTPUT_DIR_PARAMETER_NAME.equals(key))
-      this.baseDir = new File(value);
-
-    if (Design.EXTENSION_FILTER_PARAMETER_NAME.equals(key)) {
-
-      this.oligosFiles = this.baseDir.listFiles(new FilenameFilter() {
-
-        public boolean accept(File dir, String name) {
-
-          return name.endsWith(value);
-        }
-      });
-    }
+    else if (Design.TEMP_DIR_PARAMETER_NAME.equals(key))
+      this.tempDir = new File(value);
+    else if (Design.OLIGO_DIR_PARAMETER_NAME.equals(key))
+      this.oligosDir = new File(value);
+    else if (Design.EXTENSION_FILTER_PARAMETER_NAME.equals(key))
+      this.extensionFilter = value;
 
   }
 
@@ -262,6 +256,17 @@ public class RedundancyFilter implements SequenceFilter {
    * @throws TeolennException
    */
   public void init() throws TeolennException {
+
+    if (this.extensionFilter == null || "".equals(extensionFilter))
+      throw new TeolennException("No extension filter set.");
+
+    this.oligosFiles = this.oligosDir.listFiles(new FilenameFilter() {
+
+      public boolean accept(File dir, String name) {
+
+        return name.endsWith(extensionFilter);
+      }
+    });
 
     try {
 

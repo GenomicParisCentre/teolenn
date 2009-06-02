@@ -50,12 +50,12 @@ public class Design {
 
   private static final int OLIGO_LEN_DEFAULT = 60;
 
-  // private static final int UNICITY_MAX_PREFIX_LEN = 30;
-
   public static final String OLIGO_SUFFIX = ".oligo";
   public static final String OLIGO_MASKED_SUFFIX = ".masked";
   public static final String OLIGO_FILTERED_SUFFIX = ".filtered.oligo";
   public static final String OLIGO_MASKED_FILTERED_SUFFIX = ".filtered.masked";
+  public static final String OLIGO_SUBDIR = "oligos";
+  public static final String TEMP_SUBDIR = "tmp";
 
   private static final String OLIGO_MEASUREMENTS_FILE = "oligo.mes";
   private static final String OLIGO_MEASUREMENTS_FILTERED_FILE = "filtered.mes";
@@ -67,6 +67,9 @@ public class Design {
   public static final String GENOME_MASKED_FILE_PARAMETER_NAME =
       "_genomemaskedfile";
   public static final String OUTPUT_DIR_PARAMETER_NAME = "_outputdir";
+  public static final String OLIGO_DIR_PARAMETER_NAME = "_oligodir";
+  public static final String TEMP_DIR_PARAMETER_NAME = "_tempdir";
+
   public static final String OLIGO_LENGTH_PARAMETER_NAME = "_oligolength";
   public static final String START_1_PARAMETER_NAME = "_start1";
   public static final String EXTENSION_FILTER_PARAMETER_NAME =
@@ -84,6 +87,8 @@ public class Design {
   private File genomeFile;
   private File genomeMaskedFile;
   private File outputDir = (new File("")).getAbsoluteFile();
+  private File oligosDir;
+  private File tempDir;
   private boolean start1 = false;
 
   private boolean skipSequenceFilters;
@@ -120,6 +125,30 @@ public class Design {
    */
   public File getGenomeMaskedFile() {
     return genomeMaskedFile;
+  }
+
+  /**
+   * Get the output directory for oligos.
+   * @return the output directory for oligos
+   */
+  public File getOligosDir() {
+
+    if (this.oligosDir == null)
+      this.oligosDir = new File(getOutputDir(), OLIGO_SUBDIR);
+
+    return this.oligosDir;
+  }
+
+  /**
+   * Get the temporary directory.
+   * @return the temporary directory
+   */
+  public File getTempDir() {
+
+    if (this.tempDir == null)
+      this.tempDir = new File(getOutputDir(), TEMP_SUBDIR);
+
+    return this.tempDir;
   }
 
   /**
@@ -268,6 +297,32 @@ public class Design {
   //
   // Other methods
   //
+
+  /**
+   * Set the default values of the initialization parameters of a module.
+   * @param module Module which parameters must be set
+   */
+  public void setDefaultModuleInitParameters(final Module module) {
+
+    if (module == null)
+      return;
+
+    module.setInitParameter(GENOME_FILE_PARAMETER_NAME, getGenomeFile()
+        .getAbsolutePath());
+    module.setInitParameter(GENOME_MASKED_FILE_PARAMETER_NAME,
+        getGenomeMaskedFile().getAbsolutePath());
+    module.setInitParameter(OUTPUT_DIR_PARAMETER_NAME, getOutputDir()
+        .getAbsolutePath());
+    module.setInitParameter(OLIGO_LENGTH_PARAMETER_NAME, Integer
+        .toString(getOligoLength()));
+    module.setInitParameter(EXTENSION_FILTER_PARAMETER_NAME, OLIGO_SUFFIX);
+    module.setInitParameter(OLIGO_DIR_PARAMETER_NAME, getOligosDir()
+        .getAbsolutePath());
+    module.setInitParameter(TEMP_DIR_PARAMETER_NAME, getTempDir()
+        .getAbsolutePath());
+    module.setInitParameter(START_1_PARAMETER_NAME, Boolean
+        .toString(isStart1()));
+  }
 
   /**
    * Create a measurement file.
@@ -510,7 +565,7 @@ public class Design {
   /**
    * In this the initialization phase of the design.
    */
-  public void phase0() throws IOException {
+  public void phase0() throws TeolennException {
 
     logger.info("Java version: " + System.getProperty("java.version"));
     logger.info("Log level:" + logger.getLevel());
@@ -520,6 +575,10 @@ public class Design {
     logger.info("Output directory: " + this.outputDir);
 
     this.startTimeDesign = System.currentTimeMillis();
+
+    if (!getTempDir().exists())
+      if (!getTempDir().mkdirs())
+        throw new TeolennException("Unable to create temporary directory.");
   }
 
   /**
@@ -533,18 +592,22 @@ public class Design {
 
     logStartPhase("create oligos");
 
+    if (!getOligosDir().exists())
+      if (!getOligosDir().mkdirs())
+        throw new TeolennException("Unable to create oligos directory.");
+
     Map<String, Integer> chrOligo = null;
     Map<String, Integer> chrMasked = null;
 
     try {
       chrOligo =
-          FastaOverlap.fastaOverlap(this.genomeFile, outputDir,
-              Design.OLIGO_SUFFIX, this.oligoLength, isStart1());
+          FastaOverlap.fastaOverlap(getGenomeFile(), getOligosDir(),
+              Design.OLIGO_SUFFIX, getOligoLength(), isStart1());
 
       if (isGenomeMaskedFile())
         chrMasked =
-            FastaOverlap.fastaOverlap(this.genomeMaskedFile, outputDir,
-                Design.OLIGO_MASKED_SUFFIX, this.oligoLength, isStart1());
+            FastaOverlap.fastaOverlap(getGenomeMaskedFile(), getOligosDir(),
+                Design.OLIGO_MASKED_SUFFIX, getOligoLength(), isStart1());
     } catch (IOException e) {
       throw new TeolennException(e);
     }
@@ -610,7 +673,7 @@ public class Design {
 
     // Get the list of oligos files to process
     final File[] oligoFiles =
-        FileUtils.listFilesByExtension(this.outputDir, Design.OLIGO_SUFFIX);
+        FileUtils.listFilesByExtension(getOligosDir(), Design.OLIGO_SUFFIX);
     Arrays.sort(oligoFiles);
 
     try {
@@ -646,7 +709,7 @@ public class Design {
 
     // Get the list of filtered oligos files to process
     final File[] oligoFilteredFiles =
-        FileUtils.listFilesByExtension(this.outputDir, isSkipSequenceFilters()
+        FileUtils.listFilesByExtension(getOligosDir(), isSkipSequenceFilters()
             ? Design.OLIGO_SUFFIX : Design.OLIGO_FILTERED_SUFFIX);
     Arrays.sort(oligoFilteredFiles);
 
@@ -660,7 +723,8 @@ public class Design {
 
     // Calc oligos measurements
     try {
-      File oligoMeasurementsFile = new File(outputDir, OLIGO_MEASUREMENTS_FILE);
+      File oligoMeasurementsFile =
+          new File(getOutputDir(), OLIGO_MEASUREMENTS_FILE);
       Design.createMeasurementsFile(oligoFilteredFiles, oligoMeasurementsFile,
           listMeasurements, null);
     } catch (IOException e) {
@@ -692,9 +756,9 @@ public class Design {
       mf.init();
 
     final File filteredOligoMeasurementsFile =
-        new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_FILE);
+        new File(getOutputDir(), OLIGO_MEASUREMENTS_FILTERED_FILE);
     final File statsFile =
-        new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_STATS_FILE);
+        new File(getOutputDir(), OLIGO_MEASUREMENTS_FILTERED_STATS_FILE);
 
     Design.filterMeasurementsFile(new File(OLIGO_MEASUREMENTS_FILE),
         filteredOligoMeasurementsFile, overvriteStatFile ? statsFile : null,
@@ -715,12 +779,12 @@ public class Design {
     logStartPhase("select");
 
     final File oligoMeasurementsFile =
-        new File(this.outputDir, OLIGO_MEASUREMENTS_FILE);
+        new File(getOutputDir(), OLIGO_MEASUREMENTS_FILE);
     final File filteredOligoMeasurementsFile =
-        new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_FILE);
+        new File(getOutputDir(), OLIGO_MEASUREMENTS_FILTERED_FILE);
     final File statsFile =
-        new File(this.outputDir, OLIGO_MEASUREMENTS_FILTERED_STATS_FILE);
-    final File selectedOligos = new File(this.outputDir, SELECTED_FILE);
+        new File(getOutputDir(), OLIGO_MEASUREMENTS_FILTERED_STATS_FILE);
+    final File selectedOligos = new File(getOutputDir(), SELECTED_FILE);
 
     if (!statsFile.exists()) {
 

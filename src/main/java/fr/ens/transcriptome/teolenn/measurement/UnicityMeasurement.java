@@ -389,7 +389,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
       this.oligoLength = Integer.parseInt(value);
     else if (Design.GENOME_FILE_PARAMETER_NAME.equals(key))
       this.genomeFile = new File(value);
-    else if (Design.OUTPUT_DIR_PARAMETER_NAME.equals(key))
+    else if (Design.TEMP_DIR_PARAMETER_NAME.equals(key))
       this.baseDir = new File(value);
     else if ("maxprefixlength".equals(key))
       this.maxPrefixLength = Integer.parseInt(value);
