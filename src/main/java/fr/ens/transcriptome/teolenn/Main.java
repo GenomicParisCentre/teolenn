@@ -96,9 +96,6 @@ public class Main {
 
     Element root = document.getRootElement();
     Element designElement = root;
-    // root element
-    // for (Iterator i = root.elementIterator("design"); i.hasNext();) {
-    // final Element designElement = (Element) i.next();
 
     for (Iterator i1 = designElement.elementIterator("formatversion"); i1
         .hasNext();)
@@ -123,11 +120,13 @@ public class Main {
       else
         this.design.setStart1(false);
     }
+    setConstant("startPosition", "" + this.design.isStart1());
 
     // oligolength element
     for (Iterator i3 = designElement.elementIterator("oligolength"); i3
         .hasNext();)
       this.design.setOligoLength(Integer.parseInt(getValue(i3)));
+    setConstant("oligolength", "" + this.design.getOligoLength());
 
     // genomefile element
     if (genomeFile != null)
@@ -136,6 +135,8 @@ public class Main {
       for (Iterator i4 = designElement.elementIterator("genomefile"); i4
           .hasNext();)
         this.design.setGenomeFile(new File(getValue(i4)));
+    setConstant("genomefile", ""
+        + this.design.getGenomeFile().getAbsolutePath());
 
     // genomemakedfile element
     if (genomeMaskedFile != null)
@@ -147,6 +148,8 @@ public class Main {
         if (!"".equals(filename))
           this.design.setGenomeMaskedFile(new File(filename));
       }
+    setConstant("genomemaskedfile", ""
+        + this.design.getGenomeMaskedFile().getAbsolutePath());
 
     // outputdir element
     if (outputDir != null)
@@ -158,6 +161,7 @@ public class Main {
         if (!"".equals(path))
           this.design.setOutputDir((new File(path)).getCanonicalFile());
       }
+    setConstant("outputdir", "" + this.design.getOutputDir().getAbsolutePath());
 
     if (this.design.getGenomeFile() == null
         || !this.design.getGenomeFile().isFile())
@@ -209,6 +213,16 @@ public class Main {
     if (!d.isSkipPhase5())
       d.phase5Select(parseSelector(designElement),
           parseSelectWeights(designElement));
+  }
+
+  /**
+   * Set a constant.
+   * @param constantName Name of the constant
+   * @param constantValue Value of the constant
+   */
+  private void setConstant(final String constantName, final String constantValue) {
+
+    this.constants.setProperty(constantName, constantValue);
   }
 
   private String getValue(final Iterator i) {
@@ -662,19 +676,12 @@ public class Main {
 
         for (Iterator i7 = param.elementIterator("value"); i7.hasNext();) {
           final Element value = (Element) i7.next();
-          pValue = value.getTextTrim();
-
-          if ("${genomefile}".equals(pValue))
-            pValue = this.design.getGenomeFile().getAbsolutePath();
-          else if ("${genomemaskedfile}".equals(pValue))
-            pValue = this.design.getGenomeMaskedFile().getAbsolutePath();
-          else if ("${oligolength}".equals(pValue))
-            pValue = Integer.toString(this.design.getOligoLength());
-
-          pValue = getValue(pValue);
+          System.out.println(value.getTextTrim());
+          pValue = getValue(value.getTextTrim());
         }
-
-        result.setProperty(pKey, pValue);
+        
+        if (pKey != null && pValue != null)
+          result.setProperty(pKey, pValue);
       }
 
     }
@@ -711,7 +718,8 @@ public class Main {
 
         }
 
-        result.setProperty(pKey, pValue);
+        if (pKey != null || pValue != null)
+          result.setProperty(pKey, pValue);
       }
 
     }
