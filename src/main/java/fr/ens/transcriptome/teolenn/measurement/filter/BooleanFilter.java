@@ -42,6 +42,24 @@ public class BooleanFilter implements MeasurementFilter {
   private boolean acceptValue;
 
   /**
+   * Get the name of the filter.
+   * @return the name of the module
+   */
+  public String getName() {
+
+    return MEASUREMENT_FILTER_NAME;
+  }
+
+  /**
+   * Get the description of the filter.
+   * @return the description of the filter
+   */
+  public String getDescription() {
+
+    return "Filter boolean measurements";
+  }
+
+  /**
    * Filter a SequenceMeasurements.
    * @param sm SequenceMeasurements to test
    * @return true if the test allow to keep SequenceMeasurements values
@@ -82,7 +100,7 @@ public class BooleanFilter implements MeasurementFilter {
 
     if (this.field == null)
       throw new InvalidParameterException("The field value is unknown for "
-          + MEASUREMENT_FILTER_NAME+ " filter.");
+          + MEASUREMENT_FILTER_NAME + " filter.");
   }
 
   //

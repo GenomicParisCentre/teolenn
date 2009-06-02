@@ -22,6 +22,7 @@
 
 package fr.ens.transcriptome.teolenn.measurement.filter;
 
+import fr.ens.transcriptome.teolenn.Module;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
@@ -29,7 +30,7 @@ import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
  * This interface define filters on SequenceMeasurement.
  * @author Laurent Jourdren
  */
-public interface MeasurementFilter {
+public interface MeasurementFilter extends Module {
 
   /**
    * Filter a SequenceMeasurements.
@@ -39,18 +40,5 @@ public interface MeasurementFilter {
    *           SequenceMeasurement
    */
   boolean accept(SequenceMeasurements sm) throws TeolennException;
-
-  /**
-   * Set a parameter for the filter.
-   * @param key key for the parameter
-   * @param value value of the parameter
-   */
-  void setInitParameter(String key, String value);
-
-  /**
-   * Run the initialization phase of the parameter.
-   * @throws TeolennException if an error occurs while the initialization phase
-   */
-  void init() throws TeolennException;
 
 }

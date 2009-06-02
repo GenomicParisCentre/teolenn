@@ -33,7 +33,25 @@ public class SequenceNotATGCFilter implements SequenceFilter {
 
   /** Sequence filter name. */
   public static final String SEQUENCE_FILTER_NAME = "notatgc";
-  
+
+  /**
+   * Get the name of the filter.
+   * @return the name of the module
+   */
+  public String getName() {
+
+    return SEQUENCE_FILTER_NAME;
+  }
+
+  /**
+   * Get the description of the filter.
+   * @return the description of the filter
+   */
+  public String getDescription() {
+
+    return "Filter sequences that contains other character than 'A','a','T','t','G','g','C','c'";
+  }
+
   /**
    * Tests whether or not the specified sequence should be accepted.
    * @param sequence Sequence to test

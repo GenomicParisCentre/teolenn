@@ -20,22 +20,37 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.sequence.filter;
-
-import fr.ens.transcriptome.teolenn.Module;
-import fr.ens.transcriptome.teolenn.sequence.Sequence;
+package fr.ens.transcriptome.teolenn;
 
 /**
- * This interface define a sequence filter.
+ * This interface that define a Teolenn module.
  * @author Laurent Jourdren
  */
-public interface SequenceFilter extends Module {
+public interface Module {
 
   /**
-   * Tests whether or not the specified sequence should be accepted.
-   * @param sequence Sequence to test
-   * @return true if and only if the specified sequence should be accepted
+   * Get the name of the module.
+   * @return the name of the module
    */
-  boolean accept(Sequence sequence);
+  String getName();
+
+  /**
+   * Get the description of the module.
+   * @return the description of the module
+   */
+  String getDescription();
+
+  /**
+   * Set a parameter for the module.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  void setInitParameter(String key, String value);
+
+  /**
+   * Run the initialization phase of the module.
+   * @throws TeolennException if an error occurs while the initialization phase
+   */
+  void init() throws TeolennException;
 
 }

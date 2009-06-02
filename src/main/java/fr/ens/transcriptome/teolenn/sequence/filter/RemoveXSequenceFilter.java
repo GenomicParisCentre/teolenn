@@ -35,6 +35,24 @@ public class RemoveXSequenceFilter implements SequenceFilter {
   public static final String SEQUENCE_FILTER_NAME = "removex";
   
   /**
+   * Get the name of the filter.
+   * @return the name of the module
+   */
+  public String getName() {
+
+    return SEQUENCE_FILTER_NAME;
+  }
+
+  /**
+   * Get the description of the filter.
+   * @return the description of the filter
+   */
+  public String getDescription() {
+
+    return "Filter nothing but replace all 'X' of the sequences by 'N'.";
+  }
+  
+  /**
    * Tests whether or not the specified sequence should be accepted.
    * @param sequence Sequence to test
    * @return allways true

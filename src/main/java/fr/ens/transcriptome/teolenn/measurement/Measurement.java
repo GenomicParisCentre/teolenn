@@ -24,26 +24,14 @@ package fr.ens.transcriptome.teolenn.measurement;
 
 import java.util.Properties;
 
-import fr.ens.transcriptome.teolenn.TeolennException;
+import fr.ens.transcriptome.teolenn.Module;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**
  * This interface define a measurement.
  * @author Laurent Jourdren
  */
-public interface Measurement {
-
-  /**
-   * Get the name of the measurement.
-   * @return the name of the measurement
-   */
-  String getName();
-
-  /**
-   * Get the description of the measurement.
-   * @return the description of the measurement
-   */
-  String getDescription();
+public interface Measurement extends Module {
 
   /**
    * Get the type of the result of calcMeasurement.
@@ -94,18 +82,5 @@ public interface Measurement {
    * Add last measurements value to the statistics.
    */
   void addLastMeasurementToStats();
-
-  /**
-   * Set a parameter for the filter.
-   * @param key key for the parameter
-   * @param value value of the parameter
-   */
-  void setInitParameter(String key, String value);
-
-  /**
-   * Run the initialization phase of the parameter.
-   * @throws TeolennException if an error occurs while the initialization phase
-   */
-  void init() throws TeolennException;
 
 }

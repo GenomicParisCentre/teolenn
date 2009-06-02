@@ -45,6 +45,24 @@ public class ORFsFilter implements MeasurementFilter {
   private int oligoLength;
 
   /**
+   * Get the name of the filter.
+   * @return the name of the module
+   */
+  public String getName() {
+
+    return MEASUREMENT_FILTER_NAME;
+  }
+
+  /**
+   * Get the description of the filter.
+   * @return the description of the filter
+   */
+  public String getDescription() {
+
+    return "Filter ORFs";
+  }
+
+  /**
    * Filter a SequenceMeasurements.
    * @param sm SequenceMeasurements to test
    * @return true if the test allow to keep SequenceMeasurements values
