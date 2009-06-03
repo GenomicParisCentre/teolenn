@@ -356,12 +356,13 @@ public class Design {
 
     // Create a stat file if needed
     if (statsFile != null) {
+      logger.fine("Create measurement stats file.");
       SequenceMeasurementsStatWriter smsw =
           new SequenceMeasurementsStatWriter(statsFile);
 
       smsw.write(sm);
     }
-
+    logger.info("Create " + id + " entries in measurement file.");
   }
 
   private static final int createMeasurementsFile(final File inputFile,
@@ -402,6 +403,8 @@ public class Design {
       final List<SequenceFilter> sequenceFilters, final boolean maskedFiles)
       throws IOException {
 
+    int count = 0;
+
     for (int i = 0; i < oligoFiles.length; i++) {
 
       final File oligoFile = oligoFiles[i];
@@ -439,6 +442,7 @@ public class Design {
           sw1.write(si1);
           if (maskedFiles)
             sw2.write(si2);
+          count++;
         }
 
       }
@@ -448,6 +452,7 @@ public class Design {
         sw2.close();
     }
 
+    logger.info("" + count + " oligonucleotides after filtering");
   }
 
   /**
@@ -473,6 +478,7 @@ public class Design {
               .createSequenceMeasurementsFilteredWriter(
                   filteredMeasurementsFile, measurementsFile);
 
+      int count = 0;
       SequenceMeasurements sm = null;
       SequenceMeasurements last = null;
 
@@ -489,6 +495,7 @@ public class Design {
         if (pass) {
           sm.addMesurementsToStats();
           smw.writeSequenceMesurement(sm);
+          count++;
         }
 
         last = sm;
@@ -496,9 +503,12 @@ public class Design {
 
       smr.close();
       smw.close();
+      
+      logger.info(""+count+" entries found for measurement after filtering.");
 
       // Create a stat file if needed
       if (statsFile != null) {
+        logger.fine("Write stats file for measurements.");
         SequenceMeasurementsStatWriter smsw =
             new SequenceMeasurementsStatWriter(statsFile);
 
@@ -509,7 +519,8 @@ public class Design {
       throw new TeolennException("IO Error while filtering measurements: "
           + e.getMessage());
     }
-
+    
+  
   }
 
   /**
@@ -615,7 +626,29 @@ public class Design {
     if (isGenomeMaskedFile())
       verifyChromosomeLengths(chrOligo, chrMasked);
 
+    logger.info(""
+        + countOligosCreated(chrOligo) + " oligos created in  "
+        + chrOligo.size() + " chromosomes.");
+
     logEndPhase("create oligos");
+  }
+
+  /**
+   * Count the number of oligonucleotides created.
+   * @param chrOligo map with values for non maked genome
+   * @return the number of oligonucleotides created
+   */
+  private int countOligosCreated(final Map<String, Integer> chrOligo) {
+
+    if (chrOligo == null)
+      return 0;
+
+    int count = 0;
+
+    for (Map.Entry<String, Integer> e : chrOligo.entrySet())
+      count += e.getValue();
+
+    return count;
   }
 
   /**
@@ -791,6 +824,8 @@ public class Design {
       logger.severe("No stats file found.");
       throw new RuntimeException("No stats file found.");
     }
+
+    logger.info("Use " + selector.getName() + " as selector.");
 
     // Set additional parameters
     selector.setInitParameter(MEASUREMENT_FILE_PARAMETER_NAME,
