@@ -52,8 +52,8 @@ public class Design {
 
   public static final String OLIGO_SUFFIX = ".oligo";
   public static final String OLIGO_MASKED_SUFFIX = ".masked";
-  public static final String OLIGO_FILTERED_SUFFIX = ".filtered.oligo";
-  public static final String OLIGO_MASKED_FILTERED_SUFFIX = ".filtered.masked";
+  public static final String OLIGO_FILTERED_SUFFIX = ".oligo.filtered";
+  public static final String OLIGO_MASKED_FILTERED_SUFFIX = ".masked.filtered";
   public static final String OLIGO_SUBDIR = "oligos";
   public static final String TEMP_SUBDIR = "tmp";
 
@@ -91,6 +91,7 @@ public class Design {
   private File tempDir;
   private boolean start1 = false;
 
+  private boolean skipSequenceCreation;
   private boolean skipSequenceFilters;
   private boolean skipMeasurementsComputation;
   private boolean skipMeasurementsFilters;
@@ -156,7 +157,15 @@ public class Design {
    * @return the output directory
    */
   public File getOutputDir() {
-    return outputDir;
+    return this.outputDir;
+  }
+
+  /**
+   * Get if the sequences creation phase must be skipped.
+   * @return true if the sequences creation phase must be skipped.
+   */
+  public boolean isSkipSequenceCreation() {
+    return this.skipSequenceCreation;
   }
 
   /**
@@ -164,7 +173,7 @@ public class Design {
    * @return true if the sequences filters phase must be skipped.
    */
   public boolean isSkipSequenceFilters() {
-    return skipSequenceFilters;
+    return this.skipSequenceFilters;
   }
 
   /**
@@ -172,7 +181,7 @@ public class Design {
    * @return true if the measurement computation phase must be skipped.
    */
   public boolean isSkipMeasurementsComputation() {
-    return skipMeasurementsComputation;
+    return this.skipMeasurementsComputation;
   }
 
   /**
@@ -180,7 +189,7 @@ public class Design {
    * @return true if the measurement computation phase must be skipped.
    */
   public boolean isSkipMeasurementsFilters() {
-    return skipMeasurementsFilters;
+    return this.skipMeasurementsFilters;
   }
 
   /**
@@ -188,7 +197,7 @@ public class Design {
    * @return true if the selector computation phase must be skipped.
    */
   public boolean isSkipSelector() {
-    return skipSelector;
+    return this.skipSelector;
   }
 
   /**
@@ -248,6 +257,15 @@ public class Design {
    */
   public void setOutputDir(final File outputDir) {
     this.outputDir = outputDir;
+  }
+
+  /**
+   * Set if the sequences creation phase must be skipped.
+   * @param skipSequenceCreation if the sequences creation phase must be
+   *          skipped.
+   */
+  public void setSkipSequenceCreation(final boolean skipSequenceCreation) {
+    this.skipSequenceCreation = skipSequenceCreation;
   }
 
   /**
@@ -503,8 +521,9 @@ public class Design {
 
       smr.close();
       smw.close();
-      
-      logger.info(""+count+" entries found for measurement after filtering.");
+
+      logger.info(""
+          + count + " entries found for measurement after filtering.");
 
       // Create a stat file if needed
       if (statsFile != null) {
@@ -519,8 +538,7 @@ public class Design {
       throw new TeolennException("IO Error while filtering measurements: "
           + e.getMessage());
     }
-    
-  
+
   }
 
   /**
@@ -550,7 +568,7 @@ public class Design {
 
   public boolean isSkipPhase1() {
 
-    return isSkipMeasurementsComputation();
+    return isSkipSequenceCreation() || isSkipMeasurementsComputation();
   }
 
   public boolean isSkipPhase2() {
@@ -587,9 +605,16 @@ public class Design {
 
     this.startTimeDesign = System.currentTimeMillis();
 
+    if (!getOligosDir().exists())
+      if (!getOligosDir().mkdirs())
+        throw new TeolennException("Unable to create oligos directory.");
+
     if (!getTempDir().exists())
       if (!getTempDir().mkdirs())
         throw new TeolennException("Unable to create temporary directory.");
+
+    // Clean temporary directory
+    FileUtils.removeFiles(getTempDir().listFiles(), true);
   }
 
   /**
@@ -603,9 +628,7 @@ public class Design {
 
     logStartPhase("create oligos");
 
-    if (!getOligosDir().exists())
-      if (!getOligosDir().mkdirs())
-        throw new TeolennException("Unable to create oligos directory.");
+    FileUtils.removeFiles(getOligosDir().listFiles(), false);
 
     Map<String, Integer> chrOligo = null;
     Map<String, Integer> chrMasked = null;
@@ -699,6 +722,11 @@ public class Design {
       return;
 
     logStartPhase("filter oligos");
+
+    FileUtils.removeFiles(FileUtils.listFilesByExtension(getOligosDir(),
+        Design.OLIGO_FILTERED_SUFFIX), false);
+    FileUtils.removeFiles(FileUtils.listFilesByExtension(getOligosDir(),
+        Design.OLIGO_MASKED_FILTERED_SUFFIX), false);
 
     // Init all the filters
     for (SequenceFilter sf : listSequenceFilters)

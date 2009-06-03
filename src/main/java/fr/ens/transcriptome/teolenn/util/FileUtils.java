@@ -202,6 +202,36 @@ public final class FileUtils {
   }
 
   /**
+   * Remove a list of files.
+   * @param filesToRemove An array with the files to remove
+   * @param recursive true if the remove must be recursive
+   */
+  public static boolean removeFiles(final File[] filesToRemove,
+      final boolean recursive) {
+
+    if (filesToRemove == null)
+      return false;
+
+    for (int i = 0; i < filesToRemove.length; i++) {
+
+      final File f = filesToRemove[i];
+
+      if (f.isDirectory()) {
+        if (recursive) {
+          if (!removeFiles(listFilesByExtension(f, ""), true))
+            return false;
+          if (!f.delete())
+            return false;
+        }
+
+      } else if (!f.delete())
+        return false;
+    }
+
+    return true;
+  }
+
+  /**
    * Get the prefix of a list of files.
    * @param files Files that we wants the prefix
    * @return the prefix of the files
@@ -327,7 +357,7 @@ public final class FileUtils {
       throws IOException {
     return setReadable(file, readable, true);
   }
-  
+
   /**
    * Set writable bits on file on *nix.
    * @param file File to handle

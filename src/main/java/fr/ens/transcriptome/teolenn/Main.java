@@ -187,6 +187,8 @@ public class Main {
     final Design d = design;
 
     // Test if phases must be skipped
+    d.setSkipSequenceCreation(isSkipElementEnable(designElement,
+        "sequencecreation"));
     d.setSkipSequenceFilters(isSkipElementEnable(designElement,
         "sequencefilters"));
     d.setSkipMeasurementsComputation(isSkipElementEnable(designElement,
