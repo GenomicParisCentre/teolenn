@@ -619,7 +619,6 @@ public class Main {
 
         for (Iterator i7 = param.elementIterator("value"); i7.hasNext();) {
           final Element value = (Element) i7.next();
-          System.out.println(value.getTextTrim());
           pValue = getValue(value.getTextTrim());
         }
 
