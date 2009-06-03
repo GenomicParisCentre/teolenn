@@ -33,6 +33,10 @@ import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
+/**
+ * This class define the tiling selector.
+ * @author Laurent Jourdren
+ */
 public class TilingSelector extends SimpleSelector {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
