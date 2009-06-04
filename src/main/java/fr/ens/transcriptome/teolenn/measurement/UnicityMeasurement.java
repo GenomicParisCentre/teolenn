@@ -340,6 +340,9 @@ public final class UnicityMeasurement extends FloatMeasurement {
     final File mupDir = new File(this.baseDir, MUP_DIR);
     final File file = new File(mupDir, chromosome + MUP_EXTENSION);
 
+    logger.fine("Parse file: "
+        + file.getName() + " in " + MEASUREMENT_NAME + " measurement.");
+
     // Load the minimum unique prefix file in a list
     mupDict.clear();
 
