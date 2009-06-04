@@ -41,7 +41,7 @@ public class BinariesInstaller {
       final String outputPath) throws FileNotFoundException, IOException {
 
     if (new File(outputPath, file).isFile()) {
-      logger.info(file + " is allready installed.");
+      logger.fine(file + " is allready installed.");
       return;
     }
 
@@ -77,23 +77,6 @@ public class BinariesInstaller {
     FileUtils.setReadable(outputFile, false);    
   }
 
-  /**
-   * Test if the system is Mac OS X.
-   * @return true if the system is Mac OS X
-   */
-  public static boolean isMacOsX() {
-    return System.getProperty("os.name").toLowerCase().startsWith("mac os x");
-  }
-
-  /**
-   * Test if the system is Unix.
-   * @return true if the operating systeme is Windows.
-   */
-  public static boolean isLinux() {
-
-    return System.getProperty("os.name").toLowerCase().startsWith("linux");
-  }
-
   public static String install(final String file) throws IOException {
 
     final String os = System.getProperty("os.name");
@@ -102,8 +85,8 @@ public class BinariesInstaller {
     logger
         .fine("Try to install \"" + file + "\" for " + os + " (" + arch + ")");
 
-    final boolean linux = isLinux();
-    final boolean macos = isMacOsX();
+    final boolean linux = SystemUtils.isLinux();
+    final boolean macos = SystemUtils.isMacOsX();
 
     if (!(linux || macos))
       throw new FileNotFoundException(
