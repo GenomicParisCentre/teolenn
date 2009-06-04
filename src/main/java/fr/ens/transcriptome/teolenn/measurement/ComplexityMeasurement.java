@@ -24,9 +24,11 @@ package fr.ens.transcriptome.teolenn.measurement;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import fr.ens.transcriptome.teolenn.Design;
+import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.sequence.SequenceIterator;
 import fr.ens.transcriptome.teolenn.util.StringUtils;
@@ -38,11 +40,14 @@ import fr.ens.transcriptome.teolenn.util.StringUtils;
  */
 public class ComplexityMeasurement extends FloatMeasurement {
 
+  private static Logger logger = Logger.getLogger(Globals.APP_NAME);
+
   /** Measurement name. */
   public static final String MEASUREMENT_NAME = "Complexity";
-  
+
   /* The list that contain the bases count as masked */
-  private final static char[] MASK_BASES = {'a', 'c', 'g', 't', 'n', 'N', 'x', 'X'};
+  private final static char[] MASK_BASES =
+      {'a', 'c', 'g', 't', 'n', 'N', 'x', 'X'};
 
   private SequenceIterator si;
   private static final Pattern subseqPattern = Pattern.compile("subseq");
@@ -87,8 +92,6 @@ public class ComplexityMeasurement extends FloatMeasurement {
               + sequence.getName() + ")");
 
     final String s = si.getSequence();
-
-    
 
     int maskNumber = 0;
 
@@ -155,10 +158,16 @@ public class ComplexityMeasurement extends FloatMeasurement {
     if (Design.CURRENT_OLIGO_FILE_PARAMETER_NAME.equals(key)) {
 
       final String ext =
-          ".filtered.oligo".equals(StringUtils.extension(value))
-              ? ".filtered" : "";
+          Design.OLIGO_FILTERED_SUFFIX.equals(StringUtils.extension(value))
+              ? Design.OLIGO_MASKED_FILTERED_SUFFIX
+              : Design.OLIGO_MASKED_SUFFIX;
 
-      final File f = new File(StringUtils.basename(value) + ext + ".masked");
+      final File f = new File(StringUtils.basename(value) + ext);
+      logger.fine("Open sequence file: "
+          + f.getName() + " in " + MEASUREMENT_NAME + " measurement.");
+      if (!f.exists())
+        throw new RuntimeException(
+            "Unable to open oligo masked  sequence file: " + f.getName());
 
       try {
 
