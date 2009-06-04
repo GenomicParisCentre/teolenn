@@ -25,6 +25,7 @@ package fr.ens.transcriptome.teolenn;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -43,7 +44,12 @@ import fr.ens.transcriptome.teolenn.sequence.SequenceWriter;
 import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilter;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 import fr.ens.transcriptome.teolenn.util.StringUtils;
+import fr.ens.transcriptome.teolenn.util.SystemUtils;
 
+/**
+ * This class define the core class of Teolenn.
+ * @author Laurent Jourdren
+ */
 public class Design {
 
   private static final Logger logger = Logger.getLogger(Globals.APP_NAME);
@@ -58,6 +64,7 @@ public class Design {
   public static final String TEMP_SUBDIR = "tmp";
 
   private static final String OLIGO_MEASUREMENTS_FILE = "oligo.mes";
+  private static final String OLIGO_MEASUREMENTS_STATS_FILE = "oligo.stats";
   private static final String OLIGO_MEASUREMENTS_FILTERED_FILE = "filtered.mes";
   private static final String OLIGO_MEASUREMENTS_FILTERED_STATS_FILE =
       "filtered.stats";
@@ -368,7 +375,7 @@ public class Design {
     int id = 0;
 
     for (int i = 0; i < inputFiles.length; i++)
-      id = createMeasurementsFile(inputFiles[i], smw, sm, id);
+      id = createMeasurementsFile(inputFiles[i], smw, sm, id, true);
 
     smw.close();
 
@@ -385,7 +392,7 @@ public class Design {
 
   private static final int createMeasurementsFile(final File inputFile,
       final SequenceMeasurementsWriter smw, final SequenceMeasurements sm,
-      final int idStart) throws IOException {
+      final int idStart, final boolean addStats) throws IOException {
 
     final SequenceIterator si = new SequenceIterator(inputFile);
 
@@ -403,6 +410,8 @@ public class Design {
       sm.setId(++count);
       sm.setSequence(si);
       sm.calcMesurements();
+      if (addStats)
+        sm.addMesurementsToStats();
       smw.writeSequenceMesurement(sm);
 
     }
@@ -496,11 +505,19 @@ public class Design {
               .createSequenceMeasurementsFilteredWriter(
                   filteredMeasurementsFile, measurementsFile);
 
-      int count = 0;
+      int count = -1;
       SequenceMeasurements sm = null;
       SequenceMeasurements last = null;
 
       while ((sm = smr.next(sm)) != null) {
+
+        if (count == -1) {
+
+          // Clear stats from calc measurement phase
+          for (Measurement m : sm.getMeasurements())
+            m.clear();
+          count = 0;
+        }
 
         boolean pass = true;
 
@@ -596,8 +613,15 @@ public class Design {
    */
   public void phase0() throws TeolennException {
 
+    logger.info("Date: " + new Date(System.currentTimeMillis()));
+    logger.info("Host: " + SystemUtils.getHostName());
+    logger.info("Operating system name: " + System.getProperty("os.name"));
+    logger.info("Operating system arch: " + System.getProperty("os.arch"));
+    logger
+        .info("Operating system version: " + System.getProperty("os.version"));
     logger.info("Java version: " + System.getProperty("java.version"));
-    logger.info("Log level:" + logger.getLevel());
+    logger.info("Log level: " + logger.getLevel());
+
     logger.info("Oligo length: " + this.oligoLength);
     logger.info("Genome file: " + this.genomeFile);
     logger.info("Genome masked file: " + this.genomeMaskedFile);
@@ -786,8 +810,12 @@ public class Design {
     try {
       File oligoMeasurementsFile =
           new File(getOutputDir(), OLIGO_MEASUREMENTS_FILE);
+
+      File oligoStatsFile =
+          new File(getOutputDir(), OLIGO_MEASUREMENTS_STATS_FILE);
+
       Design.createMeasurementsFile(oligoFilteredFiles, oligoMeasurementsFile,
-          listMeasurements, null);
+          listMeasurements, oligoStatsFile);
     } catch (IOException e) {
 
       throw new TeolennException("Unable to create measurement file: "
@@ -880,6 +908,7 @@ public class Design {
       final SequenceMeasurementsWriter measurementWriter =
           SequenceMeasurementsIOFactory
               .createSequenceMeasurementsSelectWriter(selectedOligos);
+      // new FastaMeasurementWriter(selectedOligos, getOligoLength());
 
       // Launch selection
       selector.select(measurementReader, measurementWriter, wSetter);
