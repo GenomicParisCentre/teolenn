@@ -32,6 +32,8 @@ import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
+import fr.ens.transcriptome.teolenn.measurement.io.FastaMeasurementWriter;
+import fr.ens.transcriptome.teolenn.measurement.io.MultiSequenceMeasurementWriter;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
@@ -874,6 +876,8 @@ public class Design {
     final File statsFile =
         new File(getOutputDir(), OLIGO_MEASUREMENTS_FILTERED_STATS_FILE);
     final File selectedOligos = new File(getOutputDir(), SELECTED_FILE);
+    final File selectedOligosFasta =
+        new File(getOutputDir(), SELECTED_FILE + ".fasta");
 
     if (!statsFile.exists()) {
 
@@ -906,9 +910,10 @@ public class Design {
 
       // Open output file
       final SequenceMeasurementsWriter measurementWriter =
-          SequenceMeasurementsIOFactory
-              .createSequenceMeasurementsSelectWriter(selectedOligos);
-      // new FastaMeasurementWriter(selectedOligos, getOligoLength());
+          new MultiSequenceMeasurementWriter(SequenceMeasurementsIOFactory
+              .createSequenceMeasurementsSelectWriter(selectedOligos),
+              new FastaMeasurementWriter(selectedOligosFasta, getOligosDir(),
+                  Design.OLIGO_SUFFIX, getOligoLength(), isStart1()));
 
       // Launch selection
       selector.select(measurementReader, measurementWriter, wSetter);
