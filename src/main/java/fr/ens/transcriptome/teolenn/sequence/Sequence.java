@@ -147,6 +147,15 @@ public class Sequence {
     return Integer.parseInt(this.name.substring(startPos2 + 1, endPos));
   }
 
+  /**
+   * Override the default toString method.
+   * @return a String representation of the Sequence
+   */
+  public String toString() {
+
+    return "(" + this.name + "," + this.sequence + ")";
+  }
+
   //
   // Constructors
   //
