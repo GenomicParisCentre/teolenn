@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import fr.ens.transcriptome.teolenn.core.MeasurementCore;
+import fr.ens.transcriptome.teolenn.core.SequenceCore;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
 import fr.ens.transcriptome.teolenn.measurement.io.FastaMeasurementWriter;
@@ -39,10 +41,7 @@ import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
 import fr.ens.transcriptome.teolenn.measurement.resource.OligoSequenceResource;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
-import fr.ens.transcriptome.teolenn.sequence.FastaOverlap;
 import fr.ens.transcriptome.teolenn.sequence.SequenceIterator;
-import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
-import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurementsStatWriter;
 import fr.ens.transcriptome.teolenn.sequence.SequenceWriter;
 import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilter;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
@@ -150,76 +149,6 @@ public class DesignCommand extends Design {
   }
 
   /**
-   * Create a measurement file.
-   * @param inputFiles oligo input fasta files
-   * @param measurementsFile output file
-   * @param statsFile statFile to create (optional)
-   * @throws IOException if an error occurs while creating the measurement
-   */
-  private static final void createMeasurementsFile(final File[] inputFiles,
-      final File measurementsFile, final List<Measurement> measurements,
-      final File statsFile) throws IOException {
-
-    if (inputFiles == null || inputFiles.length == 0)
-      return;
-
-    final SequenceMeasurementsWriter smw =
-        SequenceMeasurementsIOFactory
-            .createSequenceMeasurementsWriter(measurementsFile);
-
-    final SequenceMeasurements sm = new SequenceMeasurements();
-    if (measurements != null)
-      for (Measurement m : measurements)
-        sm.addMesurement(m);
-
-    int id = 0;
-
-    for (int i = 0; i < inputFiles.length; i++)
-      id = createMeasurementsFile(inputFiles[i], smw, sm, id, true);
-
-    smw.close();
-
-    // Create a stat file if needed
-    if (statsFile != null) {
-      logger.fine("Create measurement stats file.");
-      SequenceMeasurementsStatWriter smsw =
-          new SequenceMeasurementsStatWriter(statsFile);
-
-      smsw.write(sm);
-    }
-    logger.info("Create " + id + " entries in measurement file.");
-  }
-
-  private static final int createMeasurementsFile(final File inputFile,
-      final SequenceMeasurementsWriter smw, final SequenceMeasurements sm,
-      final int idStart, final boolean addStats) throws IOException {
-
-    final SequenceIterator si = new SequenceIterator(inputFile);
-
-    // smw.writeHeader(sm);
-
-    int count = idStart;
-
-    for (Measurement m : sm.getMeasurements())
-      m.setProperty(DesignConstants.CURRENT_OLIGO_FILE_PARAMETER_NAME,
-          inputFile.getAbsolutePath());
-
-    while (si.hasNext()) {
-
-      si.next();
-      sm.setId(++count);
-      sm.setSequence(si);
-      sm.calcMesurements();
-      if (addStats)
-        sm.addMesurementsToStats();
-      smw.writeSequenceMesurement(sm);
-
-    }
-
-    return count;
-  }
-
-  /**
    * Filter oligos fasta files
    * @param oligoFiles input file
    * @param sequenceFilters filters to apply
@@ -281,82 +210,6 @@ public class DesignCommand extends Design {
     }
 
     logger.info("" + count + " oligonucleotides after filtering");
-  }
-
-  /**
-   * Filter a measurement file.
-   * @param measurementsFile input file
-   * @param filteredMeasurementsFile output file
-   * @param statsFile statFile to create (optional)
-   * @param filters Filters to applys
-   * @throws TeolennException if an error occurs while filtering
-   * @throws IOException if an error occurs while filtering
-   */
-  private static final void filterMeasurementsFile(final File measurementsFile,
-      final File filteredMeasurementsFile, final File statsFile,
-      final List<MeasurementFilter> filters) throws TeolennException {
-
-    try {
-      final SequenceMeasurementsReader smr =
-          SequenceMeasurementsIOFactory
-              .createSequenceMeasurementsReader(measurementsFile);
-
-      final SequenceMeasurementsWriter smw =
-          SequenceMeasurementsIOFactory
-              .createSequenceMeasurementsFilteredWriter(
-                  filteredMeasurementsFile, measurementsFile);
-
-      int count = -1;
-      SequenceMeasurements sm = null;
-      SequenceMeasurements last = null;
-
-      while ((sm = smr.next(sm)) != null) {
-
-        if (count == -1) {
-
-          // Clear stats from calc measurement phase
-          for (Measurement m : sm.getMeasurements())
-            m.clear();
-          count = 0;
-        }
-
-        boolean pass = true;
-
-        for (MeasurementFilter filter : filters)
-          if (!filter.accept(sm)) {
-            pass = false;
-            break;
-          }
-
-        if (pass) {
-          sm.addMesurementsToStats();
-          smw.writeSequenceMesurement(sm);
-          count++;
-        }
-
-        last = sm;
-      }
-
-      smr.close();
-      smw.close();
-
-      logger.info(""
-          + count + " entries found for measurement after filtering.");
-
-      // Create a stat file if needed
-      if (statsFile != null) {
-        logger.fine("Write stats file for measurements.");
-        SequenceMeasurementsStatWriter smsw =
-            new SequenceMeasurementsStatWriter(statsFile);
-
-        smsw.write(last);
-      }
-    } catch (IOException e) {
-
-      throw new TeolennException("IO Error while filtering measurements: "
-          + e.getMessage());
-    }
-
   }
 
   /**
@@ -472,12 +325,12 @@ public class DesignCommand extends Design {
 
     try {
       chrOligo =
-          FastaOverlap.fastaOverlap(getGenomeFile(), getOligosDir(),
+          SequenceCore.fastaOverlap(getGenomeFile(), getOligosDir(),
               DesignConstants.OLIGO_SUFFIX, getOligoLength(), isStart1());
 
       if (isGenomeMaskedFile())
         chrMasked =
-            FastaOverlap.fastaOverlap(getGenomeMaskedFile(), getOligosDir(),
+          SequenceCore.fastaOverlap(getGenomeMaskedFile(), getOligosDir(),
                 DesignConstants.OLIGO_MASKED_SUFFIX, getOligoLength(),
                 isStart1());
     } catch (IOException e) {
@@ -577,7 +430,7 @@ public class DesignCommand extends Design {
           new File(getOutputDir(),
               DesignConstants.OLIGO_MEASUREMENTS_STATS_FILE);
 
-      DesignCommand.createMeasurementsFile(oligoFilteredFiles,
+      MeasurementCore.createMeasurementsFile(oligoFilteredFiles,
           oligoMeasurementsFile, listMeasurements, oligoStatsFile);
     } catch (IOException e) {
 
@@ -614,7 +467,7 @@ public class DesignCommand extends Design {
         new File(getOutputDir(),
             DesignConstants.OLIGO_MEASUREMENTS_FILTERED_STATS_FILE);
 
-    DesignCommand.filterMeasurementsFile(new File(
+    MeasurementCore.filterMeasurementsFile(new File(
         DesignConstants.OLIGO_MEASUREMENTS_FILE),
         filteredOligoMeasurementsFile, overvriteStatFile ? statsFile : null,
         listMeasurementFilters);

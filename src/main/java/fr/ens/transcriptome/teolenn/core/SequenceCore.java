@@ -20,7 +20,7 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.sequence;
+package fr.ens.transcriptome.teolenn.core;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,12 +34,7 @@ import java.util.logging.Logger;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
-/**
- * This class define a method that create all the oligo of a specified size in a
- * fasta file.
- * @author Laurent Jourdren
- */
-public class FastaOverlap {
+public class SequenceCore {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
@@ -209,6 +204,47 @@ public class FastaOverlap {
     File f = new File(outputDir, prefix + suffix);
 
     return FileUtils.createBufferedWriter(f);
+  }
+
+  public static void fastaExplode(final File inputFile, final File outputDir,
+      final String prefix, final String suffix, final boolean convertXN,
+      final boolean compress) throws IOException {
+
+    BufferedReader br = FileUtils.createBufferedReader(inputFile);
+
+    Writer os = null;
+    boolean first = true;
+    String line;
+
+    while ((line = br.readLine()) != null) {
+
+      if (first || line.startsWith(">")) {
+        if (os != null)
+          os.close();
+
+        final String seqName = line.substring(1, line.length()).trim();
+
+        os = getOutputStream(outputDir, prefix, seqName, suffix, compress);
+        first = false;
+      } else if (convertXN)
+        line = line.replace('X', 'N');
+
+      os.write(line);
+      os.write("\n");
+    }
+
+    os.close();
+    br.close();
+  }
+
+  private static Writer getOutputStream(final File outputDir,
+      final String prefix, final String seqName, final String suffix,
+      final boolean compress) throws IOException {
+
+    File f = new File(outputDir, prefix + seqName + suffix);
+
+    return compress ? FileUtils.createBufferedGZipWriter(f) : FileUtils
+        .createBufferedWriter(f);
   }
 
 }

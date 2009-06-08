@@ -37,7 +37,7 @@ import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.Settings;
 import fr.ens.transcriptome.teolenn.TeolennException;
-import fr.ens.transcriptome.teolenn.sequence.FastaExplode;
+import fr.ens.transcriptome.teolenn.core.SequenceCore;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.util.BinariesInstaller;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
@@ -427,7 +427,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
       this.resetHistogram(0, this.oligoLength);
 
       // Create sequence files without X
-      FastaExplode.fastaExplode(genomeFile, this.baseDir, "",
+      SequenceCore.fastaExplode(genomeFile, this.baseDir, "",
           SEQ_GZ_WITHOUT_X_EXTENSION, true, true);
 
       // Get the list of sequences files created
