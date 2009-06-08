@@ -28,7 +28,7 @@ import java.io.IOException;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
-import fr.ens.transcriptome.teolenn.sequence.FastTeolennFastaReader;
+import fr.ens.transcriptome.teolenn.measurement.resource.OligoSequenceResource;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.sequence.SequenceWriter;
@@ -44,7 +44,7 @@ public class FastaMeasurementWriter implements SequenceMeasurementsWriter {
   private int indexChromosome = -1;
 
   private SequenceWriter writer;
-  private FastTeolennFastaReader fastaReader;
+  private OligoSequenceResource fastaReader;
   private Sequence sequence = new Sequence();
 
   /**
@@ -117,7 +117,7 @@ public class FastaMeasurementWriter implements SequenceMeasurementsWriter {
 
     this.writer = new SequenceWriter(outputFile);
     this.fastaReader =
-        new FastTeolennFastaReader(oligosDir, fastaExtension, oligoLength,
+        new OligoSequenceResource(oligosDir, fastaExtension, oligoLength,
             start1);
 
     // this.out = FileUtils.createBufferedWriter(file);
