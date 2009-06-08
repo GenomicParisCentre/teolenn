@@ -37,6 +37,7 @@ import fr.ens.transcriptome.teolenn.measurement.io.MultiSequenceMeasurementWrite
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
+import fr.ens.transcriptome.teolenn.measurement.resource.OligoSequenceResource;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
 import fr.ens.transcriptome.teolenn.sequence.FastaOverlap;
 import fr.ens.transcriptome.teolenn.sequence.SequenceIterator;
@@ -641,6 +642,10 @@ public class Design {
 
     // Clean temporary directory
     FileUtils.removeFiles(getTempDir().listFiles(), true);
+
+    // Create resources
+    OligoSequenceResource.getRessource(getOligosDir(), Design.OLIGO_SUFFIX,
+        getOligoLength(), isStart1());
   }
 
   /**
