@@ -116,11 +116,8 @@ public class FastaMeasurementWriter implements SequenceMeasurementsWriter {
       throw new NullPointerException("File is null");
 
     this.writer = new SequenceWriter(outputFile);
-    this.fastaReader =
-        new OligoSequenceResource(oligosDir, fastaExtension, oligoLength,
-            start1);
+    this.fastaReader = OligoSequenceResource.getRessource();
 
-    // this.out = FileUtils.createBufferedWriter(file);
   }
 
 }

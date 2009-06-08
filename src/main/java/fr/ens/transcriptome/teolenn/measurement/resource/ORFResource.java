@@ -44,6 +44,9 @@ import fr.ens.transcriptome.teolenn.util.FileUtils;
  */
 public class ORFResource {
 
+  /** The name of the resource. */
+  public static final String RESOURCE_NAME = "orf";
+
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
   // Regex to retrieve chromosome, startPos and len of a sequence from its name
@@ -69,8 +72,8 @@ public class ORFResource {
 
     final MeasurementResources rs = MeasurementResources.getResources();
 
-    if (rs.isResource("orf"))
-      return (ORFResource) rs.getResource("orf");
+    if (rs.isResource(RESOURCE_NAME))
+      return (ORFResource) rs.getResource(RESOURCE_NAME);
 
     if (!properties.containsKey("orfsfile"))
       throw new IOException("No orfsFile");
@@ -98,7 +101,7 @@ public class ORFResource {
 
     final ORFResource result = new ORFResource(orfsFile, startOffset);
 
-    rs.setResource("orf", result);
+    rs.setResource(RESOURCE_NAME, result);
 
     return result;
   }

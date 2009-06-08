@@ -38,6 +38,9 @@ import fr.ens.transcriptome.teolenn.sequence.Sequence;
  */
 public class OligoSequenceResource {
 
+  /** The name of the resource. */
+  public static final String RESOURCE_NAME = "oligo";
+
   /** The charset to use. */
   private static final String CHARSET = "ISO-8859-1";
 
@@ -223,18 +226,58 @@ public class OligoSequenceResource {
     return count;
   }
 
-  //
-  // Constructor
-  // 
+  /**
+   * Get the resource.
+   * @return a OligoSequenceResource Object if it has been already created
+   * @throws TeolennException if the resource doesn't exists
+   */
+  public static OligoSequenceResource getRessource() throws TeolennException {
+
+    final MeasurementResources rs = MeasurementResources.getResources();
+
+    if (rs.isResource(RESOURCE_NAME))
+      return (OligoSequenceResource) rs.getResource(RESOURCE_NAME);
+
+    throw new TeolennException(
+        "OligoSequenceResource has not been initialized.");
+  }
 
   /**
-   * Public constructor.
+   * Create the resource.
    * @param oligosDir the directory of the oligonucleotides
    * @param extension the extension of the fasta file
    * @param oligoLength the length of the oligonucleotides
    * @param start1 if the first position in the chromosome is 1
    */
-  public OligoSequenceResource(final File oligosDir, final String extension,
+  public static OligoSequenceResource getRessource(final File oligosDir,
+      final String extension, final int oligoLength, final boolean start1)
+      throws TeolennException {
+
+    final MeasurementResources rs = MeasurementResources.getResources();
+
+    if (rs.isResource(RESOURCE_NAME))
+      return (OligoSequenceResource) rs.getResource(RESOURCE_NAME);
+
+    final OligoSequenceResource result =
+        new OligoSequenceResource(oligosDir, extension, oligoLength, start1);
+
+    rs.setResource(RESOURCE_NAME, result);
+
+    return result;
+  }
+
+  //
+  // Constructor
+  // 
+
+  /**
+   * Private constructor.
+   * @param oligosDir the directory of the oligonucleotides
+   * @param extension the extension of the fasta file
+   * @param oligoLength the length of the oligonucleotides
+   * @param start1 if the first position in the chromosome is 1
+   */
+  private OligoSequenceResource(final File oligosDir, final String extension,
       final int oligoLength, final boolean start1) throws TeolennException {
 
     if (oligosDir == null)
@@ -254,19 +297,6 @@ public class OligoSequenceResource {
     this.oligoLength = oligoLength;
     this.start1 = start1;
 
-  }
-
-  public static void main(final String[] args) throws IOException,
-      TeolennException {
-
-    OligoSequenceResource ff =
-        new OligoSequenceResource(new File("/home/jourdren/tmp/design_toto/oligos"),
-            ".oligo", 60, true);
-    System.out.println(ff.getSequence("Ca21chr1", 5));
-    System.out.println(ff.getSequence("Ca21chr1", 120));
-    System.out.println(ff.getSequence("Ca21chr1", 522));
-    System.out.println(ff.getSequence("Ca21chr1", 3100000));
-    System.out.println(ff.getSequence("Ca21chr1", 3188500));
   }
 
 }
