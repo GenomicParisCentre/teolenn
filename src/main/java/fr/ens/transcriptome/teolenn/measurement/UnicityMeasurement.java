@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fr.ens.transcriptome.teolenn.Design;
+import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.Settings;
 import fr.ens.transcriptome.teolenn.TeolennException;
@@ -381,18 +381,18 @@ public final class UnicityMeasurement extends FloatMeasurement {
    */
   public void setInitParameter(final String key, final String value) {
 
-    if (Design.START_1_PARAMETER_NAME.equals(key)) {
+    if (DesignConstants.START_1_PARAMETER_NAME.equals(key)) {
 
       final boolean start1 = Boolean.parseBoolean(value);
       if (start1)
         this.startOffset = -1;
       else
         this.startOffset = 0;
-    } else if (Design.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
+    } else if (DesignConstants.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
       this.oligoLength = Integer.parseInt(value);
-    else if (Design.GENOME_FILE_PARAMETER_NAME.equals(key))
+    else if (DesignConstants.GENOME_FILE_PARAMETER_NAME.equals(key))
       this.genomeFile = new File(value);
-    else if (Design.TEMP_DIR_PARAMETER_NAME.equals(key))
+    else if (DesignConstants.TEMP_DIR_PARAMETER_NAME.equals(key))
       this.baseDir = new File(value);
     else if ("maxprefixlength".equals(key))
       this.maxPrefixLength = Integer.parseInt(value);

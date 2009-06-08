@@ -69,7 +69,7 @@ public class Main {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
 
-  private Design design = new Design();
+  private DesignCommand design = new DesignCommand();
   private double designFileVersion;
   private Properties constants = new Properties();
 
@@ -184,7 +184,7 @@ public class Main {
 
     isSkipElementEnable(designElement, "sequencefilters");
 
-    final Design d = design;
+    final DesignCommand d = design;
 
     // Test if phases must be skipped
     d.setSkipSequenceCreation(isSkipElementEnable(designElement,
@@ -197,24 +197,33 @@ public class Main {
         "measurementfilters"));
     d.setSkipSelector(isSkipElementEnable(designElement, "selector"));
 
+    // Set the sequenceFilters
+    d.setSequenceFiltersList(parseSequenceFilters(designElement));
+
+    // Set the measurements
+    d.setMeasurementsList(parseMeasurements(designElement));
+
+    // Set the measurement filters
+    d.setMeasurementFiltersList(parseMeasurementFilters(designElement));
+
+    // Set the selector
+    d.setSelector(parseSelector(designElement));
+
+    // Set the weights
+    d.setWeightSetters(parseSelectWeights(designElement));
+
     // Start the computation
-    d.phase0();
+    d.execute();
 
-    if (!d.isSkipPhase1())
-      d.phase1CreateAllOligos();
+  }
 
-    if (!d.isSkipPhase2())
-      d.phase2FilterAllOligos(parseSequenceFilters(designElement));
+  /**
+   * Execute the design.
+   * @throws TeolennException if an error occurs while running the design
+   */
+  public void execute() throws TeolennException {
 
-    // Don't skip this step, Add ons measurement need to be registered
-    d.phase3CalcMeasurements(parseMeasurements(designElement));
-
-    if (!d.isSkipPhase4())
-      d.phase4FilterMeasurements(parseMeasurementFilters(designElement), true);
-
-    if (!d.isSkipPhase5())
-      d.phase5Select(parseSelector(designElement),
-          parseSelectWeights(designElement));
+    this.design.execute();
   }
 
   /**
@@ -911,10 +920,16 @@ public class Main {
     final File outputDir =
         args.length > argsOptions + 3 ? new File(args[argsOptions + 3]) : null;
 
-    Main cli = new Main();
-
     try {
-      cli.readDesign(designFile, genomeFile, genomeMaskedFile, outputDir);
+
+      final Main main = new Main();
+
+      // Read design
+      main.readDesign(designFile, genomeFile, genomeMaskedFile, outputDir);
+
+      // Execute design
+      main.execute();
+
     } catch (Exception e) {
       System.err.println(e.getMessage());
       if (Globals.DEBUG)

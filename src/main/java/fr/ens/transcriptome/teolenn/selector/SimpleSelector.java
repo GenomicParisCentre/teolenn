@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import fr.ens.transcriptome.teolenn.Design;
+import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
@@ -69,7 +69,7 @@ public abstract class SimpleSelector implements SequenceSelector {
    */
   public void setInitParameter(final String key, final String value) {
 
-    if (Design.STATS_FILE_PARAMETER_NAME.equals(key))
+    if (DesignConstants.STATS_FILE_PARAMETER_NAME.equals(key))
       this.statsFile = new File(value);
   }
 

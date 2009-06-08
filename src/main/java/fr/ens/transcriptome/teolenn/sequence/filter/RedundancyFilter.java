@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fr.ens.transcriptome.teolenn.Design;
+import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.Settings;
 import fr.ens.transcriptome.teolenn.TeolennException;
@@ -233,20 +233,20 @@ public class RedundancyFilter implements SequenceFilter {
    */
   public void setInitParameter(final String key, final String value) {
 
-    if (Design.START_1_PARAMETER_NAME.equals(key)) {
+    if (DesignConstants.START_1_PARAMETER_NAME.equals(key)) {
 
       final boolean start1 = Boolean.parseBoolean(value);
       if (start1)
         this.startOffset = 0;
       else
         this.startOffset = -1;
-    } else if (Design.GENOME_FILE_PARAMETER_NAME.equals(key))
+    } else if (DesignConstants.GENOME_FILE_PARAMETER_NAME.equals(key))
       this.referenceFile = new File(value);
-    else if (Design.TEMP_DIR_PARAMETER_NAME.equals(key))
+    else if (DesignConstants.TEMP_DIR_PARAMETER_NAME.equals(key))
       this.tempDir = new File(value);
-    else if (Design.OLIGO_DIR_PARAMETER_NAME.equals(key))
+    else if (DesignConstants.OLIGO_DIR_PARAMETER_NAME.equals(key))
       this.oligosDir = new File(value);
-    else if (Design.EXTENSION_FILTER_PARAMETER_NAME.equals(key))
+    else if (DesignConstants.EXTENSION_FILTER_PARAMETER_NAME.equals(key))
       this.extensionFilter = value;
 
   }

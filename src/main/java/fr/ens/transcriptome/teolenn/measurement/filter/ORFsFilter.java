@@ -25,7 +25,7 @@ package fr.ens.transcriptome.teolenn.measurement.filter;
 import java.io.IOException;
 import java.util.Properties;
 
-import fr.ens.transcriptome.teolenn.Design;
+import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
@@ -111,7 +111,7 @@ public class ORFsFilter implements MeasurementFilter {
 
     if (key == null || value == null)
       return;
-    if (Design.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
+    if (DesignConstants.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
       this.oligoLength = Integer.parseInt(value);
 
     this.ressourceProperties.setProperty(key.toLowerCase(), value);

@@ -25,7 +25,7 @@ package fr.ens.transcriptome.teolenn.selector;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import fr.ens.transcriptome.teolenn.Design;
+import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
@@ -76,10 +76,10 @@ public class TilingSelector extends SimpleSelector {
    */
   public void setInitParameter(final String key, final String value) {
 
-    if (Design.START_1_PARAMETER_NAME.equals(key))
+    if (DesignConstants.START_1_PARAMETER_NAME.equals(key))
       this.start1 = Boolean.parseBoolean(value);
 
-    else if (Design.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
+    else if (DesignConstants.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
       this.oligoLength = Integer.parseInt(value.trim());
 
     else if ("windowLength".equals(key))
