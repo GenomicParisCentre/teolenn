@@ -61,6 +61,9 @@ public class ORFResource {
   private String currentSequenceName;
   private ORF currentORF;
 
+  private String lastChromosome;
+  private int lastOligoStart;
+
   /**
    * Static method to get the singleton of the ressource
    * @param properties Properties used to configure the resource
@@ -113,6 +116,7 @@ public class ORFResource {
   public static final class ORF implements Comparable<ORF> {
 
     public String name;
+    public String chromosome;
     public int start;
     public int end;
     public boolean wattsonStrand;
@@ -139,7 +143,24 @@ public class ORFResource {
      */
     public String toString() {
 
-      return this.start + "," + this.end;
+      return name
+          + " " + chromosome + " [" + start + "," + end + "]"
+          + (wattsonStrand ? 'W' : 'C');
+    }
+
+    public boolean equals(Object o) {
+
+      if (o == this)
+        return true;
+
+      if (o == null || !(o instanceof ORF))
+        return false;
+
+      final ORF orf = (ORF) o;
+
+      return this.name.equals(orf.name)
+          && this.start == orf.start && this.end == orf.end
+          && this.wattsonStrand == orf.wattsonStrand;
     }
 
     //
@@ -153,9 +174,10 @@ public class ORFResource {
      * @param name Name of the ORF
      * @param wattsonStrand true if the ORF is in the Wattson strand
      */
-    public ORF(final int start, final int end, final String name,
-        final boolean wattsonStrand) {
+    public ORF(final String chromosome, final int start, final int end,
+        final String name, final boolean wattsonStrand) {
 
+      this.chromosome = chromosome;
       this.start = start;
       this.end = end;
       this.name = name;
@@ -174,6 +196,12 @@ public class ORFResource {
   public ORF getORF(final String chromosome, final int oligoStart,
       final int oligoLength) {
 
+    if (this.lastChromosome == chromosome && lastOligoStart == oligoStart)
+      return this.currentORF;
+
+    this.lastChromosome = chromosome;
+    this.lastOligoStart = oligoStart;
+    
     return getORF(chromosome + "\t" + oligoStart + "\t" + oligoLength);
   }
 
@@ -277,7 +305,7 @@ public class ORFResource {
       } else
         chrORFs = this.orfs.get(chr);
 
-      chrORFs.add(new ORF(start, end, orfName, wattsonStrand));
+      chrORFs.add(new ORF(chr, start, end, orfName, wattsonStrand));
     }
 
     int count = 0;
