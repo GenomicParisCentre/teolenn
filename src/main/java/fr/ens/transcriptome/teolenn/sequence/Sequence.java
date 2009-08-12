@@ -22,15 +22,23 @@
 
 package fr.ens.transcriptome.teolenn.sequence;
 
+import java.util.logging.Logger;
+
+import fr.ens.transcriptome.teolenn.Globals;
+
 /**
  * This class define a sequence.
  * @author Laurent Jourdren
  */
 public class Sequence {
 
+  private static final Logger logger = Logger.getLogger(Globals.APP_NAME);
+
   private int id;
   private String sequence;
   private String name;
+
+  final StringBuilder sb = new StringBuilder();
 
   /**
    * Get the sequence of the sequence.
@@ -145,6 +153,51 @@ public class Sequence {
     int endPos = this.name.indexOf(")", startPos2);
 
     return Integer.parseInt(this.name.substring(startPos2 + 1, endPos));
+  }
+
+  public void reverseComplementSequence() {
+
+    if (this.sequence == null)
+      return;
+
+    final int len = this.sequence.length();
+
+    for (int i = 0; i < len; i++)
+      switch (sequence.charAt(i)) {
+      case 'A':
+        sb.append('T');
+        break;
+      case 'T':
+        sb.append('A');
+        break;
+      case 'G':
+        sb.append('C');
+        break;
+      case 'C':
+        sb.append('G');
+        break;
+      case 'a':
+        sb.append('t');
+        break;
+      case 't':
+        sb.append('a');
+        break;
+      case 'g':
+        sb.append('c');
+        break;
+      case 'c':
+        sb.append('c');
+        break;
+
+      default:
+        sb.append(sequence.charAt(i));
+        logger.warning("Unknown nucleotide: "
+            + sequence.charAt(i) + " in sequence " + this.name);
+        break;
+      }
+
+    this.sequence = sb.reverse().toString();
+
   }
 
   /**
