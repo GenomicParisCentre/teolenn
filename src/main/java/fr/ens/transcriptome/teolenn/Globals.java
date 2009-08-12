@@ -99,7 +99,7 @@ public class Globals {
   public static final boolean STD_OUTPUT_DEFAULT = false;
 
   /** Design file version. */
-  public static final double DESIGN_FILE_VERSION = 1.0;
+  public static final double DESIGN_FILE_VERSION = 1.1;
 
   private static String getVersion() {
 
