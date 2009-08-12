@@ -211,10 +211,6 @@ public class Main {
 
     // Set the weights
     d.setWeightSetters(parseSelectWeights(designElement));
-
-    // Start the computation
-    d.execute();
-
   }
 
   /**
