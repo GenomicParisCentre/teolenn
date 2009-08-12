@@ -29,8 +29,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -159,43 +157,68 @@ public class RedundancyFilter implements SequenceFilter {
     // Clear current results
     this.currentChrResult.clear();
 
-    Scanner s = new Scanner(br);
-    s.useDelimiter("\t|\n");
+    final int startOffset = this.startOffset;
+    String l = null;
 
-    while (true)
-      try {
-        final String oligoName = s.next();
+    while ((l = br.readLine()) != null) {
 
-        final int subSeqPos = oligoName.indexOf(":subseq(");
-        final int commaPos = oligoName.indexOf(",", subSeqPos);
+      final String line = l;
 
-        final String chr = oligoName.substring(0, subSeqPos);
-        final int oligoPos =
-            Integer.parseInt(oligoName.substring(subSeqPos + 8, commaPos));
+      final int subSeqPos = indexOf(line, ':', 0);
+      final int commaPos = indexOf(line, ',', subSeqPos);
+      final int posTabSeq = indexOf(line, '\t', commaPos);
+      final int posTabUnknown1 = indexOf(line, '\t', posTabSeq);
+      final int posTabNbMatches = indexOf(line, '\t', posTabUnknown1);
+      final int posTabUnknown2 = indexOf(line, '\t', posTabNbMatches);
+      final int posTabLen = indexOf(line, '\t', posTabUnknown2);
+      final int posTabStrand = indexOf(line, '\t', posTabLen);
+      final int posTabChr = indexOf(line, '\t', posTabStrand);
+      final int posTabMatchStart = indexOf(line, '\t', posTabChr);
+      final int posTabMatchType = indexOf(line, '\t', posTabMatchStart);
 
-        s.next();
-        s.next();
+      if (posTabMatchType == -1)
+        continue;
 
-        final int nbMatches = s.nextInt();
-        s.next();
-        final int matchLen = s.nextInt();
-        final String matchStrand = s.next();
-        final String matchChr = s.next();
-        final int matchStart = s.nextInt() + this.startOffset;
-        final int matchType = s.nextInt();
+      final String chr = line.substring(0, subSeqPos);
+      final int oligoPos =
+          Integer.parseInt(line.substring(subSeqPos + 8, commaPos));
+      final int nbMatches =
+          Integer.parseInt(line.substring(posTabNbMatches + 1, posTabUnknown2));
+      final int matchLen =
+          Integer.parseInt(line.substring(posTabLen + 1, posTabStrand));
+      final char matchStrand = line.charAt(posTabStrand + 1);
+      final String matchChr = line.substring(posTabChr + 1, posTabMatchStart);
+      final int matchStart =
+          Integer.parseInt(line
+              .substring(posTabMatchStart + 1, posTabMatchType))
+              + startOffset;
+      final int matchType =
+          Integer.parseInt(line.substring(posTabMatchType + 1));
 
-        // add result in memory only if oligo match at the right position
-        if (nbMatches == 1
-            && matchType == 0 && "+".equals(matchStrand)
-            && chr.equals(matchChr) && oligoPos == matchStart)
-          this.currentChrResult.put(oligoPos, matchLen);
+      // add result in memory only if oligo match at the right position
+      if (nbMatches == 1
+          && matchType == 0 && matchStrand == '+' && chr.equals(matchChr)
+          && oligoPos == matchStart)
+        this.currentChrResult.put(oligoPos, matchLen);
 
-        s.nextLine();
-      } catch (NoSuchElementException e) {
+    }
 
-        break;
-      }
+  }
 
+  private static final int indexOf(final String ch, final char character,
+      final int startPos) {
+
+    if (startPos == -1)
+      return -1;
+
+    int p = startPos;
+    final int len = ch.length();
+
+    while (++p < len)
+      if (ch.codePointAt(p) == character)
+        return p;
+
+    return -1;
   }
 
   /**
