@@ -38,6 +38,7 @@ import fr.ens.transcriptome.teolenn.measurement.io.MultiSequenceMeasurementWrite
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.output.Output;
+import fr.ens.transcriptome.teolenn.resource.ChromosomeNameResource;
 import fr.ens.transcriptome.teolenn.resource.OligoSequenceResource;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
 import fr.ens.transcriptome.teolenn.sequence.SequenceIterator;
@@ -73,6 +74,8 @@ public class DesignCommand extends Design {
 
     if (!isSkipPhase1())
       phase1CreateAllOligos();
+    else
+      ChromosomeNameResource.getRessource(getOligosDir()).load();
 
     if (!isSkipPhase2())
       phase2FilterAllOligos(getSequenceFiltersList());
@@ -338,6 +341,13 @@ public class DesignCommand extends Design {
 
     if (isGenomeMaskedFile())
       verifyChromosomeLengths(chrOligo, chrMasked);
+
+    // Create chromosome names resource
+    ChromosomeNameResource chromosomeNames =
+        ChromosomeNameResource.getRessource(getOligosDir());
+
+    // Fill chromosome names and save chromosome list file
+    chromosomeNames.addChromosomesNames(chrOligo.keySet());
 
     logger.info(""
         + countOligosCreated(chrOligo) + " oligos created in  "
