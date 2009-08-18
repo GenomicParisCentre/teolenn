@@ -34,12 +34,11 @@ import fr.ens.transcriptome.teolenn.core.MeasurementCore;
 import fr.ens.transcriptome.teolenn.core.SequenceCore;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
-import fr.ens.transcriptome.teolenn.measurement.io.FastaMeasurementWriter;
 import fr.ens.transcriptome.teolenn.measurement.io.MultiSequenceMeasurementWriter;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsIOFactory;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
-import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
 import fr.ens.transcriptome.teolenn.measurement.resource.OligoSequenceResource;
+import fr.ens.transcriptome.teolenn.output.Output;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
 import fr.ens.transcriptome.teolenn.sequence.SequenceIterator;
 import fr.ens.transcriptome.teolenn.sequence.SequenceWriter;
@@ -330,7 +329,7 @@ public class DesignCommand extends Design {
 
       if (isGenomeMaskedFile())
         chrMasked =
-          SequenceCore.fastaOverlap(getGenomeMaskedFile(), getOligosDir(),
+            SequenceCore.fastaOverlap(getGenomeMaskedFile(), getOligosDir(),
                 DesignConstants.OLIGO_MASKED_SUFFIX, getOligoLength(),
                 isStart1());
     } catch (IOException e) {
@@ -496,8 +495,6 @@ public class DesignCommand extends Design {
             DesignConstants.OLIGO_MEASUREMENTS_FILTERED_STATS_FILE);
     final File selectedOligos =
         new File(getOutputDir(), DesignConstants.SELECTED_FILE);
-    final File selectedOligosFasta =
-        new File(getOutputDir(), DesignConstants.SELECTED_FILE + ".fasta");
 
     if (!statsFile.exists()) {
 
@@ -515,8 +512,6 @@ public class DesignCommand extends Design {
         filteredOligoMeasurementsFile.getAbsolutePath());
     selector.setInitParameter(DesignConstants.STATS_FILE_PARAMETER_NAME,
         statsFile.getAbsolutePath());
-    selector.setInitParameter(DesignConstants.SELECTED_FILE_PARAMETER_NAME,
-        selectedOligos.getAbsolutePath());
 
     // Initialize the selector
     selector.init();
@@ -530,11 +525,16 @@ public class DesignCommand extends Design {
                   filteredOligoMeasurementsFile, oligoMeasurementsFile);
 
       // Open output file
-      final SequenceMeasurementsWriter measurementWriter =
-          new MultiSequenceMeasurementWriter(SequenceMeasurementsIOFactory
-              .createSequenceMeasurementsSelectWriter(selectedOligos),
-              new FastaMeasurementWriter(selectedOligosFasta, getOligosDir(),
-                  DesignConstants.OLIGO_SUFFIX, getOligoLength(), isStart1()));
+      final MultiSequenceMeasurementWriter measurementWriter =
+          new MultiSequenceMeasurementWriter();
+
+      // Init the outputs and add it to measurementWriter
+      for (Output o : getOutputList()) {
+        o.setInitParameter(DesignConstants.OUTPUT_DEFAULT_FILE_PARAMETER_NAME,
+            selectedOligos.getAbsolutePath());
+        o.init();
+        measurementWriter.addWriter(o);
+      }
 
       // Launch selection
       selector.select(measurementReader, measurementWriter, wSetter);

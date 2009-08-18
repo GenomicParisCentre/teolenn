@@ -55,6 +55,9 @@ import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilterRegistery;
+import fr.ens.transcriptome.teolenn.output.DefaultOutput;
+import fr.ens.transcriptome.teolenn.output.Output;
+import fr.ens.transcriptome.teolenn.output.OutputRegistery;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelectorRegistery;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
@@ -211,6 +214,9 @@ public class Main {
 
     // Set the weights
     d.setWeightSetters(parseSelectWeights(designElement));
+
+    // Set the outputs
+    d.setOutputsList(parseOutput(designElement));
   }
 
   /**
@@ -602,6 +608,63 @@ public class Main {
   }
 
   /**
+   * Parse the "output" element of the DOM.
+   * @param rootElement root element of the document
+   * @return a selector objects
+   * @throws TeolennException if an error occurs while parsing
+   */
+  private List<Output> parseOutput(final Element rootElement)
+      throws TeolennException {
+
+    List<Output> list = new ArrayList<Output>();
+
+    for (Iterator i = rootElement.elementIterator("output"); i.hasNext();) {
+
+      final Element selector = (Element) i.next();
+
+      String selectorName = null;
+
+      for (Iterator i1 = selector.elementIterator("name"); i1.hasNext();) {
+        final Element name = (Element) i1.next();
+        selectorName = name.getTextTrim();
+      }
+
+      // Add the selector to registery if it is a plug in
+      for (Iterator i2 = selector.elementIterator("class"); i2.hasNext();) {
+        final Element clazz = (Element) i2.next();
+        String outputClass = clazz.getTextTrim();
+        OutputRegistery.addOutputType(selectorName, outputClass);
+      }
+
+      // Get the parameters of the measurement
+      final Properties properties = getElementParameters(selector);
+
+      Output output = OutputRegistery.getOutput(selectorName);
+
+      if (output == null) {
+        logger.warning("Unknown output: " + selectorName);
+        throw new TeolennException("Unknown output: " + selectorName);
+      }
+
+      // Set the initialization parameters for the selector
+      for (Map.Entry<Object, Object> entry : properties.entrySet())
+        output.setInitParameter((String) entry.getKey(), (String) entry
+            .getValue());
+
+      list.add(output);
+    }
+
+    if (list.size() == 0)
+      list.add(new DefaultOutput());
+
+    // Set the default initialization parameters of the outputs
+    for (Output o : list)
+      this.design.setDefaultModuleInitParameters(o);
+
+    return list;
+  }
+
+  /**
    * Get the parameter of an element
    * @param element Element to parse
    * @return a Properties object with the name and values of the parameters
@@ -707,7 +770,7 @@ public class Main {
 
     System.out.println(Globals.APP_NAME
         + " version " + Globals.APP_VERSION + " (" + Globals.APP_BUILD_NUMBER
-        + ")");
+        + " on " + Globals.APP_BUILD_DATE + ")");
     System.exit(0);
   }
 

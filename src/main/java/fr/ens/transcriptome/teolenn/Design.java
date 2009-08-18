@@ -28,6 +28,7 @@ import java.util.List;
 
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
+import fr.ens.transcriptome.teolenn.output.Output;
 import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
 import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilter;
 
@@ -53,6 +54,7 @@ public class Design {
   private List<MeasurementFilter> measurementFiltersList;
   private SequenceSelector selector;
   private WeightsSetter weightSetters;
+  private List<Output> outputsList;
 
   //
   // Getters
@@ -209,6 +211,14 @@ public class Design {
    */
   public WeightsSetter getWeightSetters() {
     return weightSetters;
+  }
+  
+  /**
+   * Get the list of outputs to use.
+   * @return a list of output
+   */
+  public List<Output> getOutputList() {
+    return outputsList;
   }
 
   //
@@ -383,4 +393,17 @@ public class Design {
     this.weightSetters = weightSetters;
   }
 
+  /**
+   * Set the output list for the design.
+   * @param outputsList The list of outputs to set
+   */
+  public void setOutputsList(final List<Output> outputsList) {
+
+    if (outputsList == null)
+      throw new InvalidParameterException(
+          "The list of outputs can't be null.");
+
+    this.outputsList = outputsList;
+  }
+  
 }

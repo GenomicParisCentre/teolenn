@@ -40,6 +40,7 @@ public class DesignConstants {
   public static final String GENOME_MASKED_FILE_PARAMETER_NAME =
   "_genomemaskedfile";
   public static final String OUTPUT_DIR_PARAMETER_NAME = "_outputdir";
+  public static final String OUTPUT_DEFAULT_FILE_PARAMETER_NAME = "_outputdefaultfile";
   public static final String OLIGO_DIR_PARAMETER_NAME = "_oligodir";
   public static final String TEMP_DIR_PARAMETER_NAME = "_tempdir";
   public static final String OLIGO_LENGTH_PARAMETER_NAME = "_oligolength";

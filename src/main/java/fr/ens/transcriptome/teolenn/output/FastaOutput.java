@@ -20,15 +20,17 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.measurement.io;
+package fr.ens.transcriptome.teolenn.output;
 
 import java.io.File;
 import java.io.IOException;
 
+import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.resource.OligoSequenceResource;
+import fr.ens.transcriptome.teolenn.selector.ORFMeasurement;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.sequence.SequenceWriter;
@@ -37,15 +39,85 @@ import fr.ens.transcriptome.teolenn.sequence.SequenceWriter;
  * This class define a fasta measurement writer.
  * @author Laurent Jourdren
  */
-public class FastaMeasurementWriter implements SequenceMeasurementsWriter {
+public class FastaOutput implements Output {
+
+  /** Output name. */
+  public static final String OUTPUT_NAME = "fasta";
 
   private boolean first = true;
   private int indexStart = -1;
   private int indexChromosome = -1;
+  private int indexORF = -1;
+
+  private File outputFile;
+  private File outputDir;
+  private String outputDefaultFile;
+  private boolean rcORF = true;
+  private boolean rc12;
 
   private SequenceWriter writer;
   private OligoSequenceResource fastaReader;
   private Sequence sequence = new Sequence();
+  private boolean reverseNextSequence;
+
+  /**
+   * Get the description of the output.
+   * @return the description of the output
+   */
+  public String getDescription() {
+
+    return "Write SequenceMeasurement to Fasta format";
+  }
+
+  /**
+   * Get the name of the output.
+   * @return the name of the output
+   */
+  public String getName() {
+
+    return OUTPUT_NAME;
+  }
+
+  /**
+   * Run the initialization phase of the output.
+   * @throws TeolennException if an error occurs while the initialization phase
+   */
+  public void init() throws TeolennException {
+
+    if (this.outputFile == null)
+      this.outputFile = new File(this.outputDir, this.outputDefaultFile);
+
+    try {
+      this.writer = new SequenceWriter(outputFile);
+    } catch (IOException e) {
+      throw new TeolennException(e);
+    }
+
+  }
+
+  /**
+   * Set a parameter for the output.
+   * @param key key for the parameter
+   * @param value value of the parameter
+   */
+  public void setInitParameter(String key, String value) {
+
+    if (key == null || value == null)
+      return;
+    if (DesignConstants.OUTPUT_DIR_PARAMETER_NAME.equals(key))
+      this.outputDir = new File(value);
+    if (DesignConstants.OUTPUT_DEFAULT_FILE_PARAMETER_NAME.equals(key))
+      this.outputDefaultFile = value;
+
+    if ("outputfile".equals(key))
+      this.outputFile = new File(value);
+
+    if ("rcorf".equals(key))
+      this.rcORF = Boolean.parseBoolean(value);
+
+    if ("rc12".equals(key))
+      this.rc12 = Boolean.parseBoolean(value);
+  }
 
   /**
    * Write a sequence measurement to the file.
@@ -64,6 +136,7 @@ public class FastaMeasurementWriter implements SequenceMeasurementsWriter {
           sm.getIndexMeasurment(OligoStartMeasurement.MEASUREMENT_NAME);
       this.indexChromosome =
           sm.getIndexMeasurment(ChromosomeMeasurement.MEASUREMENT_NAME);
+      this.indexORF = sm.getIndexMeasurment(ORFMeasurement.MEASUREMENT_NAME);
 
       if (this.indexStart == -1)
         throw new RuntimeException("Unable to find start measurement.");
@@ -82,6 +155,26 @@ public class FastaMeasurementWriter implements SequenceMeasurementsWriter {
     this.sequence =
         this.fastaReader.getSequence((String) values[this.indexChromosome],
             (Integer) values[this.indexStart]);
+
+    boolean reverse = false;
+
+    if (this.rcORF && this.indexORF != -1)
+      if (((String) values[this.indexORF]).endsWith("W"))
+        reverse = true;
+
+    if (this.rc12) {
+
+      if (this.reverseNextSequence) {
+
+        reverse = true;
+
+        this.reverseNextSequence = false;
+      } else
+        this.reverseNextSequence = true;
+    }
+
+    if (reverse)
+      sequence.reverseComplementSequence();
 
     this.writer.write(sequence);
   }
@@ -102,22 +195,11 @@ public class FastaMeasurementWriter implements SequenceMeasurementsWriter {
 
   /**
    * Public constructor.
-   * @param outputFile The output file
-   * @param oligosDir The directory of the oligonucleotides
-   * @param fastaExtension the extension of the fasta files
-   * @param oligoLength The length of the oligonucleotides
-   * @param start1 true if the fisrt position of the chromosome is 1
+   * @throws TeolennException
    */
-  public FastaMeasurementWriter(final File outputFile, final File oligosDir,
-      final String fastaExtension, final int oligoLength, final boolean start1)
-      throws IOException, TeolennException {
+  public FastaOutput() throws TeolennException {
 
-    if (outputFile == null)
-      throw new NullPointerException("File is null");
-
-    this.writer = new SequenceWriter(outputFile);
     this.fastaReader = OligoSequenceResource.getRessource();
-
   }
 
 }
