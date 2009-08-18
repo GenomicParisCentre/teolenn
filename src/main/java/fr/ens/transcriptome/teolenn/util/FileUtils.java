@@ -38,6 +38,7 @@ import java.io.OutputStreamWriter;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -229,6 +230,22 @@ public final class FileUtils {
     }
 
     return true;
+  }
+
+  /**
+   * Get the prefix of a list of files.
+   * @param files Files that we wants the prefix
+   * @return the prefix of the files
+   */
+  public static String getPrefix(final List<File> files) {
+
+    if (files == null)
+      return null;
+
+    File[] param = new File[files.size()];
+    files.toArray(param);
+
+    return getPrefix(param);
   }
 
   /**
