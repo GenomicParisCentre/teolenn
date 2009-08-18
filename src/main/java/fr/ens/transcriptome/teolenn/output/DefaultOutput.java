@@ -35,7 +35,6 @@ public class DefaultOutput implements Output {
 
   private SequenceMeasurementsWriter writer;
   private File outputFile;
-  private File outputDir;
   private String outputDefaultFile;
 
   /** Output name. */
@@ -65,7 +64,6 @@ public class DefaultOutput implements Output {
    */
   public void init() throws TeolennException {
 
-    System.out.println("outputDefaultFile=" + outputDefaultFile);
     if (this.outputFile == null)
       this.outputFile = new File(this.outputDefaultFile);
 
@@ -85,18 +83,11 @@ public class DefaultOutput implements Output {
    */
   public void setInitParameter(String key, String value) {
 
-    System.out.println("key="
-        + key + "\t(" + DesignConstants.OUTPUT_DEFAULT_FILE_PARAMETER_NAME
-        + ")\tvalue=" + value);
-
     if (key == null || value == null)
       return;
-    if (DesignConstants.OUTPUT_DIR_PARAMETER_NAME.equals(key))
-      this.outputDir = new File(value);
-    if (DesignConstants.OUTPUT_DEFAULT_FILE_PARAMETER_NAME.equals(key)) {
+
+    if (DesignConstants.OUTPUT_DEFAULT_FILE_PARAMETER_NAME.equals(key))
       this.outputDefaultFile = value;
-      System.out.println("Set value");
-    }
 
     if ("outputfile".equals(key))
       this.outputFile = new File(value);
