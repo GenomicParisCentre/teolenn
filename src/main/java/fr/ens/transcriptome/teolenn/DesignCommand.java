@@ -24,7 +24,7 @@ package fr.ens.transcriptome.teolenn;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -157,15 +157,14 @@ public class DesignCommand extends Design {
    * @param maskedFiles filter masked files too
    * @throws IOException if an error occurs while filtering
    */
-  private static final void filterSequencesFiles(final File[] oligoFiles,
+  private static final void filterSequencesFiles(final List<File> oligoFiles,
       final List<SequenceFilter> sequenceFilters, final boolean maskedFiles)
       throws IOException {
 
     int count = 0;
 
-    for (int i = 0; i < oligoFiles.length; i++) {
+    for (File oligoFile : oligoFiles) {
 
-      final File oligoFile = oligoFiles[i];
       final String basename = StringUtils.basename(oligoFile.getAbsolutePath());
 
       final SequenceIterator si1 = new SequenceIterator(oligoFile);
@@ -379,10 +378,14 @@ public class DesignCommand extends Design {
       sf.init();
 
     // Get the list of oligos files to process
-    final File[] oligoFiles =
-        FileUtils.listFilesByExtension(getOligosDir(),
-            DesignConstants.OLIGO_SUFFIX);
-    Arrays.sort(oligoFiles);
+    final List<String> chrNames =
+        ChromosomeNameResource.getRessource().getChromosomesNames();
+    final List<File> oligoFiles = new ArrayList<File>(chrNames.size());
+
+    final File oligoDir = getOligosDir();
+    for (String chrName : chrNames)
+      oligoFiles
+          .add(new File(oligoDir, chrName + DesignConstants.OLIGO_SUFFIX));
 
     try {
       DesignCommand.filterSequencesFiles(oligoFiles, listSequenceFilters,
@@ -416,14 +419,21 @@ public class DesignCommand extends Design {
     }
 
     // Get the list of filtered oligos files to process
-    final File[] oligoFilteredFiles =
-        FileUtils.listFilesByExtension(getOligosDir(), isSkipSequenceFilters()
+    final List<String> chrNames =
+        ChromosomeNameResource.getRessource().getChromosomesNames();
+    final List<File> oligoFilteredFiles = new ArrayList<File>(chrNames.size());
+
+    final File oligoDir = getOligosDir();
+    final String suffix =
+        isSkipSequenceFilters()
             ? DesignConstants.OLIGO_SUFFIX
-            : DesignConstants.OLIGO_FILTERED_SUFFIX);
-    Arrays.sort(oligoFilteredFiles);
+            : DesignConstants.OLIGO_FILTERED_SUFFIX;
+
+    for (String chrName : chrNames)
+      oligoFilteredFiles.add(new File(oligoDir, chrName + suffix));
 
     // Test if input files exists
-    if (oligoFilteredFiles == null || oligoFilteredFiles.length == 0) {
+    if (oligoFilteredFiles == null || oligoFilteredFiles.size() == 0) {
 
       logger.severe("No file found for oligo measurement computation.");
       throw new RuntimeException(

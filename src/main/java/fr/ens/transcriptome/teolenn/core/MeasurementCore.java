@@ -50,11 +50,11 @@ public class MeasurementCore {
    * @param statsFile statFile to create (optional)
    * @throws IOException if an error occurs while creating the measurement
    */
-  public static final void createMeasurementsFile(final File[] inputFiles,
+  public static final void createMeasurementsFile(final List<File> inputFiles,
       final File measurementsFile, final List<Measurement> measurements,
       final File statsFile) throws IOException {
 
-    if (inputFiles == null || inputFiles.length == 0)
+    if (inputFiles == null || inputFiles.size() == 0)
       return;
 
     final SequenceMeasurementsWriter smw =
@@ -68,8 +68,8 @@ public class MeasurementCore {
 
     int id = 0;
 
-    for (int i = 0; i < inputFiles.length; i++)
-      id = createMeasurementsFile(inputFiles[i], smw, sm, id, true);
+    for (File inputFile : inputFiles)
+      id = createMeasurementsFile(inputFile, smw, sm, id, true);
 
     smw.close();
 

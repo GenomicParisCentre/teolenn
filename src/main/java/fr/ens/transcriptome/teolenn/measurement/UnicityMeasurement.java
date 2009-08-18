@@ -25,8 +25,10 @@ package fr.ens.transcriptome.teolenn.measurement;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +40,7 @@ import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.Settings;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.core.SequenceCore;
+import fr.ens.transcriptome.teolenn.resource.ChromosomeNameResource;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.util.BinariesInstaller;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
@@ -166,7 +169,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
    * @param params parameters files
    * @throws IOException if an error occurs while running gt
    */
-  private void build_fmindex(final File[] params) throws IOException {
+  private void build_fmindex(final List<File> params) throws IOException {
 
     File idxDir = new File(this.baseDir, IDX_DIR);
 
@@ -179,9 +182,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
 
     String[] idxOri = {"rev", "cpl"};
 
-    for (int i = 0; i < params.length; i++) {
-
-      File f = params[i];
+    for (File f : params) {
 
       String idxName = StringUtils.basename(f.getName());
 
@@ -261,7 +262,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
    * @param maxPrefixLength maximal prefix length
    * @throws IOException if an exception occurs while executing gt
    */
-  private void run_uniquesub(File[] filesToProcess, String basename,
+  private void run_uniquesub(List<File> filesToProcess, String basename,
       int maxPrefixLength) throws IOException {
 
     File mupDir = new File(this.baseDir, MUP_DIR);
@@ -276,8 +277,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
     final ProcessUtils.ParalellExec pexec =
         new ProcessUtils.ParalellExec(1, Settings.getMaxThreads());
 
-    for (int i = 0; i < filesToProcess.length; i++) {
-      File f = filesToProcess[i];
+    for (File f : filesToProcess) {
 
       final String cmd =
           Settings.getGenomeToolsPath()
@@ -431,11 +431,12 @@ public final class UnicityMeasurement extends FloatMeasurement {
           SEQ_GZ_WITHOUT_X_EXTENSION, true, true);
 
       // Get the list of sequences files created
-      final File[] files =
-          FileUtils.listFilesByExtension(this.baseDir,
-              SEQ_GZ_WITHOUT_X_EXTENSION);
+      final List<String> chrNames =
+          ChromosomeNameResource.getRessource().getChromosomesNames();
+      final List<File> files = new ArrayList<File>(chrNames.size());
 
-      Arrays.sort(files);
+      for (String chrName : chrNames)
+        files.add(new File(this.baseDir, chrName + SEQ_GZ_WITHOUT_X_EXTENSION));
 
       // Build fmindex
       build_fmindex(files);
