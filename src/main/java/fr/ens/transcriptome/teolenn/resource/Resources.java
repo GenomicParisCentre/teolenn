@@ -30,10 +30,10 @@ import java.util.Map;
  * more Measurement. It can avoid to load many time the same information.
  * @author Laurent Jourdren
  */
-public final class MeasurementResources {
+public final class Resources {
 
   private Map<String, Object> resources = new HashMap<String, Object>();
-  private static MeasurementResources singleton;
+  private static Resources singleton;
 
   /**
    * Test if a resource exists.
@@ -77,7 +77,7 @@ public final class MeasurementResources {
   // Constructor
   //
 
-  private MeasurementResources() {
+  private Resources() {
   }
 
   //
@@ -88,10 +88,10 @@ public final class MeasurementResources {
    * Get the resources
    * @return a measurement resource
    */
-  public static final MeasurementResources getResources() {
+  public static final Resources getResources() {
 
     if (singleton == null)
-      singleton = new MeasurementResources();
+      singleton = new Resources();
 
     return singleton;
   }

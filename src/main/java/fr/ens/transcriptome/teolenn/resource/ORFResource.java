@@ -73,7 +73,7 @@ public class ORFResource {
   public static ORFResource getRessource(final Properties properties)
       throws IOException {
 
-    final MeasurementResources rs = MeasurementResources.getResources();
+    final Resources rs = Resources.getResources();
 
     if (rs.isResource(RESOURCE_NAME))
       return (ORFResource) rs.getResource(RESOURCE_NAME);

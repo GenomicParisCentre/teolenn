@@ -233,7 +233,7 @@ public class OligoSequenceResource {
    */
   public static OligoSequenceResource getRessource() throws TeolennException {
 
-    final MeasurementResources rs = MeasurementResources.getResources();
+    final Resources rs = Resources.getResources();
 
     if (rs.isResource(RESOURCE_NAME))
       return (OligoSequenceResource) rs.getResource(RESOURCE_NAME);
@@ -253,7 +253,7 @@ public class OligoSequenceResource {
       final String extension, final int oligoLength, final boolean start1)
       throws TeolennException {
 
-    final MeasurementResources rs = MeasurementResources.getResources();
+    final Resources rs = Resources.getResources();
 
     if (rs.isResource(RESOURCE_NAME))
       return (OligoSequenceResource) rs.getResource(RESOURCE_NAME);
