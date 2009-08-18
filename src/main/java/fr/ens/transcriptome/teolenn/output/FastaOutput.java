@@ -29,7 +29,7 @@ import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
-import fr.ens.transcriptome.teolenn.measurement.resource.OligoSequenceResource;
+import fr.ens.transcriptome.teolenn.resource.OligoSequenceResource;
 import fr.ens.transcriptome.teolenn.selector.ORFMeasurement;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;

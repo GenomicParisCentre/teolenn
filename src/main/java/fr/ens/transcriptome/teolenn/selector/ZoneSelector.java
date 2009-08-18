@@ -30,8 +30,8 @@ import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
-import fr.ens.transcriptome.teolenn.measurement.resource.ORFResource;
-import fr.ens.transcriptome.teolenn.measurement.resource.ORFResource.ORF;
+import fr.ens.transcriptome.teolenn.resource.ORFResource;
+import fr.ens.transcriptome.teolenn.resource.ORFResource.ORF;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
 public class ZoneSelector extends SimpleSelector {

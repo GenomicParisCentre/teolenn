@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.ens.transcriptome.teolenn.TeolennException;
-import fr.ens.transcriptome.teolenn.measurement.resource.ORFResource;
+import fr.ens.transcriptome.teolenn.resource.ORFResource;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 
 /**

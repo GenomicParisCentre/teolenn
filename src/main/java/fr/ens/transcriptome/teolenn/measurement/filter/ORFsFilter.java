@@ -29,7 +29,7 @@ import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
-import fr.ens.transcriptome.teolenn.measurement.resource.ORFResource;
+import fr.ens.transcriptome.teolenn.resource.ORFResource;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
 public class ORFsFilter implements MeasurementFilter {

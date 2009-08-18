@@ -20,7 +20,7 @@
  *
  */
 
-package fr.ens.transcriptome.teolenn.measurement.resource;
+package fr.ens.transcriptome.teolenn.resource;
 
 import java.io.BufferedReader;
 import java.io.File;

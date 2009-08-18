@@ -22,8 +22,8 @@
 
 package fr.ens.transcriptome.teolenn.selector;
 
-import fr.ens.transcriptome.teolenn.measurement.resource.ORFResource;
-import fr.ens.transcriptome.teolenn.measurement.resource.ORFResource.ORF;
+import fr.ens.transcriptome.teolenn.resource.ORFResource;
+import fr.ens.transcriptome.teolenn.resource.ORFResource.ORF;
 
 public class From5PrimeORFMeasurement extends SimpleSelectorMeasurement {
 
