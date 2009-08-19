@@ -49,6 +49,7 @@ public class ChromosomeNameResource {
   private static final String CHROMOSOME_LIST_FILENAME = "chromosomes_list.txt";
 
   private List<String> list = new ArrayList<String>();
+
   private File listFile;
 
   private static final class ChromosomeNameComparator implements
@@ -74,11 +75,19 @@ public class ChromosomeNameResource {
       if (lastA != lastB)
         return a.compareTo(b);
 
-      int nA = Integer.parseInt(a.substring(lastA, a.length()));
-      int nB = Integer.parseInt(b.substring(lastB, b.length()));
+      final String prefixA = a.substring(0, lastA);
+      final String prefixB = b.substring(0, lastB);
+
+      if (!prefixA.equals(prefixB))
+        return prefixA.compareTo(prefixB);
+
+      final String suffixA = a.substring(lastA, a.length());
+      final String suffixB = b.substring(lastB, b.length());
+
+      int nA = suffixA.length() == 0 ? 0 : Integer.parseInt(suffixA);
+      int nB = suffixB.length() == 0 ? 0 : Integer.parseInt(suffixB);
 
       return nA - nB;
-
     }
 
     private int getLastDigitIndex(String a) {
@@ -145,8 +154,8 @@ public class ChromosomeNameResource {
       if (name != null)
         this.list.add(name.trim());
 
-    logger.info("Chromosomes: "+this.list);
-    
+    logger.info("Chromosomes: " + this.list);
+
     sortNames();
     save();
   }
