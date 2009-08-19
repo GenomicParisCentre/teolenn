@@ -26,9 +26,12 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Globals;
+import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
@@ -43,11 +46,17 @@ public class SerializedSequenceMeasurementsReader implements
     SequenceMeasurementsReader {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
-  private static final String SERIALIZED_FORMAT_VERSION = "TEOLENN_MES_1";
+  private static final String SERIALIZED_FORMAT_VERSION = "TEOLENN_MES_2";
 
   private ObjectInputStream in;
   private Measurement[] ms;
   private int[] types;
+  private final Map<Integer, String> indexChromosomeNames =
+      new HashMap<Integer, String>();
+  private int typeDataChromosomeName;
+  private String currentChr;
+  private int chrNameIndex = -1;
+  private int indexChr = -1;
 
   /**
    * Read the header of the file.
@@ -85,21 +94,31 @@ public class SerializedSequenceMeasurementsReader implements
 
         final Object objType = this.ms[i].getType();
 
-        if (Integer.class == objType)
+        if (Float.class == objType)
           this.types[i] = 1;
-        else if (Float.class == objType)
-          this.types[i] = 2;
-        else if (String.class == objType)
+        else if (Integer.class == objType)
           this.types[i] = 3;
+        else if (String.class == objType)
+          this.types[i] = 5;
         else {
           logger.severe("Unknown datatype: " + objType);
           throw new IOException("Unknown datatype: " + objType);
         }
       }
 
+      // Get the data type of chromosome names
+      this.typeDataChromosomeName = this.in.readInt();
+
+      // Get the chromosomes names
+      final String[] chrNames = (String[]) this.in.readObject();
+      for (int i = 0; i < chrNames.length; i++)
+        this.indexChromosomeNames.put(i, chrNames[i]);
+
     } catch (ClassNotFoundException e) {
     }
 
+    this.currentChr = null;
+    this.chrNameIndex = -1;
   }
 
   /**
@@ -130,6 +149,9 @@ public class SerializedSequenceMeasurementsReader implements
         result.addMesurement(ms[i]);
       result.setArrayMeasurementValues(new Object[ms.length]);
 
+      this.indexChr =
+          result.getIndexMeasurment(ChromosomeMeasurement.MEASUREMENT_NAME);
+
     } else
       result = sm;
 
@@ -147,19 +169,48 @@ public class SerializedSequenceMeasurementsReader implements
 
     for (int i = 0; i < len; i++) {
 
-      switch (this.types[i]) {
-      case 1:
-        values[i] = in.readInt();
-        break;
-      case 2:
-        values[i] = in.readFloat();
-        break;
-      case 3:
-        values[i] = in.readUTF();
-        break;
-      default:
-        break;
-      }
+      if (i == this.indexChr) {
+
+        final int val;
+
+        switch (this.typeDataChromosomeName) {
+
+        case 2:
+          val = in.readByte();
+          break;
+        case 4:
+          val = in.readShort();
+          break;
+        case 3:
+          val = in.readInt();
+          break;
+        default:
+          val = -10;
+          break;
+        }
+
+        if (val == chrNameIndex)
+          values[i] = this.currentChr;
+        else {
+          chrNameIndex = val;
+          this.currentChr = this.indexChromosomeNames.get(val);
+          values[i] = this.currentChr;
+        }
+
+      } else
+        switch (this.types[i]) {
+        case 1:
+          values[i] = in.readFloat();
+          break;
+        case 3:
+          values[i] = in.readInt();
+          break;
+        case 5:
+          values[i] = in.readUTF();
+          break;
+        default:
+          break;
+        }
     }
 
     return result;

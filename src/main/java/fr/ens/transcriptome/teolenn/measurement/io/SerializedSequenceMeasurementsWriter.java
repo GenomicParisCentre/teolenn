@@ -25,9 +25,15 @@ package fr.ens.transcriptome.teolenn.measurement.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Globals;
+import fr.ens.transcriptome.teolenn.TeolennException;
+import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
+import fr.ens.transcriptome.teolenn.resource.ChromosomeNameResource;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.util.FileUtils;
 
@@ -39,9 +45,14 @@ public class SerializedSequenceMeasurementsWriter implements
     SequenceMeasurementsWriter {
 
   private static Logger logger = Logger.getLogger(Globals.APP_NAME);
-  private static final String SERIALIZED_FORMAT_VERSION = "TEOLENN_MES_1";
+  private static final String SERIALIZED_FORMAT_VERSION = "TEOLENN_MES_2";
 
   private ObjectOutputStream out;
+  private ChromosomeNameResource resource;
+  private final Map<String, Integer> indexChromosomeNames =
+      new HashMap<String, Integer>();
+  private int typeDataChromosomeName;
+  private int indexChr;
 
   private boolean headerDone;
   private int[] types;
@@ -72,18 +83,44 @@ public class SerializedSequenceMeasurementsWriter implements
 
       final Object objType = sm.getMeasurement(names[i]).getType();
 
-      if (Integer.class == objType)
+      if (Float.class == objType)
         this.types[i] = 1;
-      else if (Float.class == objType)
-        this.types[i] = 2;
-      else if (String.class == objType)
+      else if (Integer.class == objType)
         this.types[i] = 3;
+      else if (String.class == objType)
+        this.types[i] = 5;
       else {
         logger.severe("Unknown datatype: " + objType);
         throw new IOException("Unknown datatype: " + objType);
       }
     }
 
+    // Get the list of the chromosome names
+    final List<String> chrNames = this.resource.getChromosomesNames();
+
+    // Define the type of chromosome data
+    final int nbChr = chrNames.size();
+
+    if (nbChr >= 0 && nbChr <= Byte.MAX_VALUE)
+      this.typeDataChromosomeName = 2;
+    else if (nbChr > Byte.MAX_VALUE && nbChr <= Short.MAX_VALUE)
+      this.typeDataChromosomeName = 4;
+    else if (nbChr > Short.MAX_VALUE)
+      this.typeDataChromosomeName = 1;
+
+    out.writeInt(this.typeDataChromosomeName);
+
+    // Write the list of chromosomes names
+    int i = 0;
+    for (String chrName : chrNames)
+      this.indexChromosomeNames.put(chrName, i++);
+
+    final String[] chrNamesArray = new String[chrNames.size()];
+    chrNames.toArray(chrNamesArray);
+
+    out.writeObject(chrNamesArray);
+
+    this.indexChr = -1;
     this.headerDone = true;
   }
 
@@ -98,9 +135,16 @@ public class SerializedSequenceMeasurementsWriter implements
     if (this.out == null)
       return;
 
+    String lastChr = null;
+    Object chrNameIndex = null;
+
     // Write the header
-    if (!headerDone)
+    if (!headerDone) {
       writeHeader(sm);
+      this.indexChr =
+          sm.getIndexMeasurment(ChromosomeMeasurement.MEASUREMENT_NAME);
+      this.types[this.indexChr] = this.typeDataChromosomeName;
+    }
 
     // Write the id of the current measurement
     final int id = sm.getId();
@@ -109,20 +153,56 @@ public class SerializedSequenceMeasurementsWriter implements
     // Write the values of the current measurements
     final Object[] values = sm.getArrayMeasurementValues();
     final int len = values.length;
-    for (int i = 0; i < len; i++)
+    for (int i = 0; i < len; i++) {
+
+      final Object val;
+
+      if (i == this.indexChr) {
+
+        final String chr = (String) values[i];
+        if (chr != lastChr) {
+
+          final int idx = this.indexChromosomeNames.get(chr);
+
+          switch (this.typeDataChromosomeName) {
+          case 2:
+            chrNameIndex = (byte) idx;
+            break;
+          case 4:
+            chrNameIndex = (short) idx;
+            break;
+          case 3:
+            chrNameIndex = idx;
+            break;
+          }
+
+          lastChr = chr;
+        }
+        val = chrNameIndex;
+      } else
+        val = values[i];
+
       switch (this.types[i]) {
       case 1:
-        out.writeInt((Integer) values[i]);
+        out.writeFloat((Float) val);
         break;
       case 2:
-        out.writeFloat((Float) values[i]);
+        out.writeByte((Byte) val);
         break;
       case 3:
-        out.writeUTF((String) values[i]);
+        out.writeInt((Integer) val);
         break;
+      case 4:
+        out.writeShort((Short) val);
+        break;
+      case 5:
+        out.writeUTF((String) val);
+        break;
+
       default:
         break;
       }
+    }
 
     if ((id % 100000 == 0))
       out.reset();
@@ -153,6 +233,14 @@ public class SerializedSequenceMeasurementsWriter implements
       throw new NullPointerException("File is null");
 
     this.out = FileUtils.createObjectOutputWriter(file);
+
+    try {
+      this.resource = ChromosomeNameResource.getRessource();
+
+    } catch (TeolennException e) {
+
+      throw new IOException("None chromosome name found");
+    }
   }
 
 }
