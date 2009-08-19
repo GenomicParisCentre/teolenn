@@ -175,6 +175,7 @@ public class RedundancyFilter implements SequenceFilter {
       final int posTabChr = indexOf(line, '\t', posTabStrand);
       final int posTabMatchStart = indexOf(line, '\t', posTabChr);
       final int posTabMatchType = indexOf(line, '\t', posTabMatchStart);
+      final int posTabNucleotideModifs = indexOf(line, '\t', posTabMatchType);
 
       if (posTabMatchType == -1)
         continue;
@@ -193,7 +194,9 @@ public class RedundancyFilter implements SequenceFilter {
               .substring(posTabMatchStart + 1, posTabMatchType))
               + startOffset;
       final int matchType =
-          Integer.parseInt(line.substring(posTabMatchType + 1));
+          posTabNucleotideModifs == -1 ? Integer.parseInt(line
+              .substring(posTabMatchType + 1)) : Integer.parseInt(line
+              .substring(posTabMatchType + 1, posTabNucleotideModifs));
 
       // add result in memory only if oligo match at the right position
       if (nbMatches == 1
