@@ -40,9 +40,9 @@ public final class ChromosomeMeasurement extends StringMeasurement {
    */
   protected String calcStringMeasurement(final Sequence sequence) {
 
-    String seqName = sequence.getName();
+    final String seqName = sequence.getName();
 
-    return seqName.substring(seqName.indexOf("_") + 1, seqName.indexOf(":"));
+    return seqName.substring(0, seqName.lastIndexOf(":"));
   }
 
   /**
