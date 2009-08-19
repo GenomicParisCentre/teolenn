@@ -147,7 +147,7 @@ public class Settings {
    */
   public static void setMeasurementFileSerialized(final boolean serialized) {
 
-    properties.getProperty("mes.serialized.format", Boolean
+    properties.setProperty("mes.serialized.format", Boolean
         .toString(serialized));
   }
 
