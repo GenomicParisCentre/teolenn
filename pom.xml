@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-15" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -6,15 +6,15 @@
 	<groupId>fr.ens.transcriptome</groupId>
 	<artifactId>teolenn</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>Teolenn</name>
 	<description>
-		A tool to compute design of oligonucleotides
+		A tool to compute design of oligonucleotides for microarrays.
 	</description>
-	<url>http://hestia.ens.fr/alloligos</url>
+	<url>http://transcriptome.ens.fr/teolenn</url>
 
 	<organization>
-		<name>École Normale Supérieure Microarray platform</name>
+		<name>Ãcole Normale SupÃ©rieure Microarray platform</name>
 		<url>http://transcriptome.ens.fr/sgdb</url>
 	</organization>
 
@@ -22,10 +22,10 @@
 		<developer>
 			<id>jourdren</id>
 			<name>Laurent Jourdren</name>
-			<email>jourdren 0 biologie ens fr</email>
+			<email>teolenn 0 biologie ens fr</email>
 			<url />
 			<organization>
-				École Normale Supérieure Microarray platform
+				Ãcole Normale SupÃ©rieure Microarray platform
 			</organization>
 			<organizationUrl>
 				http://transcriptome.ens.fr/sgdb
@@ -38,11 +38,11 @@
 		</developer>
 		<developer>
 			<id>lecrom</id>
-			<name>Stéphane Le Crom</name>
-			<email>lecrom 0 biologie ens fr</email>
+			<name>StÃ©phane Le Crom</name>
+			<email>teolenn 0 biologie ens fr</email>
 			<url />
 			<organization>
-				École Normale Supérieure Microarray platform
+				Ãcole Normale SupÃ©rieure Microarray platform
 			</organization>
 			<organizationUrl>
 				http://transcriptome.ens.fr/sgdb
@@ -58,14 +58,29 @@
 	<licenses>
 		<license>
 			<name>GNU General Public License</name>
-			<url>http://www.gnu.org/licenses/gpl.txt</url>
+			<url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments />
+		</license>
+		<license>
+			<name>CeCILL Licence franÃ§aise de logiciel libre</name>
+			<url>http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt</url>
 			<distribution>repo</distribution>
 			<comments />
 		</license>
 	</licenses>
 
+	<mailingLists>
+		<mailingList>
+			<name>teolenn-group</name>
+			<subscribe>http://groups.google.com/group/teolenn/subscribe</subscribe>
+			<!--unsubscribe>http://groups.google.com/group/teolenn/unsubscribe</unsubscribe-->
+			<archive>http://groups.google.com/group/teolenn</archive>
+		</mailingList>
+	</mailingLists>
+
 	<repositories>
-		<repository>
+		<!--repository>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -73,7 +88,7 @@
 			<name>Leburon Maven 2.x Repository</name>
 			<url>http://hestia.ens.fr/maven2</url>
 			<layout>default</layout>
-		</repository>
+		</repository-->
 		<!--repository>
 			<snapshots>
 				<enabled>true</enabled>
@@ -94,20 +109,20 @@
 			</url>
 			<layout>legacy</layout>
 		</repository>
+		<repository>
+			<id>oracleReleases</id>
+			<name>Oracle Released Java Packages</name>
+			<url>http://download.oracle.com/maven</url>
+			<layout>default</layout>
+		</repository>
 	</repositories>
 
 
-	<scm>
-		<connection>
-			scm:svn:https://anosgdb:anosgdb@subversion.biologie.ens.fr/svn/leburon
-		</connection>
-		<developerConnection>
-			scm:svn:https://anosgdb@subversion.biologie.ens.fr/svn/leburon
-		</developerConnection>
-		<url>
-			http://skadi.ens.fr/websvn/listing.php?repname=leburon
-		</url>
-	</scm>
+	<!--scm>
+		<connection></connection>
+		<developerConnection></developerConnection>
+		<url></url>
+	</scm-->
 
 	<dependencies>
 		<dependency>
@@ -135,10 +150,6 @@
 			<version>1.6.1</version>
 			<scope>compile</scope>
 		</dependency>
-
-<!--groupId>org.apache.maven.skins</groupId>
-     <artifactId>maven-stylus-skin</artifactId>
-     <version>1.0</version-->
 	</dependencies>
 
 	<build>
@@ -188,7 +199,7 @@
 								<mkdir dir="${basedir}/target/generated-resources"/>
 								<buildnumber file="${basedir}/build.num"/>
 								<tstamp>
-									<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+									<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss z" />
 								</tstamp>
 
 								<manifest file="${basedir}/target/generated-resources/MANIFEST.MF">
@@ -218,10 +229,9 @@
 								<!-- Package binary distribution -->
 
 								<mkdir dir="${basedir}/target/dist/lib"/>
-								<copy file="${basedir}/COMPILING.txt" todir="${basedir}/target/dist/" />
+								<!--copy file="${basedir}/COMPILING.txt" todir="${basedir}/target/dist/" /-->
 								<copy file="${basedir}/INSTALL.txt" todir="${basedir}/target/dist/" />
 								<copy file="${basedir}/LICENSE.txt" todir="${basedir}/target/dist/" />
-								<copy file="${basedir}/README.txt" todir="${basedir}/target/dist/" />
 
 								<copy file="${basedir}/src/main/bin/${pom.artifactId}.sh" todir="${basedir}/target/dist/" />
 								<chmod file="${basedir}/target/dist/${pom.artifactId}.sh" perm="ugo+rx" />
@@ -243,6 +253,10 @@
 									src="${basedir}/target/${artifactId}-${version}.tar"/>
                                                                 <bzip2 destfile="${basedir}/target/${artifactId}-${version}.tar.bz2"
                                                                         src="${basedir}/target/${artifactId}-${version}.tar"/>
+								<untar src="${basedir}/target/${pom.artifactId}-${pom.version}.tar" 
+									dest="${basedir}/target/tar-bin"/>
+                                                                <zip destfile="${basedir}/target/${artifactId}-${version}.zip"
+                                                                        basedir="${basedir}/target/tar-bin"/>
 
 								<!-- Package source distribution -->
 
@@ -261,17 +275,9 @@
 								<move file="${basedir}/target/dist-src/" tofile="${basedir}/target/dist-src/${pom.artifactId}-${pom.version}"/>
 
 								<tar tarfile="${basedir}/target/${artifactId}-src-${version}.tar">
-									<!--tarfileset dir="${basedir}/src" mode="755" username="nobody" group="nobody" prefix="src/" /-->
 
 									<tarfileset dir="${basedir}/target/dist-src"  mode="755" username="nobody" group="nobody">
 										<include name="*/**"/>
-										<!--include name="src/**"/>
-										<include name="pom.xml"/>
-										<include name="checkstyle.xml"/>
-										<include name="checkstyle-license.txt"/>
-										<include name="COMPILING.txt"/>
-										<include name="INSTALL.txt"/>
-										<include name="LICENSE.txt"/-->
 									</tarfileset>
 								</tar>
 								<gzip zipfile="${basedir}/target/${artifactId}-src-${version}.tar.gz"
@@ -279,12 +285,70 @@
 								<bzip2 destfile="${basedir}/target/${artifactId}-src-${version}.tar.bz2"
 									src="${basedir}/target/${artifactId}-src-${version}.tar"/>
 
+								<untar src="${basedir}/target/${pom.artifactId}-src-${pom.version}.tar" 
+									dest="${basedir}/target/tar-src"/>
+                                                                <zip destfile="${basedir}/target/${artifactId}-src-${version}.zip"
+                                                                        basedir="${basedir}/target/tar-src"/>
              						</tasks>
            					</configuration>
            					<goals>
              						<goal>run</goal>
            					</goals>
          				</execution>
+					<execution>
+						<id>integrate-archives-site</id>
+						<phase>install</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="${basedir}/target/site" />
+
+								<replace encoding="iso-8859-1" dir="${basedir}/target/site" value="${pom.url}">
+									<include name="**/*.jnlp"/>
+									<include name="**/*.html"/>
+									<include name="**/*.rss"/>
+									<replacetoken>@@@WEBSITE@@@</replacetoken>
+								</replace>
+								<replace encoding="iso-8859-1" dir="${basedir}/target/site" value="${pom.version}">
+									<include name="**/*.jnlp"/>
+									<include name="**/*.html"/>
+									<include name="**/*.rss"/>
+									<replacetoken>@@@VERSION@@@</replacetoken>
+								</replace>
+								<replace encoding="iso-8859-1" dir="${basedir}/target/site" value="${pom.name}">
+									<include name="**/*.jnlp"/>
+									<include name="**/*.html"/>
+									<include name="**/*.rss"/>
+									<replacetoken>@@@APPNAME@@@</replacetoken>
+								</replace>
+
+								<tstamp>
+									<format property="TODAY_UK" pattern="EEE, dd MMM yyyy HH:mm:ss z" locale="en,UK"/>
+								</tstamp>
+
+								<replace encoding="iso-8859-1" dir="${basedir}/target/site" value="${TODAY_UK}">
+									<include name="**/*.jnlp"/>
+									<include name="**/*.html"/>
+									<include name="**/*.rss"/>
+									<replacetoken>@@@DATE@@@</replacetoken>
+								</replace>
+								<copy file="${basedir}/target/${artifactId}-${pom.version}.tar.gz"
+									todir="${basedir}/target/site"/>
+								<copy file="${basedir}/target/${artifactId}-src-${pom.version}.tar.gz"
+									todir="${basedir}/target/site"/>
+								<copy file="${basedir}/target/${artifactId}-${pom.version}.tar.bz2"
+									todir="${basedir}/target/site"/>
+								<copy file="${basedir}/target/${artifactId}-src-${pom.version}.tar.bz2"
+									todir="${basedir}/target/site"/>
+								<copy file="${basedir}/target/${artifactId}-${pom.version}.zip"
+									todir="${basedir}/target/site"/>
+								<copy file="${basedir}/target/${artifactId}-src-${pom.version}.zip"
+									todir="${basedir}/target/site"/>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
 				
 				</executions>
 			</plugin>
@@ -302,32 +366,11 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>
-									${basedir}/target/generated-sources
-								</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>copy</id>
-						<!--phase>package</phase-->
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>copy</goal>
@@ -364,6 +407,26 @@
 						                  <outputDirectory>${basedir}/target/dist/lib</outputDirectory>
 						                  <destFileName>dom4j.jar</destFileName>
 						                </artifactItem>
+								<artifactItem>
+						                  <groupId>com.sleepycat</groupId>
+						                  <artifactId>je</artifactId>
+						                  <version>3.3.75</version>
+						                  <!--type></type-->
+				                                  <!--classifier> [classifier - optional] </classifier-->
+						                  <overWrite>true</overWrite>
+						                  <outputDirectory>${basedir}/target/dist/lib</outputDirectory>
+						                  <destFileName>je.jar</destFileName>
+						                </artifactItem>
+								<artifactItem>
+						                  <groupId>org.apache.derby</groupId>
+						                  <artifactId>derby</artifactId>
+						                  <version>10.4.2.0</version>
+						                  <!--type></type-->
+				                                  <!--classifier> [classifier - optional] </classifier-->
+						                  <overWrite>true</overWrite>
+						                  <outputDirectory>${basedir}/target/dist/lib</outputDirectory>
+						                  <destFileName>derby.jar</destFileName>
+						                </artifactItem>
 					              </artifactItems>
 					              <!-- other configurations here -->
 				            </configuration>
@@ -394,9 +457,6 @@
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
-			<!--<plugin>
-				<artifactId>maven-plugin-plugin</artifactId>
-				</plugin>-->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>changes-maven-plugin</artifactId>
@@ -407,27 +467,6 @@
 						</reports>
 					</reportSet>
 				</reportSets>
-				<!--executions>
-					<execution>
-						<goals>
-							<goal>announcement-generate</goal>
-						</goals>
-						<id>announcement-generate</id>
-					</execution>
-					<execution>
-					<goals>
-						<goal>announcement-mail</goal>
-					</goals>
-					<id>announcement-mail</id>
-					</execution>
-				</executions>
-				<configuration>
-					<smtpHost>smtp.biologie.ens.fr</smtpHost>
-					<smtpPort implementation="java.lang.Integer">25</smtpPort>
-					<toAddresses>
-						<toAddress implementation="java.lang.String">jourdren@biologie.ens.fr</toAddress>
-					</toAddresses>
-				</configuration-->
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -460,10 +499,17 @@
 				<minimumTokens>100</minimumTokens>
 				</configuration>
 				</plugin>-->
-			<plugin>
+			<!--plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>changelog-maven-plugin</artifactId>
-			</plugin>
+				<configuration>
+					<type>date</type>
+					<dates>
+						<date implementation="java.lang.String">2008-01-01</date>
+					</dates>
+					<dateFormat>yyyy-MM-dd</dateFormat>
+				</configuration>
+			</plugin-->
 			<!--plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>taglist-maven-plugin</artifactId>
@@ -490,31 +536,5 @@
 				</plugin>-->
 		</plugins>
 	</reporting>
-
-	<!-- Enabling the use of FTP -->
-	<distributionManagement>
-		<repository>
-			<id>leburon-repository</id>
-			<url>
-				ftp://hestia.ens.fr/export/home1/httpd/html/leburon/maven2
-			</url>
-		</repository>
-		<snapshotRepository>
-			<uniqueVersion>true</uniqueVersion>
-			<id>leburon-repository</id>
-			<name>Nividic Snapshots</name>
-			<url>
-				ftp://hestia.ens.fr/export/home1/httpd/html/leburon/maven2
-			</url>
-		</snapshotRepository>
-		<site>
-			<id>leburon-repository</id>
-			<name>Nividic Website</name>
-			<url>
-				ftp://hestia.ens.fr/export/home1/httpd/html/leburon/rosedo
-			</url>
-		</site>
-	</distributionManagement>
-
 
 </project>
