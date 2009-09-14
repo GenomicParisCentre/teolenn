@@ -1,0 +1,28 @@
+body {
+	font-size: 14px;
+	width: 1000px;
+}
+
+#banner {
+	height: 100px;
+	background: url(../images/test.jpg);
+}
+
+.xleft, #bannerLeft img {
+  text-shadow: #FFFFFF 1px 1px 1px;
+}
+.xright, #bannerRight {
+  text-shadow: #FFFFFF 1px 1px 1px;
+}
+
+a.externalLink, a.externalLink:link, a.externalLink:visited, a.externalLink:active, a.externalLink:hover {
+  padding-right: 0px;
+}
+
+
+#breadcrumbs {
+	height: 13px;
+	background-image: url(../images/test.jpg);
+	padding: 5px 5px 5px 5px;
+}
+
