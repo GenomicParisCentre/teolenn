@@ -9,7 +9,7 @@
 	</properties>
 	<body>
 
-		<release version="1.0" date="2008-11-17" description="Initial Teolen release">
+		<release version="1.0" date="2009-09-14" description="First release">
 
 			<action dev="jourdren" type="add">
 				Initial Toelenn 1.0 realease.
