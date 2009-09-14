@@ -1,46 +1,42 @@
 <design>
-	<formatversion>1.0</formatversion>
+	<formatversion>1.1</formatversion>
 
-	<windowsize>140</windowsize>
-	<oligosize>30</oligosize>
+	<startPosition>0</startPosition>
+	<oligolength>60</oligolength>
+
 
 	<genomefile>trichoderma.fasta</genomefile>
 	<genomemaskedfile>trichoderma.allmasked</genomemaskedfile>
 	<outputdir></outputdir>
 
+	<!--windowsize>140</windowsize>
+	<oligosize>30</oligosize-->
+
+	<!-- A example of constant -->
+	<constants>
+		<constant>
+			<name>myconstant</name>
+			<value>myvalue</value>
+		</constant>
+        </constants>
+
+	<!-- Sequences creation phase -->
+	<sequencecreation skip="false" />
+
+	<!-- Sequences filtering phase -->
 	<sequencefilters skip="false">
 		<sequencefilter>
 			<name>redundancy</name>
-			<!--class>fr.ens.transcriptome.test.Test</class-->
 		</sequencefilter>
 		<sequencefilter>
 			<name>Sequencexn</name>
 		</sequencefilter>
 	</sequencefilters>
+
+	<!-- Computation measurements phase -->
 	<measurements skip="false">
-		<!-- Add automaticaly -->
-		<!--measurement>
-			<name>scaffold</name>
-		</measurement-->
-		<!-- Add automaticaly ? -->
-		<!--measurement>
-			<name>oligostart</name>
-		</measurement-->
-		<!--measurement>
-			<name>dummy</name>
-			<class>fr.ens.transcriptome.oligo.measurement.DummyMeasurement</class>
-		</measurement-->
 		<measurement>
 			<name>oligosequence</name>
-		</measurement>
-		<measurement>
-			<name>position</name>
-			<!--parameters>
-				<parameter>
-					<name>windowsize</name>
-					<value>${windowsize}</value>
-				</parameter>
-			</parameters-->
 		</measurement>
 		<measurement>
 			<name>tm</name>
@@ -54,14 +50,6 @@
 		<measurement>
 			<name>unicity</name>
 			<parameters>
-				<!--parameter>
-					<name>oligolength</name>
-					<value>${oligolength}</value>
-				</parameter>
-				<parameter>
-					<name>genomefile</name>
-					<value>${genomefile}</value>
-				</parameter-->
 				<parameter>
 					<name>maxprefixlength</name>
 					<value>30</value>
@@ -70,6 +58,8 @@
 
 		</measurement>
 	</measurements>
+
+	<!-- Filtering measurements phase -->
 	<measurementfilters skip="false">
 		<measurementfilter>
 			<name>floatrange</name>
@@ -140,7 +130,20 @@
 			</parameters>
 		</measurementfilter>
 	</measurementfilters>
-	<select>
+
+	<!-- Select phase -->
+	<select skip="false">
+		<-name>tiling</name>
+		<parameters>
+			<parameter>
+				<name>windowlength</name>
+				<value>140</value>
+			</parameter>
+			<parameter>
+				<name>windowstep</name>
+				<value>140</value>
+			</parameter>
+		</parameters-->
 		<measurement>
 			<name>tm</name>
 			<weight>0.300</weight>
@@ -188,4 +191,15 @@
 			<weight>0.25</weight>
 		</measurement>
 	</select>
+
+	<!-- Output parameters -->
+        <outputs>
+		<output>
+			<name>fasta</name>
+		</output>
+		<output>
+			<name>default</name>
+		</output>
+	</outputs>
+
 </design>
