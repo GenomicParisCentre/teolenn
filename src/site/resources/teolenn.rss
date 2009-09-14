@@ -8,7 +8,7 @@
 	<lastBuildDate>@@@DATE@@@</lastBuildDate>
 	<link>@@@WEBSITE@@@</link>
 	<item>
-		<title>Teolenn version @@@VERSION@@@ is available</title>
+		<title>@@@APPNAME@@@ version @@@VERSION@@@ is available</title>
 		<description>
 			The @@@APPNAME@@@ developpement team is pleased to announce the @@@VERSION@@@ release!
 			You can download this new version here: @@@WEBSITE@@@/download.html
