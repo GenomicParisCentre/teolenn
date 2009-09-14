@@ -39,7 +39,7 @@ public class TeolennException extends Exception {
 
   /**
    * Create a new TeolennException with a cause.
-   * @param ex the Throwable that caused this NividicException
+   * @param ex the Throwable that caused this TeolennException
    */
   public TeolennException(final Throwable ex) {
     super(ex);
@@ -47,9 +47,9 @@ public class TeolennException extends Exception {
 
   /**
    * Create a new TeolennException with a cause and a message.
-   * @param ex the Throwable that caused this NividicException
+   * @param ex the Throwable that caused this TeolennException
    * @param message the message
-   * @deprecated use new NividicException(message, ex) instead
+   * @deprecated use new TeolennException(message, ex) instead
    */
   public TeolennException(final Throwable ex, final String message) {
     this(message, ex);
@@ -58,7 +58,7 @@ public class TeolennException extends Exception {
   /**
    * Create a new TeolennException with a cause and a message.
    * @param message the message
-   * @param ex the Throwable that caused this NividicException
+   * @param ex the Throwable that caused this TeolennException
    */
   public TeolennException(final String message, final Throwable ex) {
     super(message, ex);
