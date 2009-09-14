@@ -23,15 +23,7 @@
 package fr.ens.transcriptome.teolenn;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -44,25 +36,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-
-import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
-import fr.ens.transcriptome.teolenn.measurement.Measurement;
-import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
-import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
-import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
-import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilterRegistery;
-import fr.ens.transcriptome.teolenn.output.DefaultOutput;
-import fr.ens.transcriptome.teolenn.output.Output;
-import fr.ens.transcriptome.teolenn.output.OutputRegistery;
-import fr.ens.transcriptome.teolenn.selector.SequenceSelector;
-import fr.ens.transcriptome.teolenn.selector.SequenceSelectorRegistery;
-import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
-import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilter;
-import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilterRegistery;
 
 /**
  * This is the main class of the application.
@@ -175,7 +149,7 @@ public class Main {
       if (line.hasOption("version"))
         version();
 
-      if (line.hasOption("licence"))
+      if (line.hasOption("license"))
         license();
 
       // Load configuration if exists
