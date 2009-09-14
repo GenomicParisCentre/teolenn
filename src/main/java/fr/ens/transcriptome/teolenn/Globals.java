@@ -75,22 +75,26 @@ public class Globals {
   /** Teolenn Website url. */
   public static final String WEBSITE_URL = getWebSiteURL();
 
-  private static final String COPYRIGHT_DATE = "2008";
+  private static final String COPYRIGHT_DATE = "2008-2009";
 
   /** Licence text. */
   public static final String LICENSE_TXT =
-      "This program is developed under the GNU General Public License version 2 or later.";
+      "This program is developed under the GNU General Public License version 2 or later and CeCILL.";
 
   /** About string, plain text version. */
   public static final String ABOUT_TXT =
       Globals.APP_NAME
-          + " version " + Globals.APP_VERSION + " (" + Globals.APP_BUILD_NUMBER
-          + ")" + " is a software to compute design of oligonucleotides "
-          + "particles.\n" + "This version has been built on " + APP_BUILD_DATE
-          + ".\n\n" + "Authors:\n"
-          + "  Laurent Jourdren <jourdren@biologie.ens.fr>\n"
-          + "  Stéphane Le Crom <lecrom@biologie.ens.fr>\n"
-
+          + " version "
+          + Globals.APP_VERSION
+          + " ("
+          + Globals.APP_BUILD_NUMBER
+          + ")"
+          + " is a software to compute design of oligonucleotides for microarrays.\n"
+          + "This version has been built on " + APP_BUILD_DATE + ".\n\n"
+          + "Authors:\n" + "  Laurent Jourdren <jourdren@biologie.ens.fr>\n"
+          + "  Stéphane Le Crom <lecrom@biologie.ens.fr>\n" + "Contacts:\n"
+          + "  Mail: " + APP_NAME_LOWER_CASE + "@biologie.ens.fr\n"           
+          + "  Google group: http://groups.google.com/group/teolenn\n"
           + "Copyright " + COPYRIGHT_DATE
           + " École Normale Supérieure microarray platform.\n" + LICENSE_TXT
           + "\n";
