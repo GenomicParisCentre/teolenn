@@ -100,8 +100,11 @@ TTCTAAAACTAGTTAAAAAAACTAATATAGCCTTAAAAATAGCTAATAAGCTAGTAGCAAGACTTTTAAA
             read carefully the <a href="design.html">design file section</a> of the
             documentation.</p>
             
-            <p>You can also use the <a href="design-thricoderna-reesei.xml"><i>Trichoderma 
-            reesei</i> design file</a> as a model for your design. <b>Don't forget in 
+            <p>You can also use the <a href="./design-thricoderna-reesei.xml"><i>Trichoderma 
+            reesei</i> design file</a> as a model for your design. Compressed 
+            <a href="./trichoderma.fasta.bz2">Sequence</a> and
+            <a href="./trichoderma.allmasked.bz2">sequence masked</a> of <i>Trichoderma reesei</i> 
+            with bz2 can also be downloaded on our website. <b>Don't forget in 
             this design that the parameters are specific to <i>Trichoderma reesei</i> and
             <u>need to be adapted for your design</u>.</b></p> 
             
