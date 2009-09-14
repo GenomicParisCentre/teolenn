@@ -32,8 +32,9 @@
   <body>
 
    <section name="How I can conctact the authors">
-    
-      <p>You can contact the authors of Teolenn by <a href="mailto:teolenn@biologie.ens.fr">mail</a> or using the the <a href="http://groups.google.com/group/teolenn">teolenn group</a> on Google group.</p>
+   
+      <!-- teolenn 0 biologie ens fr -->	 
+      <p>You can contact the authors of Teolenn by <a href="mailto:%74%65%6f%6c%65%6e%6e%40%62%69%6f%6c%6f%67%69%65%2e%65%6e%73%2e%66%72">mail</a> or using the the <a href="http://groups.google.com/group/teolenn">teolenn group</a> on Google group.</p>
     
     </section>
     
