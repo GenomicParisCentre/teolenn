@@ -10,7 +10,7 @@ the Apache Software Foundation.
 
   After installing maven, you can :
 
-  * Compile Doelan: type 'mvn'
+  * Compile Teolenn: type 'mvn'
   * Build source and binary distribution: type 'mvn install'
   * Build the website: type 'mvn site'
   * Clean the build directory (target): type 'mvn clean'

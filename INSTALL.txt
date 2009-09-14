@@ -1,8 +1,6 @@
 INSTALLING Teolenn
 -----------------
 
-  To install Teolenn, see the doc/installing.html file.
-
-  For more information visits our website :
+  To install Teolenn, see the documentation on our website :
 
     http://transcriptome.ens.fr/teolenn
