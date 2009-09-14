@@ -13,13 +13,12 @@
  * These should be listed in @author doc comments.
  *
  * For more information on the Teolenn project and its aims,
- * or to join the Teolenn mailing list, visit the home page
+ * or to join the Teolenn Google group, visit the home page
  * at:
  *
  *      http://www.transcriptome.ens.fr/teolenn
  *
  */
-
 package fr.ens.transcriptome.teolenn.measurement.filter;
 
 import fr.ens.transcriptome.teolenn.Module;
