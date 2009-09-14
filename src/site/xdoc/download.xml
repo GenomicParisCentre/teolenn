@@ -76,8 +76,8 @@
             <td>Operating System</td>
             <td>
 		Teolenn can only works on *nix system as some externals tools (genometools 
-		and soap) can't run under Microsoft Windows. <b>Note for Mac OS X that soap 
-		seem buggy under this operating system, so <u>Teolenn will fail</u> if you use the Redundancy filter</b>
+		and soap) can't run under Microsoft Windows.<!--  <b>Note for Mac OS X that soap 
+		seem buggy under this operating system, so <u>Teolenn will fail</u> if you use the Redundancy filter</b>-->
             </td>
           </tr>
         </table>

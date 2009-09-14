@@ -19,7 +19,7 @@
 $ teolenn.sh -h
 </source>
 
-  <p>The program show you the next output:</p>
+  <p>The program show you the following output:</p>
 
 <source>
 usage: teolenn [options] design [genome [genome_masked [output_dir]]]
@@ -38,7 +38,7 @@ usage: teolenn [options] design [genome [genome_masked [output_dir]]]
 
     <subsection name="arguments">
 
-      <p>The Teolenn command line has 4 standards arguments (without options):</p>
+      <p>The Teolenn command line has 4 standards arguments (without options) that overwrite parameters of the design file:</p>
       <ul>
 	<li><b>design</b>: This is the design file to read. This file contains all the parameters to run the design. This is the only argument of Teolenn that is mandatory.</li>
 	<li><b>genome</b>: Is the path to the genome file (one file in fasta format). This argument is optional as this parameter can be set in the design file.</li>
@@ -52,7 +52,7 @@ usage: teolenn [options] design [genome [genome_masked [output_dir]]]
       this software and then returns to the shell.</p>
     </subsection>
     <subsection name="-conf &lt;file&gt;">
-      <p>With this option, Teolenn will be load the <b>file</b> as configuration file. See the <a href="#configuration_file">configuration section</a> for more information.</p>
+      <p>With this option, Teolenn will load the <b>file</b> as configuration file. See the <a href="#configuration_file">configuration section</a> for more information.</p>
     </subsection>
     <subsection name="-license">
       <p>When you run Teolenn with this option, you will get information about Teolenn license and and then returns to the shell.</p>
@@ -77,10 +77,11 @@ usage: teolenn [options] design [genome [genome_masked [output_dir]]]
     </subsection>
 
   </section>
+   <a name="configuration_file"/>
   <section name="Teolenn configuration file">
-  	<p>Some global parameters of Teolenn such as the path of the external tools can be set in a configuration file. There are two ways use this configuration file:</p>
+  	<p>Some global parameters of Teolenn such as the path of the external tools can be set in a configuration file. There are two ways to use this configuration file:</p>
   	<ul>
-  		<li>Create a <code>~/.teolenn</code> file.</li>
+  		<li>Create a <b>~/.teolenn</b> file.</li>
   		<li>use the <b>-conf &lt;file&gt;</b> option of Teolenn command line. The <code>~/.teolenn</code> file will not be read.</li>
   	</ul>
 
@@ -88,8 +89,8 @@ usage: teolenn [options] design [genome [genome_masked [output_dir]]]
 
 	<table>
 	  <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
-	  <tr><td>soap.path</td><td>String</td><td>The soap executable path. By default Teolenn use the its embedded version if exists for your platform. When this parameter is set the embedded version will not be used.</td></tr>
-	  <tr><td>gt.path</td><td>String</td><td>The genometools executable path. By default Teolenn use the its embedded version if exists for your platform. When this parameter is set the embedded version will not be used.</td></tr>
+	  <tr><td>soap.path</td><td>String</td><td>The soap executable path. By default Teolenn use the version embedded if exists for your platform. When this parameter is set the embedded version will not be used.</td></tr>
+	  <tr><td>gt.path</td><td>String</td><td>The genometools executable path. By default Teolenn use the version embedded if exists for your platform. When this parameter is set the embedded version will not be used.</td></tr>
 	  <tr><td>std.output</td><td>Boolean</td><td>Show the output of the external executable. This parameter as the same effect than <b>-v</b> option of Teolenn command line.</td></tr>
 	  <tr><td>max.threads</td><td>Integer</td><td>Set the maximal number of threads. This parameter as the same effect than <b>-threads</b> option of Teolenn command line.</td></tr>
 	</table>

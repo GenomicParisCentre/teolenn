@@ -12,7 +12,9 @@
   
     <section name="Known Bugs for Teolenn @@@VERSION@@@">
 
-      <p>No bug has been discovered in Teolenn.</p>  
+      <p>Teolenn is not able to designing probes for genome sequence files with 
+      more than 500 scaffolds due to a limitation with the specificity calculation 
+      using genome tools.</p>  
 
       <!--ul> 
         <li>Bug 1.</li>
@@ -24,7 +26,9 @@
     <section name="Submit a Teolenn bug">
 
       <!-- teolenn-list?subject=Bug -->
-      <p>You can submit a bug by sending a sending a mail to the <a href="mailto:%64%6f%65%6c%61%6e%2d%6c%69%73%74%40%62%69%6f%6c%6f%67%69%65%2e%65%6e%73%2e%66%72%3f%73%75%62%6a%65%63%74%3d%42%75%67">Teolenn list</a>.</p>
+      <p>You can submit a bug by filling an entry on the 
+      <a href="http://code.google.com/p/teolenn/issues/list">issue tracker</a> 
+      of the Google code hosting page of our project.</p>
 
     </section>
 

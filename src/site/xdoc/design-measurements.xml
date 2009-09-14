@@ -20,9 +20,6 @@
 		&lt;name&gt;oligosequence&lt;/name&gt;
 	&lt;/measurement&gt;
 	&lt;measurement&gt;
-		&lt;name&gt;position&lt;/name&gt;
-	&lt;/measurement&gt;
-	&lt;measurement&gt;
 		&lt;name&gt;tm&lt;/name&gt;
 	&lt;/measurement&gt;
 	&lt;measurement&gt;
@@ -47,22 +44,19 @@
 	<p>Each sequence filter is defined by:</p>
 	<ul>
 		<li>A <b>name</b>.</li>
-		<li>A <b>class</b> if the sequence filter is provided by an external plugin.</li>
+		<li>A <b>class</b> if the sequence filter is provided by an external plug-in.</li>
 		<li>Some <b>parameters</b> that allow configure each measurement.</li>
 	</ul>
 
 	<p>Each measurement, add a column to the measurement file(<code>oligo.mes</code>). 
-	The standard version of Teolenn contains 10 measurements:</p>
+	The standard version of Teolenn contains 7 measurements:</p>
 	<ul>
 		<li><b>chromosome</b>: Add the chromosome of the oligonucleotides sequence to the measurement file.</li>
-		<li><b>complexity</b>: Add a complexity value based on the genome masked.</li>
-		<li><b>%gc</b>: Add the percent of gc of the oligonucleotides.</li>
-		<li><b>oligolength</b>: Add the sequence length of the oligonucleotides.</li>
-		<li><b>oligoname</b>: Add the sequence name of the oligonucleotides.</li>
-		<li><b>oligosequence</b>: Add the sequences of the oligonucleotides.</li>
 		<li><b>oligostart</b>: Add the start position of the oligonucleotides on the chromosome.</li>
-		<li><b>position</b>: Add a position score for each oligonucleotides.</li>
+		<li><b>oligosequence</b>: Add the sequences of the oligonucleotides.</li>
 		<li><b>tm</b>: Add the melting temperature of the oligonucleotides.</li>
+		<li><b>%gc</b>: Add the percent of gc of the oligonucleotides.</li>
+		<li><b>complexity</b>: Add a complexity value based on the genome masked.</li>
 		<li><b>unicity</b>: Add the unicity value for each oligonucleotides.</li>
 	</ul>
   
@@ -77,6 +71,7 @@
   <subsection name="The chromosome measurement">
   
   	<ul>
+  		<li><b>Name:</b> chromosome</li>
   		<li><b>Description:</b> Get the chromosome source of an oligonucleotide.</li>
 		<li><b>Parameters:</b> None.</li>
 		<li><b>Use external tool:</b> No.</li>
@@ -85,9 +80,33 @@
   
   </subsection>
   
+  <subsection name="The oligstart measurement">
+  
+  	<ul>
+  		<li><b>Name:</b> oligostart</li>
+  		<li><b>Description:</b> Get the start position on the chromosome of the probe.</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> No.</li>
+		<li><b>Automatically added to measurements file:</b> Yes.</li>
+  	</ul> 
+  </subsection> 
+  
+  <subsection name="The oligosequence measurement">
+  
+  	<ul>
+  		<li><b>Name:</b> oligosequence</li>
+  		<li><b>Description:</b> Get the sequence of the probe.</li>
+		<li><b>Parameters:</b> None.</li>
+		<li><b>Use external tool:</b> No.</li>
+		<li><b>Automatically added to measurements file:</b> No.</li>
+  	</ul>  
+  
+  </subsection>
+  
   <subsection name="The complexity measurement">
   
   	<ul>
+  		<li><b>Name:</b> complexity</li>
   		<li><b>Description:</b> Get a complexity value using masked genome created probes.</li>
 		<li><b>Parameters:</b> None.</li>
 		<li><b>Use external tool:</b> No.</li>
@@ -99,53 +118,8 @@
   <subsection name="The %GC measurement">
   
   	<ul>
+  		<li><b>Name:</b> %gc</li>
   		<li><b>Description:</b> Get the percentage of GC bases in the oligonucleotide sequence.</li>
-		<li><b>Parameters:</b> None.</li>
-		<li><b>Use external tool:</b> No.</li>
-		<li><b>Automatically added to measurements file:</b> No.</li>
-  	</ul>  
-  
-  </subsection>
-  
-  <subsection name="The oligolength measurement">
-  
-  	<ul>
-  		<li><b>Description:</b> Get the length of the probe. Usualy, it's not 
-  		very useful as all probes has the same length.</li>
-		<li><b>Parameters:</b> None.</li>
-		<li><b>Use external tool:</b> No.</li>
-		<li><b>Automatically added to measurements file:</b> No.</li>
-  	</ul>  
-  
-  </subsection>
- 
-  <subsection name="The oligoname measurement">
-  
-  	<ul>
-  		<li><b>Description:</b> Get the name of the probe.</li>
-		<li><b>Parameters:</b> None.</li>
-		<li><b>Use external tool:</b> No.</li>
-		<li><b>Automatically added to measurements file:</b> No.</li>
-  	</ul>  
-  
-  </subsection>
-  
-  <subsection name="The oligstart measurement">
-  
-  	<ul>
-  		<li><b>Description:</b> Get the start position on the chromosome of the probe.</li>
-		<li><b>Parameters:</b> None.</li>
-		<li><b>Use external tool:</b> No.</li>
-		<li><b>Automatically added to measurements file:</b> No.</li>
-  	</ul>  
-  
-  </subsection>
-  
-  <subsection name="The position measurement">
-  
-  	<ul>
-  		<li><b>Description:</b> Get a position value is calculated in order
-  		 to favour probes centred in the window.</li>
 		<li><b>Parameters:</b> None.</li>
 		<li><b>Use external tool:</b> No.</li>
 		<li><b>Automatically added to measurements file:</b> No.</li>
@@ -156,6 +130,7 @@
   <subsection name="The unicity measurement">
   
   	<ul>
+  		<li><b>Name:</b> unicity</li>
   		<li><b>Description:</b> Get the minimum length of the unique prefixes
   		 are located all along the genome in the oligonucleotide sequence.</li>
 		<li><b>Parameters:</b>
@@ -171,12 +146,12 @@
   
   
   
-  <subsection name="Use external sequence filters">
+  <subsection name="Use external measurements">
   
   	<p>Teolenn is a very customizable tool, you can use your own measurement 
-  	calculator (see the <a href="plugins.html">developping plugins section</a> for more informations). To enable your custom filter, you must 
+  	calculator (see the <a href="plugins.html">developing plug-ins section</a> for more informations). To enable your custom measurement, you must 
      add the full name of the main class (witch implements <code>Measurement</code>)
-     of your plugin in the design file as shown in the following sample:</p>
+     of your plug-in in the design file as shown in the following sample:</p>
   	 
   	 <source>
 &lt;measurement&gt;

@@ -49,16 +49,17 @@
 
 
 			<p>
-				Teolenn is a tool dedicated to 3D distances measurements
-				within the cell developed to access the minimal distance
-				between cellular objects (e.g. individual mRNA molecules
-				and mitochondria surface). Corsen include 3D
-				segmentation algorithm allowing extracting and
-				characterizing cell objects to be processed - surface
-				calculation, aggregates decomposition- for minimal
-				distances calculation. A batch process is implemented to
-				analyse cell populations making possible statistical
-				analysis.
+				Teolenn is a universal probe design workflow developed
+				with a flexible and customisable module organisation.
+				Teolenn is intended for being used either by biologists,
+				thanks to an easy-to-use parameter file that gathers all
+				design properties, or by computer scientists, since its
+				Java-based customisable workflow allows to implement any
+				new method and to deal with any design parameters or
+				array format. In addition, Teolenn is able to supply
+				quality scores for each of the designed probes allowing
+				for a posteriori comparisons between quality scores and
+				signal intensities.
 			</p>
 
 
@@ -71,13 +72,15 @@
 		<section name="Availabality">
 
 			<p>
-				Corsen is distributed under the
-				<a href="license.html">General Public Licence</a>.
+				Teolenn is distributed under the
+				<a href="license.html">General Public Licence</a> and <a href="licence.html">CeCill</a>.
 			</p>
-
+			<p>Toelenn is The breton word for tiling.</p>
 		</section>
 		
 		<p><a href="teolenn.rss"><img src="images/feed-icon-14x14.png"/></a></p>
-
+		
+	
+		
 	</body>
 </document>

@@ -15,9 +15,9 @@
   
   <table>
 	  <tr><th>Parameter</th><th>Type</th><th>Value</th><th>Optional</th><th>Description</th></tr>
-	  <tr><td>windowlength</td><td>Integer</td><td>Must be &gt; 0</td><td>No</td><td>The windows length</td></tr>
-	  <tr><td>windowstep</td><td>Integer</td><td>Must be &gt; 0</td><td>No</td><td>The distance in pb between the start of two windows</td></tr>
-	  <tr><td>oligolength</td><td>Integer</td><td>Must be &gt; 0</td><td>No</td><td>The length of the oligonucleotide to design</td></tr>
+	  <tr><td>formatversion</td><td>String</td><td>1.1</td><td>No</td><td>The 1.1 version is currently the only version of the format supported by Teolenn.</td></tr>
+	  <tr><td>startposition</td><td>Integer</td><td>0 or 1</td><td>No</td><td>The way the first base is numbered.</td></tr>
+	  <tr><td>oligolenght</td><td>Integer</td><td>Must be &gt; 0</td><td>No</td><td>The length of the oligonucleotide to design</td></tr>
 	  
 	  <tr><td>genomefile</td><td>String</td><td>A relative or an absolute path</td><td>Yes, can be overrided by the second argument of <code>teolenn.sh</code></td><td>The path to the genome file. All the sequences must be in one file in fasta format.</td></tr>
 	  <tr><td>genomemaskedfile</td><td>String</td><td>A or an absolute relative path</td><td>Yes, can be overrided by the third argument of <code>teolenn.sh</code></td><td>The path to the masked genome file. All the sequences must be in one file in fasta format.</td></tr>
@@ -30,9 +30,9 @@
 
 <source>
 &lt;design&gt;
-	&lt;windowlength&gt;90&lt;/windowlength&gt;
-	&lt;windowstep&gt;60&lt;/windowstep&gt;
-	&lt;oligolength&gt;60&lt;/oligolength&gt;
+	&lt;formatversion&gt;1.1&lt;/formatversion&gt;
+	&lt;startposition&gt;0&lt;/startposition&gt;
+	&lt;oligosize&gt;60&lt;/oligosize&gt;
 
 	&lt;genomefile&gt;Ca21_chromosomes2.fasta&lt;/genomefile&gt;
 	&lt;genomemaskedfile&gt;Ca21_chromosomes2.fasta.allmasked&lt;/genomemaskedfile&gt;

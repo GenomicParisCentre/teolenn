@@ -14,7 +14,7 @@
 	  
 	  <p>First set your current directory to the base directory of <b>Teolenn</b>. The next commands works whatever your operating system and the "<code>$</code>" character represent the command line prompt.</p>
 	  
-	  <p>To build build both source and binary distribution:</p>
+	  <p>To build both source and binary distribution:</p>
 	  <source>$ mvn install</source>
 	  
 	  <p>To generate documentation:</p>

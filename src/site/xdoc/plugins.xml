@@ -2,7 +2,7 @@
 <document>
 
     <properties>
-        <title>Developing plugins for Teolen</title>
+        <title>Developing plug-ins for Teolen</title>
         <author email="jourdren@biologie.ens.fr">
             Laurent Jourdren
         </author>
@@ -15,14 +15,14 @@
         <p>Teolenn is a very customizable tool, you can use your own module at 
         each step of Teolenn process.</p>
         
-        <p>Your plugin must be written is Java but it could call external tools 
+        <p>Your plugin must be written in Java but it could call external tools 
         or use <a href="http://scripting.dev.java.net">scripting languages</a> 
         available on the Java platform.</p>
         
         <p>You can provide your plugin for Teolenn as class file(s) or jar file(s) by adding 
-        your plugin to the Teolenn <code>CLASSPATH</code>. To do it, edit 
+        your plug-in to the Teolenn <code>CLASSPATH</code>. To do it, edit 
         <code>teolenn.sh</code> in the <code>bin</code> directory of the 
-        Teolenn installation, then add the path to your plugin and dependencies after 
+        Teolenn installation, then add the path to your plug-in and dependencies after 
         the declaration of the <code>PLUGINS</code> variable.</p>
         
 <source>
@@ -55,19 +55,17 @@ $JAVA_CMD -server \
           fr.ens.transcriptome.teolenn.Main $*</source>        
         
       <p>The next table summaries, the java interface you need to implements 
-      for the type of plugin you want to write:</p>
+      for the type of plug-in you want to write:</p>
       
       <table>
         <tr><th>Type</th><th>Section in design file</th><th>Interface to implements</th></tr>
         <tr><td>Sequence filter</td><td><code>sequencefilters</code></td><td><code>SequenceFilter</code></td></tr>
         <tr><td>Measurement</td><td><code>measurements</code></td><td><code>Measurements</code></td></tr>
         <tr><td>Measurement filter</td><td><code>measurementfilters</code></td><td><code>MeasurementFilter</code></td></tr>
+	<tr><td>Selector</td><td><code>select</code></td><td><code>SequenceSelector</code></td></tr>
+	<tr><td>Ouput</td><td><code>outputs</code></td><td><code>Output</code></td></tr>
       </table>
-      
-<source>
-
-</source>
-      
+    
       <p>Don't forget to register your plugin in the design file using the <b>class</b>
        tag. Note that measurements need only to be declared once in <code>measurements</code> 
        section, not in <code>select</code> section. The following sample show the 
@@ -80,7 +78,7 @@ $JAVA_CMD -server \
 &lt;/sequencefilter&gt;</source>   
  
         
-        <p>For more specific information about plugin development see the <a href="contribute.html">contribute page</a>.</p>
+        <p>For more specific information about plug-in development see the <a href="contribute.html">contribute page</a>.</p>
         
         
         </section>

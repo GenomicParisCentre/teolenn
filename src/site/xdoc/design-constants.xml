@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+
+<properties>
+  <title>The constants section of the design file</title>
+  <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+</properties>
+
+<body>
+
+  <section name="Constants">
+    <p>The design file allow the user to define constants that will be used as built-in variables:</p>
+    <source>
+&lt;constants&gt;
+	&lt;constant&gt;
+		&lt;name&gt;myconstant&lt;/name&gt;
+		&lt;value&gt;200&lt;/value&gt;
+	&lt;/constant&gt;
+&lt;/constants&gt;
+</source>
+
+    <p>Then, you can use the constant anywhere in the design file:</p>
+    <source>
+	&lt;parameter&gt;
+		&lt;name&gt;max&lt;/name&gt;
+		&lt;value&gt;${myconstant}&lt;/value&gt;
+	&lt;/parameter&lt;    
+</source>
+  </section>
+
+</body>
+</document>

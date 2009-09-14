@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+
+<properties>
+  <title>The outputs section of the design file</title>
+  <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+</properties>
+
+<body>
+
+  <section name="Outputs">
+    <p>Teolenn allow to define one or more outputs for the selection algorithm. If the outputs section is forgotten the default output will be use. The following source show the structure of a typical outputs section of the design file:</p>
+    <source>
+...
+&lt;outputs&gt;
+	&lt;output&gt;
+		&lt;name&gt;default&lt;/name&gt;
+	&lt;/output&gt;
+	&lt;output&gt;
+		&lt;name&gt;fasta&lt;/name&gt;
+		&lt;parameters&gt;
+			&lt;parameter&gt;
+			    &lt;name&gt;outputfile&lt;/name&gt;
+			    &lt;name&gt;output.fasta&lt;/name&gt;
+			&lt;/parameter&gt;
+		&lt;/parameters&gt;
+	&lt;/output&gt;
+
+&lt;/outputs&gt;
+...</source>
+
+    <subsection name="Default output">
+    
+	<ul>
+		<li><b>Name:</b> default</li>
+  		<li><b>Description:</b> This is the default output of Teolenn. This tabular plain text file contains all the values of the measurements and scores of the selected oligonucleotides.</li>
+		<li><b>Parameters:</b>
+		  <ul>
+			  <li><b>outputfile:</b> The name output file. This parameter is optional, by default the output file is <b>select.mes</b>.</li>
+		  </ul> 
+		</li>
+  	</ul>  
+    
+    </subsection>
+
+    <subsection name="Fasta output">
+    
+	<ul>
+		<li><b>Name:</b> fasta</li>
+  		<li><b>Description:</b> This output will write selected measurement as a fasta file.</li>
+		<li><b>Parameters:</b> 
+		  <ul>
+			  <li><b>outputfile:</b> The name output file. This parameter is optional, by default the output file is <b>select.fasta</b>.</li>
+		  </ul>
+		</li>
+  	</ul>  
+    
+    </subsection>
+
+
+  </section>
+
+</body>
+</document>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+
+<properties>
+  <title>The sequence creation section of the design file</title>
+  <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
+</properties>
+
+<body>
+
+   <section name="Skip sequence creation">
+  
+  <p>In some case it will be useful to filtering sequences without regenerate all the oligonucleotides. Note that the sequencecreation tag is optional, if absent sequence creation will be automatically launched. To disable sequence creationsimply add to your design file:</p>
+  <source>
+...
+&lt;sequencecreation skip="true"&gt;
+...
+</source>
+  
+  </section>
+
+</body>
+</document>

@@ -11,12 +11,24 @@
     
   <section name="The select section of design file">
   
-  	<p>This section of the design file allow to set the weight and other parameters for each measurement used for the design.</p>
+  	<p>This section of the design file allow to specify the type of the selection and to set the weight and other parameters for each measurement used for the design.</p>
   
     <p>The following source show the structure of a typical select
      section of the design file:</p>
   
 <source>&lt;select&gt;
+	&lt;name&gt;tilling&lt;/name&gt;
+	&lt;parameters&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;windowlength&lt;/name&gt;
+				&lt;value&gt;140&lt;/value&gt;
+			&lt;/parameter&gt;
+			&lt;parameter&gt;
+				&lt;name&gt;windowstep&lt;/name&gt;
+				&lt;value&gt;140&lt;/value&gt;
+			&lt;/parameter&gt;
+		&lt;/parameters&gt;
+		
 	&lt;measurement&gt;
 		&lt;name&gt;%gc&lt;/name&gt;
 		&lt;weight&gt;0.150&lt;/weight&gt;
@@ -48,9 +60,9 @@
 	...
 &lt;/select&gt;</source>
 
+	<p>As Teolenn can use several algorithms for selection, you must specify the type of selector and its parameters.</p>
 
-
-	<p>Each measurement of the select selection is defined by:</p>
+	<p>Each measurement of the select section is defined by:</p>
 	<ul>
 		<li>A <b>name</b>.</li>
 		<li>A <b>weight</b> that define the weight of the measurement in the global score</li>
@@ -65,10 +77,35 @@
 	The next subsections summaries this parameters for score computation.</p>
 	
   
- 
-  	
+  </section>
+    
+  <section name="The selector type">
+  
+    <p>Teolenn is modular and for the selection phase as for the previous phases, you have the choice of the selector to use. Currently, only the tilling selector is available but a selector for ORF microarray design is under development.</p>
+    
+    <p>As for measurements and filters, the selector can be configured with parameters.</p>
+  
+    <subsection name="Tilling selector">
+    </subsection>
+  
+	<ul>
+  		<li><b>name</b>: tiling</li>
+		<li><b>Parameters:</b> 
+			<ul>
+				<li><b>windowlength</b>: The length of the tiling windows</li>
+				<li><b>windowstep</b>: Increment between two tiling windows. Must be &gt; 1</li>
+			</ul>
+		</li>
+  	</ul>  
+  
+  </section>
+    
+    
   
   
+  <section name="The measurements parameters">
+  
+  <p>This section contains the specifics parameters of measurements for the selection phase.</p>
   
   <subsection name="The tm measurement">
   
@@ -130,6 +167,24 @@
   
   </subsection>
   
+  
+  </section>
+  
+  
+    <section name="Use external selector">
+  
+  	<p>Teolenn is a very customizable tool, you can use your own selector 
+  	(see the <a href="plugins.html">developing plug-ins section</a> for more informations). To enable your custom selector, you must 
+     add the full name of the main class (witch implements <code>SequenceSelector</code>)
+     of your plug-in in the design file as shown in the following sample:</p>
+  	 
+  	 <source>
+&lt;select&gt;
+	&lt;name&gt;myselector&lt;/name&gt;
+	&lt;class&gt;com.example.mymeasurement&lt;/class&gt;
+	...
+&lt;/select&gt;</source>   
+  	 
   
   </section>
   

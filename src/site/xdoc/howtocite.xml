@@ -11,35 +11,38 @@
 	<body>
 
 		<section name="How to cite Teolenn">
-			<p>No article for Teolenn has been submited.</p>
+			<p>The Teolenn article is currently under submission.</p>
 			
-			<p>
-				<b>
-					Doelan: a solution for quality control monitoring of
-					microarray production
-				</b>
-			</p>
-			<p>
-				<small>
-					Laurent Jourdren and Stéphane Le Crom
-					<br />
-				</small>
-				<small>
-					Bioinformatics Advance Access published on September
-					22, 2005. doi:10.1093/bioinformatics/bti686
-					<br />
-				</small>
-				<small>
-					<a
-						href="http://bioinformatics.oxfordjournals.org/cgi/content/abstract/bti686v1">
-						[Abstract]
-					</a>
-				</small>
-				<a
-					href="http://bioinformatics.oxfordjournals.org/cgi/reprint/bti686v1">
-					[Accepted Manuscript]
-				</a>
-			</p>
+			
+                        <!--
+                        <p>
+                                <b>
+                                        Teolenn: an efficient and customisable workflow to design high-quality probes for microarray experiments
+                                </b>
+                        </p>
+                        <p>
+                                <small>
+                                        Jourdren Laurent, Duclos Aurélie, Brion Christian, Portnoy Thomas, Mathis Hugues, Margeot Antoine, Le Crom Stéphane
+                                        <br />
+                                </small>
+                                <small>
+                                        My favorite journal Advance Access published
+                                        xx, 2009. doi:
+                                        <br />
+                                </small>
+                                <small>
+                                        <a
+                                                href="">
+                                                [Abstract]
+                                        </a>
+
+                                    <a
+                                          href="">
+                                          [Accepted Manuscript]
+                                    </a>
+                                </small>
+                        </p>
+                        -->
 
 		</section>
 	</body>

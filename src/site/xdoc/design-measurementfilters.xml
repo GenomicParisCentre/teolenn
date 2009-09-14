@@ -16,7 +16,7 @@
     <p>The following source show the structure of a typical measurement filters
      section of the design file:</p>
   
-<source>&lt;measurementfilters&gt;
+<source>&lt;measurementfilters skip="false"&gt;
 	&lt;measurementfilter&gt;
 		&lt;name&gt;floatrange&gt;/name&gt;
 		&lt;parameters&gt;
@@ -57,7 +57,7 @@
 	<p>Each measurement filter is defined by:</p>
 	<ul>
 		<li>A <b>name</b>.</li>
-		<li>A <b>class</b> if the sequence filter is provided by an external plugin.</li>
+		<li>A <b>class</b> if the sequence filter is provided by an external plug-in.</li>
 		<li>Some <b>parameters</b> that allow configure each measurement.</li>
 	</ul>
 

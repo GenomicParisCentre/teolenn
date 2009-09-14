@@ -23,7 +23,7 @@
 		&lt;name&gt;redundancy&lt;/name&gt;
 	&lt;/sequencefilter&gt;
 	&lt;sequencefilter&gt;
-		&lt;name&gt;notatgc&lt;/name&gt;
+		&lt;name&gt;Sequencexn&lt;/name&gt;
 	&lt;/sequencefilter&gt;
 	&lt;sequencefilter&gt;
 		&lt;name&gt;dummysequencefilter&lt;/name&gt;
@@ -45,13 +45,13 @@
 	<p>Each sequence filter is defined by:</p>
 	<ul>
 		<li>A <b>name</b>.</li>
-		<li>A <b>class</b> if the sequence filter is provided by an external plugin.</li>
+		<li>A <b>class</b> if the sequence filter is provided by an external plug-in.</li>
 		<li>Some <b>parameters</b> that allow configure each filter.</li>
 	</ul>
 
 	<p>The standard version of Teolenn contains 2 filters:</p>
 	<ul>
-		<li><b>notatgc</b>: filter all the sequence that contains other 
+		<li><b>Sequencexn</b>: filter all the sequence that contains other 
 		Nucleic Acid Code that A, T, G or C (case insensitive).</li>
 		<li><b>redundancy</b>: filter all the redundancy oligonucleotides.</li>
 	</ul>
@@ -60,7 +60,7 @@
   
   </section>
   
-  <subsection name="The notatgc filter">
+  <subsection name="The Sequencexn filter">
   
   	<ul>
   		<li><b>Description:</b> This sequence filter filters all the sequence that contains other 
@@ -87,9 +87,9 @@
   <subsection name="Use external sequence filters">
   
   	<p>Teolenn is a very customizable tool, you can use your own sequence
-  	 filter (see the <a href="plugins.html">developping plugins section</a> for more informations). To enable your custom filter, you must 
+  	 filter (see the <a href="plugins.html">developing plug-ins section</a> for more informations). To enable your custom filter, you must 
   	 add the full name of the main class (witch implements <code>SequenceFilter</code>)
-  	 of your plugin in the design file as shown in the following sample:</p>
+  	 of your plug-in in the design file as shown in the following sample:</p>
   	 
   	 <source>
 &lt;sequencefilter&gt;
