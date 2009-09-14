@@ -42,16 +42,19 @@
 		</menu>
 
 		<menu name="Documentation">
-			<item name="Handbook" href="/handbook.html" />
+			<item name="Introduction" href="/introduction.html" />
 			<item name="Command line" href="/command_line.html" />
 			<item name="The design file" href="/design.html" collapse="true">
 				<item name="Global parameters" href="/design-global.html" />
+				<item name="Constants" href="/design-constants.html" />
+				<item name="Sequence creation" href="/design-sequencecreation.html" />
 				<item name="Sequence filters" href="/design-sequencefilters.html" />
 				<item name="Measurements" href="/design-measurements.html" />
 				<item name="Measurement filers" href="/design-measurementfilters.html" />
 				<item name="Select" href="/design-select.html" />
-			</item>
+				<item name="Outputs" href="/design-outputs.html" />
 			<!-- item name ="Optimize" href="/optimize.html"/-->
+			</item>
 			<item name="Known bugs" href="/bugs.html" />
 			<item name="Mailing list" href="/mail-lists.html" />
 		</menu>
@@ -60,7 +63,7 @@
 			<item name="Downloading sources" href="/download-src.html" />
 			<item name="Writing plugins" href="/plugins.html" /> 
 			<item name="Compiling" href="/compiling.html"/>
-			<item name="Contribute to Teolenn" href="/contribute.html"/>
+			<item name="Teolenn community" href="/contribute.html"/>
 		</menu>
 
 		<!--${reports}-->
