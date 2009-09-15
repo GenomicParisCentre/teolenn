@@ -7,6 +7,13 @@ body {
 	height: 100px;
 	background: url(../images/test.jpg);
 }
+#bannerLeft img {
+  padding: 5px 0px 0px 30px;
+}
+#bannerRight img {
+  padding: 15px 5px 0px 0px;
+}
+
 
 .xleft, #bannerLeft img {
   text-shadow: #FFFFFF 1px 1px 1px;
@@ -22,7 +29,7 @@ a.externalLink, a.externalLink:link, a.externalLink:visited, a.externalLink:acti
 
 #breadcrumbs {
 	height: 13px;
-	background-image: url(../images/test.jpg);
+	background-image: url(../images/header.png);
 	padding: 5px 5px 5px 5px;
 }
 
