@@ -54,7 +54,7 @@
       </ul>
       <p>
         Teolenn is distributed under the
-        <a href="license.html">General Public License</a>.
+        <a href="license.html">General Public License</a> and <a href="license.html">CeCILL</a>.
       </p>
       <subsection name="Compilation">
         <p>You'll find more information about how compile Teolenn in the <a href="compiling.html">compiling section</a>.</p>

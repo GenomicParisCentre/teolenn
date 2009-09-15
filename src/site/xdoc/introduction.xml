@@ -77,12 +77,16 @@ TTCTAAAACTAGTTAAAAAAACTAATATAGCCTTAAAAATAGCTAATAAGCTAGTAGCAAGACTTTTAAA
             <tr><td>soap</td><td>1.11</td><td>Linux 2.6.8+</td><td>i386</td><td></td></tr>
             <tr><td>soap</td><td>1.11</td><td>Linux 2.6.8+</td><td>x86_64</td><td></td></tr>
 	    <tr><td>soap</td><td>1.11</td><td>Mac OS 10.5+</td><td>i386</td><td></td></tr>
+	    <tr><td>soap</td><td>1.11</td><td>Mac OS 10.5+</td><td>x86_64</td><td>This the i386 that is embedded because it was impossible to compile genometools
+            as a static executable for this architecture.</td></tr>
             <tr><td>genometools</td><td>1.2.0</td><td>Linux 2.4.1+</td><td>i386</td><td></td></tr>
             <tr><td>genometools</td><td>1.2.0</td><td>Linux 2.4.1+</td><td>x86_64</td><td>
             This the i386 that is embedded because it was impossible to compile genometools 
             as a static executable for this architecture. IA32 compatibility 
             libraries are needed.</td></tr>
 	    <tr><td>genometools</td><td>1.2.0</td><td>Mac OS 10.5+</td><td>i386</td><td></td></tr>
+	    <tr><td>genometools</td><td>1.2.0</td><td>Mac OS 10.5+</td><td>x86_64</td><td>This the i386 that is embedded because it was impossible to compile genometools
+            as a static executable for this architecture.</td></tr>
         </table>
         
         
@@ -101,10 +105,9 @@ TTCTAAAACTAGTTAAAAAAACTAATATAGCCTTAAAAATAGCTAATAAGCTAGTAGCAAGACTTTTAAA
             documentation.</p>
             
             <p>You can also use the <a href="./design-thricoderna-reesei.xml"><i>Trichoderma 
-            reesei</i> design file</a> as a model for your design. Compressed 
-            <a href="./trichoderma.fasta.bz2">Sequence</a> and
-            <a href="./trichoderma.allmasked.bz2">sequence masked</a> of <i>Trichoderma reesei</i> 
-            with bz2 can also be downloaded on our website. <b>Don't forget in 
+            reesei</i> design file</a> as a model for your design.
+            Sequence and sequence masked of <i>Trichoderma reesei</i> 
+            are available on the <a href="http://genome.jgi-psf.org/Trire2/Trire2.download.html">website of the JGI</a>. <b>Don't forget in 
             this design that the parameters are specific to <i>Trichoderma reesei</i> and
             <u>need to be adapted for your design</u>.</b></p> 
             

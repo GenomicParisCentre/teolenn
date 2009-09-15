@@ -42,11 +42,11 @@
     <li>The <a href="design-sequencesfilters.html">sequencefilters</a> section. This section define the filters on all the oligonucleotides generated.</li>
     <li>The <a href="design-measurements.html">measurements section</a>. This section define the measurement to compute on the filtered oligonucleotides.</li>
     <li>The <a href="design-measurementfilters.html">measurementfilters</a> section. This section define the filters based on measurements to remove oligonucleotides.</li>
-    <li>The <a href="design-select.html">select section</a>. This part of the file set the parameters to select the best oligonucleotide for each window.</li>
+    <li>The <a href="design-selector.html">selector section</a>. This part of the file set the parameters to select the bests oligonucleotides.</li>
     <li>The <a href="design-outputs.html">outputs section</a>. This last part of the file set the parameters of the output(s) of selected oligonucleotides. If this section is absent, the default output will be used.</li>
   </ul>
   
-  <p>The following source show the structure of a typical <code>design.xml</code> file:</p>
+  <p>All the tags must be in lower case. The following source show the structure of a typical <code>design.xml</code> file:</p>
   
   <source>
 &lt;design&gt;
@@ -77,22 +77,24 @@
     ...
     &lt;/measurementfilters&gt;
     
-    &lt;select&gt;
+    &lt;selector&gt;
     ...
-    &lt;/select&gt;
+    &lt;/selector&gt;
     
     &lt;outputs&gt;
     ...
     &lt;/outputs&gt;
 &lt;/design&gt;</source>
 
+	<p>Note that all pluggable elements (sequencefilters, measurements, measurementsfilter, selectors, outputs) names, all parameters names and constants names are case insensible in the design file.</p>
+
 	<subsection name="Skip steps">
 	
 	<p>All the phases from sequences creation to selection of the best oligonucleotides can be skipped. To skip a phase set the skip attribute to true in the phase tag. As an example the following fragment of design file will skip the selection phase:</p>
 	<source>
-    &lt;select skip="true"&gt;
+    &lt;selector skip="true"&gt;
     ...
-    &lt;/select&gt;</source>
+    &lt;/selector&gt;</source>
 	</subsection>
 
   	<subsection name="Built-in variables">

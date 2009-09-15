@@ -85,13 +85,13 @@ $JAVA_CMD -server \
         <tr><td>Sequence filter</td><td><code>sequencefilters</code></td><td><code>SequenceFilter</code></td></tr>
         <tr><td>Measurement</td><td><code>measurements</code></td><td><code>Measurements</code></td></tr>
         <tr><td>Measurement filter</td><td><code>measurementfilters</code></td><td><code>MeasurementFilter</code></td></tr>
-	<tr><td>Selector</td><td><code>select</code></td><td><code>SequenceSelector</code></td></tr>
+	<tr><td>Selector</td><td><code>selector</code></td><td><code>SequenceSelector</code></td></tr>
 	<tr><td>Ouput</td><td><code>outputs</code></td><td><code>Output</code></td></tr>
       </table>
     
       <p>Don't forget to register your plugin in the design file using the <b>class</b>
        tag. Note that measurements need only to be declared once in <code>measurements</code> 
-       section, not in <code>select</code> section. The following sample show the 
+       section, not in <code>selector</code> section. The following sample show the 
        declaration of a sequence filter plugin:</p>
      
      <source>

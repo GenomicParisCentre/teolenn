@@ -25,20 +25,20 @@
 <document>
 
 <properties>
-  <title>The select section of design file</title>
+  <title>The selector section of design file</title>
   <author email="jourdren@biologie.ens.fr">Laurent Jourdren</author>
 </properties>
 
 <body>
     
-  <section name="The select section of design file">
+  <section name="The selector section of design file">
   
-  	<p>This section of the design file allow to specify the type of the selection and to set the weight and other parameters for each measurement used for the design.</p>
+  	<p>This section of the design file allow to specify the type of selection and to set the weight and other parameters for each measurement used for the design.</p>
   
-    <p>The following source show the structure of a typical select
+    <p>The following source show the structure of a typical selector
      section of the design file:</p>
   
-<source>&lt;select&gt;
+<source>&lt;selector&gt;
 	&lt;name&gt;tilling&lt;/name&gt;
 	&lt;parameters&gt;
 			&lt;parameter&gt;
@@ -80,11 +80,11 @@
 		&lt;/parameters&gt;
 	&lt;/measurement&gt;
 	...
-&lt;/select&gt;</source>
+&lt;/selector&gt;</source>
 
 	<p>As Teolenn can use several algorithms for selection, you must specify the type of selector and its parameters.</p>
 
-	<p>Each measurement of the select section is defined by:</p>
+	<p>Each measurement of the selector section is defined by:</p>
 	<ul>
 		<li>A <b>name</b>.</li>
 		<li>A <b>weight</b> that define the weight of the measurement in the global score</li>
@@ -93,7 +93,7 @@
 
 
 
-	<p>If a measurement is not present in the <b>select</b> section, all the scores of this 
+	<p>If a measurement is not present in the <b>selector</b> section, all the scores of this 
 	measurement will be at 0 as by default the weight of a measurement is equal to
 	0. In addition, extra parameters are sometimes needed to compute the score for a measurement. 
 	The next subsections summaries this parameters for score computation.</p>
@@ -135,8 +135,8 @@
   		<li><b>name</b>: tm</li>
 		<li><b>Parameters:</b> 
 			<ul>
-				<li><b>reference</b>: </li>
-				<li><b>deviation</b>: </li>
+				<li><b>reference</b>: The Tm value to be obtained. Can easily be set up to the Tm mean distribution.</li>
+				<li><b>deviation</b>: The deviation around the Tm reference to be allowed. The best score will be given for Tm near the reference + ou - the deviation.</li>
 			</ul>
 		</li>
   	</ul>  
@@ -149,8 +149,8 @@
   		<li><b>name</b>: %gc</li>
 		<li><b>Parameters:</b> 
 			<ul>
-				<li><b>reference</b>: </li>
-				<li><b>deviation</b>: </li>
+				<li><b>reference</b>: The GC percent value to be obtained. Can easily be set up to the GC content mean distribution.</li>
+				<li><b>deviation</b>: The deviation around the GC percent reference to be allowed. The best score will be given for GC percent near the reference + ou - the deviation.</li>
 			</ul>
 		</li>
   	</ul>  
@@ -201,11 +201,11 @@
      of your plug-in in the design file as shown in the following sample:</p>
   	 
   	 <source>
-&lt;select&gt;
+&lt;selector&gt;
 	&lt;name&gt;myselector&lt;/name&gt;
 	&lt;class&gt;com.example.mymeasurement&lt;/class&gt;
 	...
-&lt;/select&gt;</source>   
+&lt;/selector&gt;</source>   
   	 
   
   </section>

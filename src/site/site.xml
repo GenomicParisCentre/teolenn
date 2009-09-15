@@ -74,7 +74,7 @@
 				<item name="Sequence filters" href="/design-sequencefilters.html" />
 				<item name="Measurements" href="/design-measurements.html" />
 				<item name="Measurement filers" href="/design-measurementfilters.html" />
-				<item name="Select" href="/design-select.html" />
+				<item name="Selector" href="/design-selector.html" />
 				<item name="Outputs" href="/design-outputs.html" />
 			<!-- item name ="Optimize" href="/optimize.html"/-->
 			</item>
@@ -94,6 +94,11 @@
 		<!--search/-->
 
 
-
 	</body>
+
+	<poweredBy>
+		<logo name="" href=""
+          img=""/>	
+	</poweredBy>
+
 </project>
