@@ -285,6 +285,7 @@ public class DesignCommand extends Design {
     logger.info("Java version: " + System.getProperty("java.version"));
     logger.info("Log level: " + logger.getLevel());
 
+    logger.info("Start position: " + (isStart1() ? "1" : "0"));
     logger.info("Oligo length: " + getOligoLength());
     logger.info("Genome file: " + getGenomeFile());
     logger.info("Genome masked file: " + getGenomeMaskedFile());
@@ -349,7 +350,7 @@ public class DesignCommand extends Design {
     chromosomeNames.addChromosomesNames(chrOligo.keySet());
 
     logger.info(""
-        + countOligosCreated(chrOligo) + " oligos created in  "
+        + countOligosCreated(chrOligo) + " oligos created in "
         + chrOligo.size() + " chromosomes.");
 
     logEndPhase("create oligos");
