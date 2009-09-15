@@ -107,7 +107,7 @@ public class DesignReader {
     // constants element
     this.constants = getElementConstants(designElement);
 
-    for (Iterator i2 = designElement.elementIterator("startPosition"); i2
+    for (Iterator i2 = designElement.elementIterator("startposition"); i2
         .hasNext();) {
 
       final String sp = ((Element) i2.next()).getTextTrim();
@@ -669,7 +669,7 @@ public class DesignReader {
 
         for (Iterator i6 = param.elementIterator("name"); i6.hasNext();) {
           final Element name = (Element) i6.next();
-          pKey = name.getTextTrim();
+          pKey = name.getTextTrim().toLowerCase();
         }
 
         for (Iterator i7 = param.elementIterator("value"); i7.hasNext();) {
@@ -706,7 +706,7 @@ public class DesignReader {
 
         for (Iterator i6 = param.elementIterator("name"); i6.hasNext();) {
           final Element name = (Element) i6.next();
-          pKey = name.getTextTrim();
+          pKey = name.getTextTrim().toLowerCase();
         }
 
         for (Iterator i7 = param.elementIterator("value"); i7.hasNext();) {

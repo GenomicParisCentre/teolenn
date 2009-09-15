@@ -82,10 +82,10 @@ public class TilingSelector extends SimpleSelector {
     else if (DesignConstants.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
       this.oligoLength = Integer.parseInt(value.trim());
 
-    else if ("windowLength".equals(key))
+    else if ("windowlength".equals(key))
       this.windowLength = Integer.parseInt(value.trim());
 
-    else if ("windowStep".equals(key))
+    else if ("windowstep".equals(key))
       this.windowStep = Integer.parseInt(value.trim());
 
     super.setInitParameter(key, value);
