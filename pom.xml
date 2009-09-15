@@ -6,7 +6,7 @@
 	<groupId>fr.ens.transcriptome</groupId>
 	<artifactId>teolenn</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>Teolenn</name>
 	<description>
 		A tool to compute design of oligonucleotides for microarrays.
@@ -28,7 +28,7 @@
 				École Normale Supérieure Microarray platform
 			</organization>
 			<organizationUrl>
-				http://transcriptome.ens.fr/sgdb
+				http://transcriptome.ens.fr/sgdb/
 			</organizationUrl>
 			<roles>
 				<role>Developer</role>
@@ -45,7 +45,7 @@
 				École Normale Supérieure Microarray platform
 			</organization>
 			<organizationUrl>
-				http://transcriptome.ens.fr/sgdb
+				http://transcriptome.ens.fr/sgdb/
 			</organizationUrl>
 			<roles>
 				<role>Developer</role>
@@ -54,6 +54,41 @@
 			<properties />
 		</developer>
 	</developers>
+
+	<contributors>
+		<contributor>
+			<name>Aurelie Duclos</name>
+			<email/>
+			<url />
+			<organization>
+				École Normale Supérieure Microarray platform
+			</organization>
+			<organizationUrl>
+				http://transcriptome.ens.fr/sgdb/
+			</organizationUrl>
+			<roles>
+				<role>Specificity set up and testing</role>
+			</roles>
+			<timezone>1</timezone>
+			<properties />
+		</contributor>
+		<contributor>
+			<name>Bernd Jagla</name>
+			<email/>
+			<url />
+			<organization>
+				Pasteur Institute, Paris, Microarray platform PF2 
+			</organization>
+			<organizationUrl>
+				http://www.pasteur.fr/
+			</organizationUrl>
+			<roles>
+				<role>Mac OS X testing and SOAP binary building for Mac OS X</role>
+			</roles>
+			<timezone>1</timezone>
+			<properties />
+		</contributor>
+	</contributors>
 
 	<licenses>
 		<license>
