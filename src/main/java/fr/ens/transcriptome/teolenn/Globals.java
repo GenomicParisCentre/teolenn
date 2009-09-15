@@ -57,7 +57,7 @@ public class Globals {
   public static final Level LOG_LEVEL = Level.INFO; // Level.OFF;
 
   /** Set the debug mode. */
-  public static final boolean DEBUG = true;
+  public static final boolean DEBUG = false;
 
   /** Use serialization format for measurement file. */
   public static final boolean MEASUREMENT_FILE_SERIALIZED = true;
@@ -93,7 +93,7 @@ public class Globals {
           + "This version has been built on " + APP_BUILD_DATE + ".\n\n"
           + "Authors:\n" + "  Laurent Jourdren <jourdren@biologie.ens.fr>\n"
           + "  Stéphane Le Crom <lecrom@biologie.ens.fr>\n" + "Contacts:\n"
-          + "  Mail: " + APP_NAME_LOWER_CASE + "@biologie.ens.fr\n"           
+          + "  Mail: " + APP_NAME_LOWER_CASE + "@biologie.ens.fr\n"
           + "  Google group: http://groups.google.com/group/teolenn\n"
           + "Copyright " + COPYRIGHT_DATE
           + " École Normale Supérieure microarray platform.\n" + LICENSE_TXT
