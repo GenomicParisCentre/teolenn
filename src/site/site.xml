@@ -24,12 +24,6 @@
 -->
 <project name="Teolenn">
 
-	<skin>
-<groupId>org.apache.maven.skins</groupId>
-     <artifactId>maven-stylus-skin</artifactId>
-     <version>1.0</version>
-</skin>
-
 	<publishDate position="left" format="yyyy-MM-dd HH:mm"/>
 
 	<bannerLeft>
@@ -48,7 +42,6 @@
 				href="http://transcriptome.ens.fr" />
 			<item name="École Normale Supérieure"
 				href="http://www.ens.fr" />
-			<!--      <item name="PDF Documentation"                   href="/alloligo.pdf" img="/images/logos/acroread-12.png" target="_blank"/>-->
 		</links>
 
 
@@ -84,21 +77,13 @@
 
 		<menu name="Developement">
 			<item name="Downloading sources" href="/download-src.html" />
-			<item name="Writing plugins" href="/plugins.html" /> 
 			<item name="Compiling" href="/compiling.html"/>
+			<item name="Writing plugins" href="/plugins.html" /> 
 			<item name="Teolenn community" href="/contribute.html"/>
 		</menu>
 
-		<!--${reports}-->
-
-		<!--search/-->
-
+		<!--menu ref="reports"/-->
 
 	</body>
-
-	<poweredBy>
-		<logo name="" href=""
-          img=""/>	
-	</poweredBy>
 
 </project>
