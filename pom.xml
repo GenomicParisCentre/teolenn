@@ -13,6 +13,11 @@
 	</description>
 	<url>http://transcriptome.ens.fr/teolenn</url>
 
+	<properties>
+		<didyouknow>Did you know that teolenn is the breton word for tiling?</didyouknow>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<organization>
 		<name>École Normale Supérieure Microarray platform</name>
 		<url>http://transcriptome.ens.fr/sgdb</url>
@@ -92,6 +97,12 @@
 
 	<licenses>
 		<license>
+			<name>GNU General Public License version 3</name>
+			<url>http://www.gnu.org/licenses/gpl.txt</url>
+			<distribution>repo</distribution>
+			<comments />
+		</license>
+		<license>
 			<name>GNU General Public License</name>
 			<url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
 			<distribution>repo</distribution>
@@ -115,24 +126,6 @@
 	</mailingLists>
 
 	<repositories>
-		<!--repository>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>leburon</id>
-			<name>Leburon Maven 2.x Repository</name>
-			<url>http://hestia.ens.fr/maven2</url>
-			<layout>default</layout>
-		</repository-->
-		<!--repository>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>sateh.com</id>
-			<name>seteh repository</name>
-			<url>http://maven.sateh.com/repository</url>
-			<layout>default</layout>
-		</repository-->
 		<repository>
 			<snapshots>
 				<enabled>true</enabled>
@@ -144,20 +137,20 @@
 			</url>
 			<layout>legacy</layout>
 		</repository>
-		<repository>
-			<id>oracleReleases</id>
-			<name>Oracle Released Java Packages</name>
-			<url>http://download.oracle.com/maven</url>
-			<layout>default</layout>
-		</repository>
 	</repositories>
 
+	<scm>
+		<connection>scm:svn:https://teolenn.googlecode.com/svn/trunk/</connection>
+		<tag>teolenn-read-only</tag>
+                <!--developerConnection></developerConnection-->
+		<url>http://code.google.com/p/teolenn/source/checkout</url>
+	</scm>
 
-	<!--scm>
-		<connection></connection>
-		<developerConnection></developerConnection>
-		<url></url>
-	</scm-->
+	<issueManagement>
+		<system>GoogleCode</system>
+		<url>http://code.google.com/p/teolenn/issues/list</url>
+	</issueManagement>
+
 
 	<dependencies>
 		<dependency>
@@ -202,7 +195,7 @@
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>src/test/java</directory>
+				<directory>src/test/java/files</directory>
 			</testResource>
 		</testResources>
 		<plugins>
@@ -355,6 +348,12 @@
 									<include name="**/*.rss"/>
 									<replacetoken>@@@APPNAME@@@</replacetoken>
 								</replace>
+								<replace encoding="iso-8859-1" dir="${basedir}/target/site" value="${artifactId}">
+									<include name="**/*.jnlp"/>
+									<include name="**/*.html"/>
+									<include name="**/*.rss"/>
+									<replacetoken>@@@APPNAMEMIN@@@</replacetoken>
+								</replace>
 
 								<tstamp>
 									<format property="TODAY_UK" pattern="EEE, dd MMM yyyy HH:mm:ss z" locale="en,UK"/>
@@ -465,9 +464,18 @@
 					              </artifactItems>
 					              <!-- other configurations here -->
 				            </configuration>
-				          </execution>
-			        </executions>
-		      </plugin>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<templateFile>${basedir}/src/site/site.vm</templateFile>
+					<outputEncoding>iso-8859-1</outputEncoding>
+				</configuration>
+			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
@@ -491,6 +499,9 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
+					<configuration>
+						<encoding>utf-8</encoding>
+					</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
