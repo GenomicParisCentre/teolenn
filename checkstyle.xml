@@ -15,6 +15,9 @@ Description:
             <property name="scope" value="public"/>
             <property name="allowUndeclaredRTE" value="true"/>
         </module>
+	<module name="Header">
+		<property name="headerFile" value="checkstyle-license.txt"/>
+	</module>
         <module name="LeftCurly"/>
         <module name="RightCurly"/>
         <module name="LineLength">
