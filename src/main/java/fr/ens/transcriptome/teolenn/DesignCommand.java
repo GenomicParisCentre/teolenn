@@ -284,6 +284,7 @@ public class DesignCommand extends Design {
         .info("Operating system version: " + System.getProperty("os.version"));
     logger.info("Java version: " + System.getProperty("java.version"));
     logger.info("Log level: " + logger.getLevel());
+    logger.info("Max threads: " + Settings.getMaxThreads());
 
     logger.info("Start position: " + (isStart1() ? "1" : "0"));
     logger.info("Oligo length: " + getOligoLength());
