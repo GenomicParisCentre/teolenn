@@ -111,6 +111,9 @@ public class DesignCommand extends Design {
         getOutputDir().getAbsolutePath());
     module.setInitParameter(DesignConstants.OLIGO_LENGTH_PARAMETER_NAME,
         Integer.toString(getOligoLength()));
+    module.setInitParameter(
+        DesignConstants.OLIGO_INTERVAL_LENGTH_PARAMETER_NAME, Integer
+            .toString(getOligoIntervalLength()));
     module.setInitParameter(DesignConstants.EXTENSION_FILTER_PARAMETER_NAME,
         DesignConstants.OLIGO_SUFFIX);
     module.setInitParameter(DesignConstants.OLIGO_DIR_PARAMETER_NAME,
@@ -288,6 +291,7 @@ public class DesignCommand extends Design {
 
     logger.info("Start position: " + (isStart1() ? "1" : "0"));
     logger.info("Oligo length: " + getOligoLength());
+    logger.info("Oligo interval length: " + getOligoIntervalLength());
     logger.info("Genome file: " + getGenomeFile());
     logger.info("Genome masked file: " + getGenomeMaskedFile());
     logger.info("Output directory: " + getOutputDir());
@@ -329,13 +333,14 @@ public class DesignCommand extends Design {
     try {
       chrOligo =
           SequenceCore.fastaOverlap(getGenomeFile(), getOligosDir(),
-              DesignConstants.OLIGO_SUFFIX, getOligoLength(), isStart1());
+              DesignConstants.OLIGO_SUFFIX, getOligoLength(),
+              getOligoIntervalLength(), isStart1());
 
       if (isGenomeMaskedFile())
         chrMasked =
             SequenceCore.fastaOverlap(getGenomeMaskedFile(), getOligosDir(),
                 DesignConstants.OLIGO_MASKED_SUFFIX, getOligoLength(),
-                isStart1());
+                getOligoIntervalLength(), isStart1());
     } catch (IOException e) {
       throw new TeolennException(e);
     }

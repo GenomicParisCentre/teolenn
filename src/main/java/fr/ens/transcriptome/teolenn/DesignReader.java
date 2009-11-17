@@ -42,6 +42,7 @@ import org.dom4j.io.SAXReader;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
 import fr.ens.transcriptome.teolenn.measurement.MeasurementRegistery;
+import fr.ens.transcriptome.teolenn.measurement.OligoLengthMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilter;
 import fr.ens.transcriptome.teolenn.measurement.filter.MeasurementFilterRegistery;
@@ -124,13 +125,20 @@ public class DesignReader {
       this.design.setOligoLength(Integer.parseInt(getValue(i3)));
     setConstant("oligolength", "" + this.design.getOligoLength());
 
+    // oligoIntervallength element
+    for (Iterator i4 = designElement.elementIterator("oligointervallength"); i4
+        .hasNext();)
+      this.design.setOligoIntervalLength(Integer.parseInt(getValue(i4)));
+    setConstant("oligointervallength", ""
+        + this.design.getOligoIntervalLength());
+
     // genomefile element
     if (genomeFile != null)
       this.design.setGenomeFile(genomeFile);
     else
-      for (Iterator i4 = designElement.elementIterator("genomefile"); i4
+      for (Iterator i5 = designElement.elementIterator("genomefile"); i5
           .hasNext();)
-        this.design.setGenomeFile(new File(getValue(i4)));
+        this.design.setGenomeFile(new File(getValue(i5)));
     setConstant("genomefile", ""
         + this.design.getGenomeFile().getAbsolutePath());
 
@@ -138,9 +146,9 @@ public class DesignReader {
     if (genomeMaskedFile != null)
       this.design.setGenomeMaskedFile(genomeMaskedFile);
     else
-      for (Iterator i5 = designElement.elementIterator("genomemaskedfile"); i5
+      for (Iterator i6 = designElement.elementIterator("genomemaskedfile"); i6
           .hasNext();) {
-        final String filename = getValue(i5);
+        final String filename = getValue(i6);
         if (!"".equals(filename))
           this.design.setGenomeMaskedFile(new File(filename));
       }
@@ -151,9 +159,9 @@ public class DesignReader {
     if (outputDir != null)
       this.design.setOutputDir(outputDir);
     else
-      for (Iterator i6 = designElement.elementIterator("outputdir"); i6
+      for (Iterator i7 = designElement.elementIterator("outputdir"); i7
           .hasNext();) {
-        final String path = getValue(i6);
+        final String path = getValue(i7);
         if (!"".equals(path))
           this.design.setOutputDir((new File(path)).getCanonicalFile());
       }
@@ -327,6 +335,7 @@ public class DesignReader {
 
     list.add(new ChromosomeMeasurement());
     list.add(new OligoStartMeasurement());
+    list.add(new OligoLengthMeasurement());
 
     for (Iterator i = rootElement.elementIterator("measurements"); i.hasNext();) {
       final Element measurements = (Element) i.next();
@@ -581,7 +590,13 @@ public class DesignReader {
           final String name = e.getKey();
           final Properties properties = e.getValue();
 
+          if (!sm.isMeasurement(name)) {
+            logger.warning("Unknown measurement: " + name);
+            continue;
+          }
+
           for (Map.Entry<Object, Object> e2 : properties.entrySet()) {
+
             sm.getMeasurement(name).setProperty((String) e2.getKey(),
                 (String) e2.getValue());
 

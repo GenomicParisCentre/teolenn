@@ -35,6 +35,7 @@ import fr.ens.transcriptome.teolenn.sequence.filter.SequenceFilter;
 public class Design {
 
   private int oligoLength = DesignConstants.OLIGO_LEN_DEFAULT;
+  private int oligoIntervalLength = DesignConstants.OLIGO_LEN_INTERVAL_DEFAULT;
 
   private File genomeFile;
   private File genomeMaskedFile;
@@ -61,11 +62,19 @@ public class Design {
   //
 
   /**
-   * Set the oligo length for the design
+   * Get the oligo length for the design.
    * @return the oligo length
    */
   public int getOligoLength() {
-    return oligoLength;
+    return this.oligoLength;
+  }
+
+  /**
+   * Get the max interval for oligos length.
+   * @return the max interval for oligos length
+   */
+  public int getOligoIntervalLength() {
+    return this.oligoIntervalLength;
   }
 
   /**
@@ -73,7 +82,7 @@ public class Design {
    * @return the genome file
    */
   public File getGenomeFile() {
-    return genomeFile;
+    return this.genomeFile;
   }
 
   /**
@@ -81,7 +90,7 @@ public class Design {
    * @return the genome masked file
    */
   public File getGenomeMaskedFile() {
-    return genomeMaskedFile;
+    return this.genomeMaskedFile;
   }
 
   /**
@@ -212,7 +221,7 @@ public class Design {
   public WeightsSetter getWeightSetters() {
     return weightSetters;
   }
-  
+
   /**
    * Get the list of outputs to use.
    * @return a list of output
@@ -226,7 +235,7 @@ public class Design {
   //
 
   /**
-   * Set the olgo length
+   * Set the oligo length
    * @param oligoLength The oligo length
    */
   public void setOligoLength(final int oligoLength) {
@@ -236,6 +245,24 @@ public class Design {
           + oligoLength);
 
     this.oligoLength = oligoLength;
+  }
+
+  /**
+   * Set the oligo max interval length
+   * @param oligoIntervalLength The oligo interval length
+   */
+  public void setOligoIntervalLength(final int oligoIntervalLength) {
+
+    if (oligoIntervalLength <= 0)
+      throw new IllegalArgumentException(
+          "Invalid oligo interval length value: " + oligoIntervalLength);
+
+    if (getOligoLength() - oligoIntervalLength < 1)
+      throw new IllegalArgumentException(
+          "Oligo interval can't be greater or equals to oligo length: "
+              + oligoIntervalLength);
+
+    this.oligoIntervalLength = oligoIntervalLength;
   }
 
   /**
@@ -400,10 +427,9 @@ public class Design {
   public void setOutputsList(final List<Output> outputsList) {
 
     if (outputsList == null)
-      throw new InvalidParameterException(
-          "The list of outputs can't be null.");
+      throw new InvalidParameterException("The list of outputs can't be null.");
 
     this.outputsList = outputsList;
   }
-  
+
 }

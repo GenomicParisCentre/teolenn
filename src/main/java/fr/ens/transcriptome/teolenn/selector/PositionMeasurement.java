@@ -22,7 +22,6 @@
 
 package fr.ens.transcriptome.teolenn.selector;
 
-
 /**
  * This class define a measurement that returns
  * @author Stéphane Le Crom
@@ -38,15 +37,15 @@ public final class PositionMeasurement extends SimpleSelectorMeasurement {
   private int windowBestPosition;
   private boolean first = true;
 
-  private int oligoLength;
-
   /**
    * Calc the measurement of a sequence.
    * @param chromosome the chromosome of sequence to use for the measurement
    * @param startPos the start position of sequence to use for the measurement
+   * @param oligoLength The length of the oligo
    * @return an object as result
    */
-  public Object calcMesurement(final String chromosome, final int startPos) {
+  public Object calcMesurement(final String chromosome, final int startPos,
+      final int oligoLength) {
 
     if (this.windowLength == -1)
       throw new RuntimeException("Window size is undefined.");
@@ -54,7 +53,7 @@ public final class PositionMeasurement extends SimpleSelectorMeasurement {
     if (this.first) {
 
       this.windowBestPosition =
-          (int) Math.ceil(((this.windowLength - this.oligoLength) / 2.0f));
+          (int) Math.ceil(((this.windowLength - oligoLength) / 2.0f));
 
       this.first = false;
     }
@@ -158,11 +157,9 @@ public final class PositionMeasurement extends SimpleSelectorMeasurement {
    * @param oligoLength The length of the oligos
    * @param windowSize The size of the window
    */
-  public PositionMeasurement(final boolean start1, final int oligoLength,
-      final int windowSize) {
+  public PositionMeasurement(final boolean start1, final int windowSize) {
 
     this.start1 = start1;
-    this.oligoLength = oligoLength;
     this.windowLength = windowSize;
   }
 }

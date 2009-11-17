@@ -32,7 +32,10 @@ import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.WeightsSetter;
+import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
+import fr.ens.transcriptome.teolenn.measurement.OligoLengthMeasurement;
+import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsReader;
 import fr.ens.transcriptome.teolenn.measurement.io.SequenceMeasurementsWriter;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
@@ -54,6 +57,7 @@ public abstract class SimpleSelector implements SequenceSelector {
   private WeightsSetter weightsSetters;
   private int indexScaffold = -1;
   private int indexStartPosition = -1;
+  private int indexOligoLengthPosition = -1;
   private int indexFirstSelectorMeasurement = 0;
 
   private Object[] valuesToWrite;
@@ -133,8 +137,12 @@ public abstract class SimpleSelector implements SequenceSelector {
       this.smReadedValues = smReaded.getArrayMeasurementValues();
       this.smReadedLength = smReaded.size();
 
-      this.indexScaffold = smReaded.getIndexMeasurment("chromosome");
-      this.indexStartPosition = smReaded.getIndexMeasurment("oligostart");
+      this.indexScaffold =
+          smReaded.getIndexMeasurment(ChromosomeMeasurement.MEASUREMENT_NAME);
+      this.indexStartPosition =
+          smReaded.getIndexMeasurment(OligoStartMeasurement.MEASUREMENT_NAME);
+      this.indexOligoLengthPosition =
+          smReaded.getIndexMeasurment(OligoLengthMeasurement.MEASUREMENT_NAME);
 
       this.smWrited = new SequenceMeasurements();
 
@@ -170,6 +178,8 @@ public abstract class SimpleSelector implements SequenceSelector {
     // Get the chromosome and the start position
     final String chromosome = (String) this.smReadedValues[indexScaffold];
     final int startPos = (Integer) this.smReadedValues[indexStartPosition];
+    final int oligoLength =
+        (Integer) this.smReadedValues[indexOligoLengthPosition];
 
     // Copy the read values
     System.arraycopy(this.smReadedValues, 0, this.valuesToWrite, 0,
@@ -178,7 +188,8 @@ public abstract class SimpleSelector implements SequenceSelector {
     // Add the values of SelectorMeasurements
     int i = this.smReadedLength;
     for (SelectorMeasurement m : this.ms)
-      this.valuesToWrite[i++] = m.calcMesurement(chromosome, startPos);
+      this.valuesToWrite[i++] =
+          m.calcMesurement(chromosome, startPos, oligoLength);
 
     this.valuesToWrite[i++] = this.smWrited.getScore();
     this.smWrited.setId(smReaded.getId());

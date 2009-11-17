@@ -32,15 +32,15 @@ public abstract class SimpleSelectorMeasurement extends SimpleMeasurement
     implements SelectorMeasurement {
 
   private static final Pattern seqNamePattern =
-    Pattern.compile("^(.*):subseq\\((\\d+),(\\d+)\\)$");
-  
+      Pattern.compile("^(.*):subseq\\((\\d+),(\\d+)\\)$");
+
   /**
    * Calc the measurement of a sequence.
    * @param sequence the sequence to use for the measurement
    * @return an object as result
    */
   final public Object calcMesurement(final Sequence sequence) {
-    
+
     final String sequenceName = sequence.getName();
 
     final Matcher m = seqNamePattern.matcher(sequenceName);
@@ -51,8 +51,9 @@ public abstract class SimpleSelectorMeasurement extends SimpleMeasurement
 
     final String chr = m.group(1);
     final int startPos = Integer.parseInt(m.group(2));
-    
-    return calcMesurement(chr, startPos);
+    final int len = sequence.getLengthOligo();
+
+    return calcMesurement(chr, startPos, len);
   }
-  
+
 }

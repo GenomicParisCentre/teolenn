@@ -49,12 +49,16 @@ public class SequenceCore {
    * @param outputDir output directory
    * @param extension Name of the extension
    * @param windowSize size of the window
+   * @param interval interval of sizes
    * @param start1 true if the first position on sequence is 1
    * @throws IOException if an error occurs while executing fastaoverlap
    */
   public static final Map<String, Integer> fastaOverlap(final File inputFile,
       final File outputDir, final String extension, final int windowSize,
-      final boolean start1) throws IOException {
+      final int interval, final boolean start1) throws IOException {
+
+    final int minSize = windowSize - interval <= 0 ? 1 : windowSize - interval;
+    final int maxSize = windowSize + interval;
 
     final Map<String, Integer> result = new HashMap<String, Integer>();
 
@@ -77,7 +81,7 @@ public class SequenceCore {
     int countInternal = 0;
     int count = 0;
 
-    final StringBuilder subSeq = new StringBuilder(windowSize);
+    final StringBuilder subSeq = new StringBuilder(maxSize);
 
     final int firstPosition = start1 ? 1 : 0;
 
@@ -91,7 +95,8 @@ public class SequenceCore {
 
         if (!first) {
 
-          writeAllSubSeq(subSeq, os, offset, windowSize, headerOutput, true);
+          writeAllSubSeq(subSeq, os, offset, minSize, maxSize, headerOutput,
+              true);
           result.put(outputFilename, count);
 
           count = 0;
@@ -121,11 +126,11 @@ public class SequenceCore {
         countInternal += lineLength;
         count += lineLength;
 
-        if (countInternal > windowSize) {
+        if (countInternal > maxSize) {
 
           offset +=
-              writeAllSubSeq(subSeq, os, offset, windowSize, headerOutput,
-                  false);
+              writeAllSubSeq(subSeq, os, offset, minSize, maxSize,
+                  headerOutput, false);
 
           countInternal = 0;
         }
@@ -133,7 +138,7 @@ public class SequenceCore {
       }
     }
 
-    writeAllSubSeq(subSeq, os, offset, windowSize, headerOutput, true);
+    writeAllSubSeq(subSeq, os, offset, minSize, maxSize, headerOutput, true);
     result.put(outputFilename, count);
     br.close();
 
@@ -141,21 +146,27 @@ public class SequenceCore {
   }
 
   private static final int writeAllSubSeq(final StringBuilder sb,
-      final Writer os, final int offset, final int size, final String header,
-      final boolean flush) throws IOException {
+      final Writer os, final int offset, final int minSize, int maxSize,
+      final String header, final boolean flush) throws IOException {
 
-    final int endFor = sb.length() - size + 1;
+    final int endFor = sb.length() - maxSize + 1;
     int index = 0;
 
     final StringBuilder output = outputStringBuilder;
 
     for (index = 0; index < endFor; index++) {
 
-      final int end = index + size;
+      // final int end = index + maxSize;
 
-      final String sequence = sb.substring(index, end);
+      // final String sequence = sb.substring(index, end);
 
-      writeSeq(output, sequence, header, offset + index, size);
+      for (int size = minSize; size <= maxSize; size++) {
+
+        final int end = index + size;
+        final String sequence = sb.substring(index, end);
+
+        writeSeq(output, sequence, header, offset + index, size);
+      }
 
       if (output.length() > WRITE_BUFFER_LEN) {
         os.write(output.toString());
@@ -165,6 +176,21 @@ public class SequenceCore {
     }
 
     if (flush) {
+
+      final int endFor2 = sb.length() - minSize + 1;
+
+      int i = 0;
+      for (; index < endFor2; index++) {
+
+        for (int size = minSize; size < maxSize - i && index < endFor2; size++) {
+
+          final int end = index + size;
+          final String sequence = sb.substring(index, end);
+
+          writeSeq(output, sequence, header, offset + index, size);
+        }
+        i++;
+      }
 
       os.write(output.toString());
       output.setLength(0);

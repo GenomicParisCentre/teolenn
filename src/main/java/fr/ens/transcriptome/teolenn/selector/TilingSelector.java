@@ -30,6 +30,7 @@ import fr.ens.transcriptome.teolenn.Globals;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.Measurement;
+import fr.ens.transcriptome.teolenn.measurement.OligoLengthMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 
@@ -101,8 +102,7 @@ public class TilingSelector extends SimpleSelector {
     else if (this.windowStep < 1)
       throw new TeolennException("Invalid window step: " + this.windowStep);
 
-    addMeasurement(new PositionMeasurement(this.start1, this.oligoLength,
-        this.windowLength));
+    addMeasurement(new PositionMeasurement(this.start1, this.windowLength));
     addMeasurement(new TilingZoneMeasurement());
   }
 
@@ -116,6 +116,7 @@ public class TilingSelector extends SimpleSelector {
     boolean first = true;
     int indexScaffold = -1;
     int indexStartPosition = -1;
+    int indexOligoLengthPosition = -1;
     int indexTilingZoneMeasurement = -1;
 
     String currentScafold = null;
@@ -149,6 +150,8 @@ public class TilingSelector extends SimpleSelector {
             sm.getIndexMeasurment(ChromosomeMeasurement.MEASUREMENT_NAME);
         indexStartPosition =
             sm.getIndexMeasurment(OligoStartMeasurement.MEASUREMENT_NAME);
+        indexOligoLengthPosition =
+            sm.getIndexMeasurment(OligoLengthMeasurement.MEASUREMENT_NAME);
         indexTilingZoneMeasurement =
             sm.getIndexMeasurment(TilingZoneMeasurement.MEASUREMENT_NAME);
         values = sm.getArrayMeasurementValues();
@@ -166,6 +169,8 @@ public class TilingSelector extends SimpleSelector {
         throw new RuntimeException("No Scaffold field");
       if (indexStartPosition < 0)
         throw new RuntimeException("No Start field");
+      if (indexOligoLengthPosition < 0)
+        throw new RuntimeException("No oligo length field");
 
       final String chromosome = (String) values[indexScaffold];
       final int pos = (Integer) values[indexStartPosition];

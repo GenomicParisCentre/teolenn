@@ -33,9 +33,10 @@ public class TilingZoneMeasurement extends SimpleSelectorMeasurement {
    * Calc the measurement of a sequence.
    * @param chromosome the chromosome of sequence to use for the measurement
    * @param startPos the start position of sequence to use for the measurement
+   * @param oligoLength the length of the oligonucleotide
    * @return an object as result
    */
-  public Object calcMesurement(final String chromosome, final int startPos) {
+  public Object calcMesurement(final String chromosome, final int startPos, int oligoLength) {
     return null;
   }
 

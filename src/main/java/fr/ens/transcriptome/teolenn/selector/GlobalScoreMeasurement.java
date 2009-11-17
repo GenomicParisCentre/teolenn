@@ -33,14 +33,16 @@ public class GlobalScoreMeasurement extends SimpleSelectorMeasurement {
 
   /** Measurement name. */
   public static final String MEASUREMENT_NAME = "GlobalScore";
-  
+
   /**
    * Calc the measurement of a sequence.
    * @param chromosome the chromosome of sequence to use for the measurement
    * @param startPos the start position of sequence to use for the measurement
+   * @param oligoLength the length of the oligonucleotide
    * @return an object as result
    */
-  public Object calcMesurement(final String chromosome, final int startPos) {
+  public Object calcMesurement(final String chromosome, final int startPos,
+      final int oligoLength) {
     return null;
   }
 

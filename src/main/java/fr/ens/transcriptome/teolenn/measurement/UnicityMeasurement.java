@@ -65,7 +65,8 @@ public final class UnicityMeasurement extends FloatMeasurement {
   private static final String IDX_DIR = "idx";
   private static final String FMIDX_DIR = "fmidx";
 
-  private int oligoLength = 60;
+  private int oligoLength = DesignConstants.OLIGO_LEN_DEFAULT;
+  private int oligoIntervalLength = DesignConstants.OLIGO_LEN_INTERVAL_DEFAULT;
 
   private File genomeFile;
   private File baseDir;
@@ -101,6 +102,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
 
     final String chr = m.group(1);
     final int startPos = Integer.parseInt(m.group(2));
+    final int len = sequence.getLengthOligo();
 
     try {
 
@@ -114,7 +116,7 @@ public final class UnicityMeasurement extends FloatMeasurement {
           + e.getMessage());
     }
 
-    return uscoreCalculation(startPos + this.startOffset);
+    return uscoreCalculation(startPos + this.startOffset, len);
   }
 
   /**
@@ -300,10 +302,10 @@ public final class UnicityMeasurement extends FloatMeasurement {
    * Function that calculate uniqueness
    * @param sequenceStart sequence start position
    */
-  private float uscoreCalculation(final int sequenceStart) {
+  private float uscoreCalculation(final int sequenceStart, final int len) {
 
     // Oligo end position calculation
-    final int sequenceEnd = sequenceStart + this.oligoLength - 1;
+    final int sequenceEnd = sequenceStart + len - 1;
 
     // Clear the mupEnd hashtable (optimization)
     this.mupEnd.clear();
@@ -390,6 +392,9 @@ public final class UnicityMeasurement extends FloatMeasurement {
         this.startOffset = 0;
     } else if (DesignConstants.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
       this.oligoLength = Integer.parseInt(value);
+    else if (DesignConstants.OLIGO_INTERVAL_LENGTH_PARAMETER_NAME.equals(key))
+      this.oligoIntervalLength = Integer.parseInt(value);
+
     else if (DesignConstants.GENOME_FILE_PARAMETER_NAME.equals(key))
       this.genomeFile = new File(value);
     else if (DesignConstants.TEMP_DIR_PARAMETER_NAME.equals(key))
@@ -423,8 +428,15 @@ public final class UnicityMeasurement extends FloatMeasurement {
           || l.equals(Level.INFO))
         logger.info("genometools version: " + getGenomeToolsVersion());
 
+      if (this.oligoLength < 0)
+        throw new TeolennException("OligoLength parameter is invalid: "
+            + this.oligoLength);
+      if (this.oligoIntervalLength < 0)
+        throw new TeolennException("OligoIntervalLength parameter is invalid: "
+            + this.oligoIntervalLength);
+
       // Reset Histogram
-      this.resetHistogram(0, this.oligoLength);
+      this.resetHistogram(0, this.oligoLength + this.oligoIntervalLength);
 
       // Create sequence files without X
       SequenceCore.fastaExplode(genomeFile, this.baseDir, "",

@@ -68,9 +68,9 @@ public class RedundancyFilter implements SequenceFilter {
   private int startOffset;
   private String extensionFilter;
 
-  // Soap results for current chromosome
-  private final Map<Integer, Integer> currentChrResult =
-      new HashMap<Integer, Integer>();
+  // Soap results for current chromosome (Len,pos,Len)
+  private final Map<Integer, Map<Integer, Integer>> currentChrResult =
+      new HashMap<Integer, Map<Integer, Integer>>();
 
   // Regex to retrieve chromosome, startPos and len of a sequence from its name
   private static final Pattern seqNamePattern =
@@ -126,7 +126,11 @@ public class RedundancyFilter implements SequenceFilter {
       }
 
       // Get the length of the match of the soap result
-      final Integer result = this.currentChrResult.get(startPos);
+      final Map<Integer, Integer> map = this.currentChrResult.get(len);
+
+      if (map == null)
+        return false;
+      final Integer result = map.get(startPos);
 
       // Return true if the result exists and if its length is equals to the
       // oligo length
@@ -166,7 +170,8 @@ public class RedundancyFilter implements SequenceFilter {
 
       final int subSeqPos = indexOf(line, ':', 0);
       final int commaPos = indexOf(line, ',', subSeqPos);
-      final int posTabSeq = indexOf(line, '\t', commaPos);
+      final int bracketPos = indexOf(line, ')', commaPos);
+      final int posTabSeq = indexOf(line, '\t', bracketPos);
       final int posTabUnknown1 = indexOf(line, '\t', posTabSeq);
       final int posTabNbMatches = indexOf(line, '\t', posTabUnknown1);
       final int posTabUnknown2 = indexOf(line, '\t', posTabNbMatches);
@@ -183,6 +188,8 @@ public class RedundancyFilter implements SequenceFilter {
       final String chr = line.substring(0, subSeqPos);
       final int oligoPos =
           Integer.parseInt(line.substring(subSeqPos + 8, commaPos));
+      final int oligoLen =
+          Integer.parseInt(line.substring(commaPos + 1, bracketPos));
       final int nbMatches =
           Integer.parseInt(line.substring(posTabNbMatches + 1, posTabUnknown2));
       final int matchLen =
@@ -201,8 +208,13 @@ public class RedundancyFilter implements SequenceFilter {
       // add result in memory only if oligo match at the right position
       if (nbMatches == 1
           && matchType == 0 && matchStrand == '+' && chr.equals(matchChr)
-          && oligoPos == matchStart)
-        this.currentChrResult.put(oligoPos, matchLen);
+          && oligoPos == matchStart) {
+
+        if (!this.currentChrResult.containsKey(oligoLen))
+          this.currentChrResult.put(oligoLen, new HashMap<Integer, Integer>());
+
+        this.currentChrResult.get(oligoLen).put(oligoPos, matchLen);
+      }
 
     }
 

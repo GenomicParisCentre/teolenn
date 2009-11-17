@@ -28,6 +28,7 @@ import java.util.Properties;
 import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
+import fr.ens.transcriptome.teolenn.measurement.OligoLengthMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.teolenn.resource.ORFResource;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
@@ -42,7 +43,7 @@ public class ORFsFilter implements MeasurementFilter {
   private boolean first = true;
   private int colChromosome;
   private int colOligoStart;
-  private int oligoLength;
+  private int colOligoLength;
 
   /**
    * Get the name of the filter.
@@ -76,7 +77,7 @@ public class ORFsFilter implements MeasurementFilter {
       this.colChromosome =
           sm.getIndexMeasurment(ChromosomeMeasurement.MEASUREMENT_NAME);
 
-      if (colChromosome == -1)
+      if (this.colChromosome == -1)
         throw new TeolennException("The "
             + ChromosomeMeasurement.MEASUREMENT_NAME
             + " measurement is mandatory to use " + MEASUREMENT_FILTER_NAME
@@ -85,7 +86,16 @@ public class ORFsFilter implements MeasurementFilter {
       this.colOligoStart =
           sm.getIndexMeasurment(OligoStartMeasurement.MEASUREMENT_NAME);
 
-      if (colOligoStart == -1)
+      if (this.colOligoStart == -1)
+        throw new TeolennException("The "
+            + OligoStartMeasurement.MEASUREMENT_NAME
+            + " measurement is mandatory to use " + MEASUREMENT_FILTER_NAME
+            + " filter.");
+
+      this.colOligoLength =
+          sm.getIndexMeasurment(OligoLengthMeasurement.MEASUREMENT_NAME);
+
+      if (this.colOligoLength == -1)
         throw new TeolennException("The "
             + OligoStartMeasurement.MEASUREMENT_NAME
             + " measurement is mandatory to use " + MEASUREMENT_FILTER_NAME
@@ -99,7 +109,7 @@ public class ORFsFilter implements MeasurementFilter {
     final String chr = (String) values[this.colChromosome];
     final int pos = (Integer) values[this.colOligoStart];
 
-    return this.ressource.getORF(chr, pos, this.oligoLength) != null;
+    return this.ressource.getORF(chr, pos, this.colOligoLength) != null;
   }
 
   /**
@@ -111,8 +121,8 @@ public class ORFsFilter implements MeasurementFilter {
 
     if (key == null || value == null)
       return;
-    if (DesignConstants.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
-      this.oligoLength = Integer.parseInt(value);
+    // if (DesignConstants.OLIGO_LENGTH_PARAMETER_NAME.equals(key))
+    // this.oligoLength = Integer.parseInt(value);
 
     this.ressourceProperties.setProperty(key.toLowerCase(), value);
   }

@@ -108,6 +108,20 @@ public class SequenceMeasurements {
   }
 
   /**
+   * Test if a measurement exists.
+   * @param measurementName The measurement to test
+   * @return true if the measurement exists.
+   */
+  public boolean isMeasurement(final String measurementName) {
+
+    if (measurementName == null)
+      return false;
+
+    return this.measurementsIndex.containsKey(measurementName.trim()
+        .toLowerCase());
+  }
+
+  /**
    * Add a measurement.
    * @param m Measurement to add
    * @param weight Weight of the measurement in the final score

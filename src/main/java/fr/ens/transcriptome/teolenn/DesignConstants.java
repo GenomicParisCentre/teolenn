@@ -44,6 +44,7 @@ public class DesignConstants {
   public static final String OLIGO_DIR_PARAMETER_NAME = "_oligodir";
   public static final String TEMP_DIR_PARAMETER_NAME = "_tempdir";
   public static final String OLIGO_LENGTH_PARAMETER_NAME = "_oligolength";
+  public static final String OLIGO_INTERVAL_LENGTH_PARAMETER_NAME = "_oligointervallength";
   public static final String START_1_PARAMETER_NAME = "_start1";
   public static final String EXTENSION_FILTER_PARAMETER_NAME =
   "_extensionfilter";
@@ -54,6 +55,7 @@ public class DesignConstants {
   "_filteredMesFile";
   public static final String STATS_FILE_PARAMETER_NAME = "_statsFile";
   public static final String SELECTED_FILE_PARAMETER_NAME = "_selectedFile";
-  static final int OLIGO_LEN_DEFAULT = 60;
+  public static final int OLIGO_LEN_DEFAULT = 60;
+  public static final int OLIGO_LEN_INTERVAL_DEFAULT = 0;
 
 }

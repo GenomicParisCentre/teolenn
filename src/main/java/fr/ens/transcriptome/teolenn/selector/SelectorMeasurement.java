@@ -30,8 +30,9 @@ public interface SelectorMeasurement extends Measurement {
    * Calc the measurement of a sequence.
    * @param chromosome the chromosome of sequence to use for the measurement
    * @param startPos the start position of sequence to use for the measurement
+   * @param oligoLength the length of the oligonucleotide
    * @return an object as result
    */
-  Object calcMesurement(String chromosome, int startPos);
+  Object calcMesurement(String chromosome, int startPos, int oligoLength);
 
 }
