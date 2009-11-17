@@ -136,8 +136,8 @@ public class Sequence {
     if (this.name == null)
       return -1;
 
-    int startPos = this.name.indexOf(":subseq(");
-    int endPos = this.name.indexOf(",", startPos);
+    final int startPos = this.name.indexOf(":subseq(");
+    final int endPos = this.name.indexOf(",", startPos);
 
     return Integer.parseInt(this.name.substring(startPos + 8, endPos));
   }
@@ -148,8 +148,14 @@ public class Sequence {
    */
   public int getLengthOligo() {
 
-    int startPos = this.name.indexOf(":subseq(");
-    int startPos2 = this.name.indexOf(",", startPos);
+    if (this.sequence != null)
+      return this.sequence.length();
+
+    if (this.name == null)
+      return -1;
+
+    final int startPos = this.name.indexOf(":subseq(");
+    final int startPos2 = this.name.indexOf(",", startPos);
     int endPos = this.name.indexOf(")", startPos2);
 
     return Integer.parseInt(this.name.substring(startPos2 + 1, endPos));
