@@ -50,7 +50,13 @@ public class SequenceFilterRegistery {
       return;
 
     if (testClassType(clazz)) {
-      registery.put(name.toLowerCase(), clazz);
+      final String lowerName = name.toLowerCase();
+
+      if (registery.containsKey(lowerName))
+        logger.warning("Sequence filter "
+            + name + " already exits, override previous sequence filter.");
+
+      registery.put(lowerName, clazz);
       logger.finest("Add " + name + " to Sequence filters registery");
     } else
       logger.warning("Addon " + name + " is not a sequence filter class");

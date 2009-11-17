@@ -50,7 +50,13 @@ public class MeasurementFilterRegistery {
     if (name == null || clazz == null)
       return;
 
-    registery.put(name.toLowerCase(), clazz);
+    final String lowerName = name.toLowerCase();
+
+    if (registery.containsKey(lowerName))
+      logger.warning("Measurement filter "
+          + name + " already exits, override previous measurement filter.");
+
+    registery.put(lowerName, clazz);
   }
 
   /**
@@ -143,7 +149,8 @@ public class MeasurementFilterRegistery {
         FloatRangeFilter.class);
     addMeasurementFilterType(BooleanFilter.MEASUREMENT_FILTER_NAME,
         BooleanFilter.class);
-    addMeasurementFilterType(ORFsFilter.MEASUREMENT_FILTER_NAME, ORFsFilter.class);
+    addMeasurementFilterType(ORFsFilter.MEASUREMENT_FILTER_NAME,
+        ORFsFilter.class);
   }
 
 }

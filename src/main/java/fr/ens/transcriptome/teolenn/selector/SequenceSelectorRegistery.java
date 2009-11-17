@@ -48,7 +48,13 @@ public class SequenceSelectorRegistery {
     if (name == null || clazz == null)
       return;
 
-    registery.put(name.toLowerCase(), clazz);
+    final String lowerName = name.toLowerCase();
+
+    if (registery.containsKey(lowerName))
+      logger.warning("Selector "
+          + name + " already exits, override previous selector.");
+
+    registery.put(lowerName, clazz);
   }
 
   /**

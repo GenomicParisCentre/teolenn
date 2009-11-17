@@ -50,7 +50,14 @@ public class MeasurementRegistery {
       return;
 
     if (testClassType(clazz)) {
-      registery.put(name.toLowerCase(), clazz);
+
+      final String lowerName = name.toLowerCase();
+
+      if (registery.containsKey(lowerName))
+        logger.warning("Measurement "
+            + name + " already exits, override previous measurement.");
+
+      registery.put(lowerName, clazz);
       logger.finest("Add " + name + " to Measurements registery");
     } else
       logger.warning("Addon " + name + " is not a measurement class");
