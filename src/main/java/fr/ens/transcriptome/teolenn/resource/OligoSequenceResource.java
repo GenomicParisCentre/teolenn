@@ -48,6 +48,7 @@ public class OligoSequenceResource {
   private String chr;
   private String oligosExtension;
   private int oligoLength;
+  private int oligoIntervalLength;
   private boolean start1;
   private int positionConstant;
   private FileChannel inChannel;
@@ -58,13 +59,14 @@ public class OligoSequenceResource {
    * @param chromosome Chromosome of the sequence
    * @param oligoStartPos the start position of the oligonucleotide in the
    *          genome
+   * @param oligoLength the length of the oligonucleotide
    * @return a Sequence Object
    * @throws IOException if an error occurs while reading fasta file
    */
-  public Sequence getSequence(final String chr, final int oligoStartPos)
-      throws IOException {
+  public Sequence getSequence(final String chr, final int oligoStartPos,
+      final int oligoLength) throws IOException {
 
-    return getSequence(chr, oligoStartPos, null);
+    return getSequence(chr, oligoStartPos, oligoLength, null);
   }
 
   /**
@@ -72,12 +74,13 @@ public class OligoSequenceResource {
    * @param chromosome Chromosome of the sequence
    * @param oligoStartPos the start position of the oligonucleotide in the
    *          genome
+   * @param oligoLength the length of the oligonucleotide
    * @param sequence the result to avoid creating a new object
    * @return a Sequence Object
    * @throws IOException if an error occurs while reading fasta file
    */
   public Sequence getSequence(final String chromosome, final int oligoStartPos,
-      final Sequence sequence) throws IOException {
+      final int oligoLength, final Sequence sequence) throws IOException {
 
     if (chromosome == null || oligoStartPos < 0)
       return null;
@@ -96,8 +99,9 @@ public class OligoSequenceResource {
       this.positionConstant = calcPositionConstant();
     }
 
-    final long pos = getFilePos(oligoStartPos, this.start1);
-    final int length = this.positionConstant + getDigits(oligoStartPos);
+    final long pos = getFilePos(oligoStartPos, oligoLength, this.start1);
+    final int length =
+        this.positionConstant + getDigits(oligoStartPos) + oligoLength;
 
     if (this.bb == null || this.bb.capacity() != length)
       this.bb = ByteBuffer.allocate(length);
@@ -130,6 +134,7 @@ public class OligoSequenceResource {
       result = sequence;
 
     final int i1 = s.indexOf('\n');
+
     if (i1 == -1)
       return null;
 
@@ -162,9 +167,8 @@ public class OligoSequenceResource {
    */
   private int calcPositionConstant() {
 
-    return 5
-        + chr.length() + ":subseq(".length() + +getDigits(this.oligoLength)
-        + oligoLength;
+    return 5 + chr.length() + ":subseq(".length() + getDigits(this.oligoLength);
+
   }
 
   /**
@@ -173,7 +177,7 @@ public class OligoSequenceResource {
    * @param start1 if the first position in the chromosome is 1
    * @return the
    */
-  private static final long calcPositionVariable(final int oligoStartPos,
+  private static final long calcPositionVariableHeader(final int oligoStartPos,
       final boolean start1) {
 
     long count = start1 ? 9 : 10;
@@ -198,14 +202,27 @@ public class OligoSequenceResource {
   /**
    * Get the position in file of the start of the oligonucleotide.
    * @param oligoStartPos The start of the oligonucleotide in the chormosome
+   * @param currentOligoLength The length of the oligonucleotide
    * @param start1 if the first position in the chromosome is 1
    * @return
    */
-  private long getFilePos(final int oligoStartPos, final boolean start1) {
+  private long getFilePos(final int oligoStartPos,
+      final int currentOligoLength, final boolean start1) {
 
-    return this.positionConstant
-        * (start1 ? oligoStartPos - 1 : oligoStartPos)
-        + calcPositionVariable(oligoStartPos, start1);
+    final int previousPositions = (start1 ? oligoStartPos - 1 : oligoStartPos);
+    final int repeats = 1 + this.oligoIntervalLength * 2;
+
+    final long previousHeaderVariable =
+        calcPositionVariableHeader(oligoStartPos, start1);
+
+    long result =
+        (previousPositions * (this.positionConstant + this.oligoLength) + previousHeaderVariable)
+            * repeats;
+
+    for (int i = this.oligoLength - this.oligoIntervalLength; i < currentOligoLength; i++)
+      result += this.positionConstant + getDigits(oligoStartPos) + i;
+
+    return result;
   }
 
   /**
@@ -247,10 +264,12 @@ public class OligoSequenceResource {
    * @param oligosDir the directory of the oligonucleotides
    * @param extension the extension of the fasta file
    * @param oligoLength the length of the oligonucleotides
+   * @param oligoIntervalLength the interval of length of the oligonucleotides
    * @param start1 if the first position in the chromosome is 1
    */
   public static OligoSequenceResource getRessource(final File oligosDir,
-      final String extension, final int oligoLength, final boolean start1)
+      final String extension, final int oligoLength,
+      final int oligoIntervalLength, final boolean start1)
       throws TeolennException {
 
     final Resources rs = Resources.getResources();
@@ -259,7 +278,8 @@ public class OligoSequenceResource {
       return (OligoSequenceResource) rs.getResource(RESOURCE_NAME);
 
     final OligoSequenceResource result =
-        new OligoSequenceResource(oligosDir, extension, oligoLength, start1);
+        new OligoSequenceResource(oligosDir, extension, oligoLength,
+            oligoIntervalLength, start1);
 
     rs.setResource(RESOURCE_NAME, result);
 
@@ -275,10 +295,12 @@ public class OligoSequenceResource {
    * @param oligosDir the directory of the oligonucleotides
    * @param extension the extension of the fasta file
    * @param oligoLength the length of the oligonucleotides
+   * @param oligoIntervalLength the interval of length of the oligonucleotides
    * @param start1 if the first position in the chromosome is 1
    */
   private OligoSequenceResource(final File oligosDir, final String extension,
-      final int oligoLength, final boolean start1) throws TeolennException {
+      final int oligoLength, final int oligoIntervalLength, final boolean start1)
+      throws TeolennException {
 
     if (oligosDir == null)
       throw new TeolennException("Invalid directory for oligonucleotides: "
@@ -288,13 +310,19 @@ public class OligoSequenceResource {
       throw new TeolennException("Invalid extension for oligonucleotides: "
           + oligosExtension);
 
-    if (oligoLength <= 0)
+    if (oligoLength < 0)
       throw new TeolennException("Invalid length for oligonucleotides: "
           + oligoLength);
+
+    if (oligoIntervalLength <= 0)
+      throw new TeolennException(
+          "Invalid interval length for oligonucleotides: "
+              + oligoIntervalLength);
 
     this.oligosDir = oligosDir;
     this.oligosExtension = extension;
     this.oligoLength = oligoLength;
+    this.oligoIntervalLength = oligoIntervalLength;
     this.start1 = start1;
 
   }
