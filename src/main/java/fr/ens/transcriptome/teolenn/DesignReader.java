@@ -618,40 +618,46 @@ public class DesignReader {
 
     List<Output> list = new ArrayList<Output>();
 
-    for (Iterator i = rootElement.elementIterator("output"); i.hasNext();) {
+    for (Iterator i = rootElement.elementIterator("outputs"); i.hasNext();) {
 
-      final Element selector = (Element) i.next();
+      final Element outputs = (Element) i.next();
 
-      String selectorName = null;
+      for (Iterator i1 = outputs.elementIterator("output"); i1.hasNext();) {
 
-      for (Iterator i1 = selector.elementIterator("name"); i1.hasNext();) {
-        final Element name = (Element) i1.next();
-        selectorName = name.getTextTrim();
+        final Element output = (Element) i1.next();
+
+        String selectorName = null;
+
+        for (Iterator i2 = output.elementIterator("name"); i2.hasNext();) {
+          final Element name = (Element) i2.next();
+          selectorName = name.getTextTrim();
+        }
+
+        // Add the selector to registery if it is a plug in
+        for (Iterator i3 = output.elementIterator("class"); i3.hasNext();) {
+          final Element clazz = (Element) i3.next();
+          String outputClass = clazz.getTextTrim();
+          OutputRegistery.addOutputType(selectorName, outputClass);
+        }
+
+        // Get the parameters of the measurement
+        final Properties properties = getElementParameters(output);
+
+        Output o = OutputRegistery.getOutput(selectorName);
+
+        if (output == null) {
+          logger.warning("Unknown output: " + selectorName);
+          throw new TeolennException("Unknown output: " + selectorName);
+        }
+
+        // Set the initialization parameters for the selector
+        for (Map.Entry<Object, Object> entry : properties.entrySet())
+          o
+              .setInitParameter((String) entry.getKey(), (String) entry
+                  .getValue());
+
+        list.add(o);
       }
-
-      // Add the selector to registery if it is a plug in
-      for (Iterator i2 = selector.elementIterator("class"); i2.hasNext();) {
-        final Element clazz = (Element) i2.next();
-        String outputClass = clazz.getTextTrim();
-        OutputRegistery.addOutputType(selectorName, outputClass);
-      }
-
-      // Get the parameters of the measurement
-      final Properties properties = getElementParameters(selector);
-
-      Output output = OutputRegistery.getOutput(selectorName);
-
-      if (output == null) {
-        logger.warning("Unknown output: " + selectorName);
-        throw new TeolennException("Unknown output: " + selectorName);
-      }
-
-      // Set the initialization parameters for the selector
-      for (Map.Entry<Object, Object> entry : properties.entrySet())
-        output.setInitParameter((String) entry.getKey(), (String) entry
-            .getValue());
-
-      list.add(output);
     }
 
     if (list.size() == 0)
