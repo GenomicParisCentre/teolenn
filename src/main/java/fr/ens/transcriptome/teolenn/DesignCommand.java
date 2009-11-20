@@ -311,7 +311,8 @@ public class DesignCommand extends Design {
 
     // Create resources
     OligoSequenceResource.getRessource(getOligosDir(),
-        DesignConstants.OLIGO_SUFFIX, getOligoLength(), isStart1());
+        DesignConstants.OLIGO_SUFFIX, getOligoLength(),
+        getOligoIntervalLength(), isStart1());
   }
 
   /**
