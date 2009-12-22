@@ -48,6 +48,11 @@ public class ChromosomeNameResource {
   /** The name of the chromosome list file. */
   private static final String CHROMOSOME_LIST_FILENAME = "chromosomes_list.txt";
 
+  private static char[] FORBIDEN_CHARACTERS =
+      {'!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '.', '/',
+          ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '`', '{',
+          '|', '}', '~'};
+
   private List<String> list = new ArrayList<String>();
 
   private File listFile;
@@ -147,14 +152,22 @@ public class ChromosomeNameResource {
   /**
    * Add chromosomes names to the list.
    * @param chromosomeName Name of the chromosome to add
+   * @throws TeolennException if one of the chromosome names is invalid
    */
-  public void addChromosomesNames(final Collection<String> chromosomeNames) {
+  public void addChromosomesNames(final Collection<String> chromosomeNames)
+      throws TeolennException {
 
     for (String name : chromosomeNames)
       if (name != null)
         this.list.add(name.trim());
 
     logger.info("Chromosomes: " + this.list);
+
+    final String verifyError = verify();
+    if (verifyError != null) {
+      logger.severe(verifyError);
+      throw new TeolennException(verifyError);
+    }
 
     sortNames();
     save();
@@ -208,6 +221,27 @@ public class ChromosomeNameResource {
   }
 
   /**
+   * Verify if the chromosomes names are valid.
+   * @return a String with the error message if needed
+   */
+  private String verify() throws TeolennException {
+
+    for (String chr : this.list) {
+
+      if (chr.indexOf(' ') != -1)
+        return "Invalid chromosome name. Not space is allowed: " + chr;
+
+      for (int i = 0; i < FORBIDEN_CHARACTERS.length; i++)
+        if (chr.indexOf(FORBIDEN_CHARACTERS[i]) != -1)
+          return "Invalid chromosome name. The name contains one or more invalid character: "
+              + chr;
+
+    }
+
+    return null;
+  }
+
+  /**
    * Load the list of the chromosomes.
    * @throws TeolennException Throw an exception if the file can not be read
    */
@@ -234,6 +268,12 @@ public class ChromosomeNameResource {
     } catch (IOException e) {
       throw new TeolennException(
           "Unable to load the list of chromosomes names.");
+    }
+
+    final String verifyError = verify();
+    if (verifyError != null) {
+      logger.severe(verifyError);
+      throw new TeolennException(verifyError);
     }
 
   }
