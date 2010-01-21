@@ -237,8 +237,8 @@ public class DesignCommand extends Design {
   /**
    * Verify that the names and the length of the chromosomes are the same in the
    * maked genome and the non masked genome.
-   * @param chrOligo map with values for non maked genome
-   * @param chrMasked map with values for non maked genome
+   * @param chrOligo map with values for non masked genome
+   * @param chrMasked map with values for non masked genome
    * @throws TeolennException if the name, the number or the length of the
    *           chromosomes are not the same
    */
