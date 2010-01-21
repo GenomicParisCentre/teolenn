@@ -314,7 +314,7 @@ public class OligoSequenceResource {
       throw new TeolennException("Invalid length for oligonucleotides: "
           + oligoLength);
 
-    if (oligoIntervalLength <= 0)
+    if (oligoIntervalLength < 0)
       throw new TeolennException(
           "Invalid interval length for oligonucleotides: "
               + oligoIntervalLength);
