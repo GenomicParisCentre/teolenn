@@ -25,8 +25,10 @@ package fr.ens.transcriptome.teolenn.resource;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -57,9 +59,11 @@ public class ORFResource {
   private final Set<ORF> orfsToRemove = new HashSet<ORF>();
   private Set<ORF> lastOrfsChr = null;
   private Set<ORF> currentChrORFs = null;
+  private Set<String> unknownChromosomes = null;
 
   private String currentSequenceName;
   private ORF currentORF;
+  private List<ORF> currentORFs;
 
   private String lastChromosome;
   private int lastOligoStart;
@@ -119,7 +123,7 @@ public class ORFResource {
     public String chromosome;
     public int start;
     public int end;
-    public boolean wattsonStrand;
+    public boolean codingStrand;
 
     /**
      * Test if a sequence is in the ORF
@@ -144,8 +148,8 @@ public class ORFResource {
     public String toString() {
 
       return name
-          + " " + chromosome + " [" + start + "," + end + "]"
-          + (wattsonStrand ? 'W' : 'C');
+          + " " + chromosome + " [" + start + "-" + end + "]"
+          + (codingStrand ? "+1" : "-1");
     }
 
     public boolean equals(Object o) {
@@ -160,7 +164,7 @@ public class ORFResource {
 
       return this.name.equals(orf.name)
           && this.start == orf.start && this.end == orf.end
-          && this.wattsonStrand == orf.wattsonStrand;
+          && this.codingStrand == orf.codingStrand;
     }
 
     //
@@ -172,16 +176,16 @@ public class ORFResource {
      * @param start Start position of the ORF
      * @param end End position of the ORF
      * @param name Name of the ORF
-     * @param wattsonStrand true if the ORF is in the Wattson strand
+     * @param codingStrand true if the ORF is in the coding strand
      */
     public ORF(final String chromosome, final int start, final int end,
-        final String name, final boolean wattsonStrand) {
+        final String name, final boolean codingStrand) {
 
       this.chromosome = chromosome;
       this.start = start;
       this.end = end;
       this.name = name;
-      this.wattsonStrand = wattsonStrand;
+      this.codingStrand = codingStrand;
     }
 
   }
@@ -201,7 +205,7 @@ public class ORFResource {
 
     this.lastChromosome = chromosome;
     this.lastOligoStart = oligoStart;
-    
+
     return getORF(chromosome + "\t" + oligoStart + "\t" + oligoLength);
   }
 
@@ -239,13 +243,27 @@ public class ORFResource {
 
     final Set<ORF> chrORFs = this.orfs.get(chr);
 
+    // Show a warning if the chromosome is unknown in the annotation
+    if (chrORFs == null) {
+
+      if (this.unknownChromosomes == null)
+        this.unknownChromosomes = new HashSet<String>();
+
+      if (!this.unknownChromosomes.contains(chr)) {
+        this.unknownChromosomes.add(chr);
+        logger.warning("Unknown chromosome in annotation: " + chr);
+      }
+
+      return null;
+    }
+
     // Remove no more used ORFs
     if (chrORFs != this.lastOrfsChr) {
       this.lastOrfsChr = chrORFs;
       this.currentChrORFs = new TreeSet<ORF>(chrORFs);
-    } else
-      for (ORF o : this.orfsToRemove)
-        this.currentChrORFs.remove(o);
+    } /*
+       * else for (ORF o : this.orfsToRemove) this.currentChrORFs.remove(o);
+       */
 
     this.orfsToRemove.clear();
 
@@ -261,6 +279,93 @@ public class ORFResource {
     }
 
     return null;
+  }
+
+  public List<ORF> getORFs(final String chromosome, final int oligoStart,
+      final int oligoLength) {
+
+    if (this.lastChromosome == chromosome && lastOligoStart == oligoStart)
+      return this.currentORFs;
+
+    this.lastChromosome = chromosome;
+    this.lastOligoStart = oligoStart;
+
+    return getORFs(chromosome + "\t" + oligoStart + "\t" + oligoLength);
+  }
+
+  private final List<ORF> getORFs(final String sequenceKey) {
+
+    if (sequenceKey == null)
+      return null;
+
+    if (sequenceKey.equals(this.currentSequenceName))
+      return this.currentORFs;
+
+    final List<ORF> orfs = nextORFs(sequenceKey);
+
+    this.currentSequenceName = sequenceKey;
+    this.currentORFs = orfs;
+
+    return orfs;
+  }
+
+  private final List<ORF> nextORFs(final String sequenceKey) {
+
+    if (sequenceKey == null)
+      return null;
+
+    final Matcher m = seqNamePattern.matcher(sequenceKey);
+
+    if (!m.matches())
+      throw new RuntimeException("Unable to parse sequence name: "
+          + sequenceKey);
+
+    final String chr = m.group(1);
+    final int start = Integer.parseInt(m.group(2));
+    final int len = Integer.parseInt(m.group(3));
+    final int end = start + len;
+
+    final Set<ORF> chrORFs = this.orfs.get(chr);
+
+    // Show a warning if the chromosome is unknown in the annotation
+    if (chrORFs == null) {
+
+      if (this.unknownChromosomes == null)
+        this.unknownChromosomes = new HashSet<String>();
+
+      if (!this.unknownChromosomes.contains(chr)) {
+        this.unknownChromosomes.add(chr);
+        logger.warning("Unknown chromosome in annotation: " + chr);
+      }
+
+      return null;
+    }
+
+    // Remove no more used ORFs
+    if (chrORFs != this.lastOrfsChr) {
+      this.lastOrfsChr = chrORFs;
+      this.currentChrORFs = new TreeSet<ORF>(chrORFs);
+    } /*
+       * else for (ORF o : this.orfsToRemove) this.currentChrORFs.remove(o);
+       */
+
+    // this.orfsToRemove.clear();
+
+    final List<ORF> result = new ArrayList<ORF>();
+
+    for (ORF o : this.currentChrORFs) {
+
+      // if (end > o.end) {
+      // orfsToRemove.add(o);
+      // continue;
+      // }
+
+      if (o.isOligoInsideORF(start, end))
+        result.add(o);
+
+    }
+
+    return result.size() > 0 ? result : null;
   }
 
   //
@@ -289,13 +394,26 @@ public class ORFResource {
       if (line.startsWith("#"))
         continue;
 
-      final String[] fields = p.split(line);
+      // Handle empty lines
+      final String lineTrimed = line.trim();
+      if ("".equals(lineTrimed))
+        continue;
+
+      final String[] fields = p.split(lineTrimed);
       final String orfName = fields[0];
       final String chr = fields[1];
-      final boolean wattsonStrand = "W".equals(fields[4].toUpperCase());
+      final String location = fields[2];
 
-      final int start = Integer.parseInt(fields[2]) + startOffset;
-      final int end = Integer.parseInt(fields[3]) + startOffset;
+      final int posSeparator = location.indexOf(':');
+
+      final boolean codingStrand = Integer.parseInt(fields[3]) == 1;
+
+      final int start =
+          Integer.parseInt(location.substring(1, posSeparator)) + startOffset;
+      final int end =
+          Integer.parseInt(location.substring(posSeparator + 1, location
+              .length() - 1))
+              + startOffset;
 
       final Set<ORF> chrORFs;
 
@@ -305,7 +423,7 @@ public class ORFResource {
       } else
         chrORFs = this.orfs.get(chr);
 
-      chrORFs.add(new ORF(chr, start, end, orfName, wattsonStrand));
+      chrORFs.add(new ORF(chr, start, end, orfName, codingStrand));
     }
 
     int count = 0;

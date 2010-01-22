@@ -51,7 +51,7 @@ public class From5PrimeORFMeasurement extends SimpleSelectorMeasurement {
     if (orf == null)
       return -1;
 
-    if (!orf.wattsonStrand)
+    if (!orf.codingStrand)
       return startPos - orf.start;
 
     return orf.end - startPos - this.oligoLength;

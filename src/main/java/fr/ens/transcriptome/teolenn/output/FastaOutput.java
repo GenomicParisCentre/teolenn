@@ -24,16 +24,20 @@ package fr.ens.transcriptome.teolenn.output;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import fr.ens.transcriptome.teolenn.DesignConstants;
 import fr.ens.transcriptome.teolenn.TeolennException;
 import fr.ens.transcriptome.teolenn.measurement.ChromosomeMeasurement;
+import fr.ens.transcriptome.teolenn.measurement.OligoLengthMeasurement;
 import fr.ens.transcriptome.teolenn.measurement.OligoStartMeasurement;
 import fr.ens.transcriptome.teolenn.resource.OligoSequenceResource;
+import fr.ens.transcriptome.teolenn.resource.ORFResource.ORF;
 import fr.ens.transcriptome.teolenn.selector.ORFMeasurement;
 import fr.ens.transcriptome.teolenn.sequence.Sequence;
 import fr.ens.transcriptome.teolenn.sequence.SequenceMeasurements;
 import fr.ens.transcriptome.teolenn.sequence.SequenceWriter;
+import fr.ens.transcriptome.teolenn.util.StringUtils;
 
 /**
  * This class define a fasta measurement writer.
@@ -48,9 +52,9 @@ public class FastaOutput implements Output {
   private int indexStart = -1;
   private int indexChromosome = -1;
   private int indexORF = -1;
+  private int indexLength = -1;
 
   private File outputFile;
-  private File outputDir;
   private String outputDefaultFile;
   private boolean rcORF = true;
   private boolean rc12;
@@ -85,14 +89,17 @@ public class FastaOutput implements Output {
   public void init() throws TeolennException {
 
     if (this.outputFile == null)
-      this.outputFile = new File(this.outputDir, this.outputDefaultFile);
+      this.outputFile =
+          new File(StringUtils.basename(this.outputDefaultFile) + ".fasta");
 
     try {
       this.writer = new SequenceWriter(outputFile);
+
     } catch (IOException e) {
       throw new TeolennException(e);
     }
 
+    this.fastaReader = OligoSequenceResource.getRessource();
   }
 
   /**
@@ -104,8 +111,6 @@ public class FastaOutput implements Output {
 
     if (key == null || value == null)
       return;
-    if (DesignConstants.OUTPUT_DIR_PARAMETER_NAME.equals(key))
-      this.outputDir = new File(value);
     if (DesignConstants.OUTPUT_DEFAULT_FILE_PARAMETER_NAME.equals(key))
       this.outputDefaultFile = value;
 
@@ -137,12 +142,17 @@ public class FastaOutput implements Output {
       this.indexChromosome =
           sm.getIndexMeasurment(ChromosomeMeasurement.MEASUREMENT_NAME);
       this.indexORF = sm.getIndexMeasurment(ORFMeasurement.MEASUREMENT_NAME);
+      this.indexLength =
+          sm.getIndexMeasurment(OligoLengthMeasurement.MEASUREMENT_NAME);
 
       if (this.indexStart == -1)
         throw new RuntimeException("Unable to find start measurement.");
 
       if (this.indexChromosome == -1)
         throw new RuntimeException("Unable to find chromosome measurement.");
+
+      if (this.indexLength == -1)
+        throw new RuntimeException("Unable to find oligo length measurement.");
 
       first = false;
     }
@@ -152,14 +162,16 @@ public class FastaOutput implements Output {
     if (values == null)
       throw new RuntimeException("Nothing to write.");
 
-    this.sequence =
-        this.fastaReader.getSequence((String) values[this.indexChromosome],
-            (Integer) values[this.indexStart]);
+    final String chr = (String) values[this.indexChromosome];
+    final int start = (Integer) values[this.indexStart];
+    final int length = (Integer) values[this.indexLength];
+
+    this.sequence = this.fastaReader.getSequence(chr, start, length);
 
     boolean reverse = false;
 
     if (this.rcORF && this.indexORF != -1)
-      if (((String) values[this.indexORF]).endsWith("W"))
+      if (!((List<ORF>) values[this.indexORF]).get(0).codingStrand)
         reverse = true;
 
     if (this.rc12) {
@@ -198,8 +210,6 @@ public class FastaOutput implements Output {
    * @throws TeolennException
    */
   public FastaOutput() throws TeolennException {
-
-    this.fastaReader = OligoSequenceResource.getRessource();
   }
 
 }
