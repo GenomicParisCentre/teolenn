@@ -11,7 +11,7 @@ BASEDIR=`dirname $0`
 LIBDIR=$BASEDIR/lib
 
 # Set the memory in MiB needed by Teolenn (only Java part, not external tools)
-# By Default 512
+# By Default 1024
 MEMORY=1024
 
 # Add here your plugins and dependencies
