@@ -54,6 +54,7 @@
     
     &lt;startposition&gt;0&lt;/startposition&gt;
     &lt;oligolength&gt;60&lt;/oligolength&gt;
+    &lt;oligointervallength&gt;0&lt;/oligointervallength&gt;
 
     &lt;genomefile&gt;Ca21_chromosomes2.fasta&lt;/genomefile&gt;
     &lt;genomemaskedfile&gt;Ca21_chromosomes2.fasta.allmasked&lt;/genomemaskedfile&gt;

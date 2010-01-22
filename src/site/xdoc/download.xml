@@ -103,6 +103,14 @@
 		seem buggy under this operating system, so <u>Teolenn will fail</u> if you use the Redundancy filter</b>-->
             </td>
           </tr>
+          <tr>
+            <td>SOAP</td>
+            <td>If you want to use the redundancy module for oligonucleotide sequence filtering, SOAP is mandatory. SOAP 1.11 is embedded in Teolenn for main platforms (see the <a href="installing.html">Teolenn installing page</a> for more informations). Note that <b>Teolenn is only compatible with SOAP 1.x</b>. SOAP 2.x will not work.</td>
+          </tr>
+          <tr>
+            <td>genometools</td>
+            <td>To use the unicity measurement module, genometools is requiered. However genometool 1.2.0 is embedded in Teolenn for main platforms (see the <a href="installing.html">Teolenn installing page</a> for more informations). Upper version of genometools may work with Teolenn.</td>
+          </tr>
         </table>
       </subsection>
     </section>
