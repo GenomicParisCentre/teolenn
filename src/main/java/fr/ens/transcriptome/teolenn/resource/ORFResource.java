@@ -191,7 +191,7 @@ public class ORFResource {
   }
 
   /**
-   * Get the associated ORF to a sequence.
+   * Get the first associated ORF to a sequence.
    * @param chromosome Chromosome
    * @param oligoStart the start position of the sequence
    * @param oligoLength the length of the sequence
@@ -281,6 +281,13 @@ public class ORFResource {
     return null;
   }
 
+  /**
+   * Get the list of associated ORFa to a sequence.
+   * @param chromosome Chromosome
+   * @param oligoStart the start position of the sequence
+   * @param oligoLength the length of the sequence
+   * @return the list of associated ORFs if exists or null
+   */
   public List<ORF> getORFs(final String chromosome, final int oligoStart,
       final int oligoLength) {
 
