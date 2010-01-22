@@ -145,6 +145,9 @@ public class SequenceSelectorRegistery {
 
     addSequenceSelectorType(TilingSelector.SELECTOR_NAME, TilingSelector.class);
     addSequenceSelectorType(ZoneSelector.SELECTOR_NAME, ZoneSelector.class);
+    addSequenceSelectorType(TilingZoneSelector.SELECTOR_NAME,
+        TilingZoneSelector.class);
+
   }
 
 }
