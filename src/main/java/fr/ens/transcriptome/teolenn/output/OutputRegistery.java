@@ -143,8 +143,8 @@ public class OutputRegistery {
   static {
 
     addOutputType(DefaultOutput.OUTPUT_NAME, DefaultOutput.class);
-    addOutputType(FastaOutput.OUTPUT_NAME,
-        FastaOutput.class);
+    addOutputType(FastaOutput.OUTPUT_NAME, FastaOutput.class);
+    addOutputType(GFFOutput.OUTPUT_NAME, GFFOutput.class);
   }
 
 }
