@@ -73,7 +73,7 @@
           </tr>
           <tr>
             <td>Memory</td>
-            <td>By default 512 MiB are allocated to the JVM for running Teolenn.
+            <td>By default 2048 MiB are allocated to the JVM for running Teolenn.
             You can edit this value in the <code>teolenn.sh</code> file with the 
             <b>-Xmx</b> option of the JVM. However Teolenn use external tools 
             like soap or genometools that also need memory, 2-3 GiB seem to be
