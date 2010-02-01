@@ -9,11 +9,20 @@
 	</properties>
 	<body>
 
-		<release version="1.0" date="2009-09-14" description="First release">
-
+		<release version="1.0" description="First release" date="2009-09-14">
 			<action dev="jourdren" type="add">
 				Initial Toelenn 1.0 realease.
 			</action>
 		</release>
+		<release version="1.0.1" description="Documentation fixes release" date="2009-09-24">
+            <action dev="jourdren" type="fix">
+                Fix documentation.
+            </action>
+        </release>
+        <release version="2.0" description="Second Major version" date="2010-01-22">
+            <action dev="jourdren" type="add">
+                Support for variable oligonucleotides length.
+            </action>
+        </release>
 	</body>
 </document>
