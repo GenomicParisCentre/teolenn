@@ -166,7 +166,12 @@ public class FastaOutput implements Output {
     final int start = (Integer) values[this.indexStart];
     final int length = (Integer) values[this.indexLength];
 
-    this.sequence = this.fastaReader.getSequence(chr, start, length);
+    try {
+      this.sequence = this.fastaReader.getSequence(chr, start, length);
+    } catch (TeolennException e) {
+      throw new IOException("Unable to get the length of chromosome before "
+          + "retrieve oligonucleotide sequence");
+    }
 
     boolean reverse = false;
 

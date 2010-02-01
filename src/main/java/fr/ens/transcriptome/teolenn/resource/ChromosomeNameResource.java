@@ -27,10 +27,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import fr.ens.transcriptome.teolenn.Globals;
@@ -54,6 +55,7 @@ public class ChromosomeNameResource {
           '|', '}', '~'};
 
   private List<String> list = new ArrayList<String>();
+  private Map<String, Integer> lengths = new HashMap<String, Integer>();
 
   private File listFile;
 
@@ -154,12 +156,16 @@ public class ChromosomeNameResource {
    * @param chromosomeName Name of the chromosome to add
    * @throws TeolennException if one of the chromosome names is invalid
    */
-  public void addChromosomesNames(final Collection<String> chromosomeNames)
+  public void addChromosomesNames(final Map<String, Integer> chromosomeNames)
       throws TeolennException {
 
-    for (String name : chromosomeNames)
-      if (name != null)
-        this.list.add(name.trim());
+    for (Map.Entry<String, Integer> e : chromosomeNames.entrySet()) {
+
+      final String nameTrimmed = e.getKey().trim();
+
+      this.list.add(nameTrimmed);
+      this.lengths.put(nameTrimmed, e.getValue());
+    }
 
     logger.info("Chromosomes: " + this.list);
 
@@ -191,6 +197,19 @@ public class ChromosomeNameResource {
   }
 
   /**
+   * Get the chromosome length.
+   * @param name Name of the chromosome
+   * @return the length of the chromosome
+   */
+  public int getChromosomeLength(final String name) {
+
+    if (this.lengths.containsKey(name))
+      return this.lengths.get(name);
+
+    return 0;
+  }
+
+  /**
    * Save the list of chromosomes.
    */
   private void save() {
@@ -203,6 +222,8 @@ public class ChromosomeNameResource {
 
       for (String s : this.list) {
         sb.append(s);
+        sb.append('\t');
+        sb.append(getChromosomeLength(s));
         sb.append('\n');
       }
 
@@ -254,8 +275,16 @@ public class ChromosomeNameResource {
 
       String line = null;
 
-      while ((line = br.readLine()) != null)
-        this.list.add(line.trim());
+      while ((line = br.readLine()) != null) {
+
+        final String trimmedLine = line.trim();
+        final int pos = trimmedLine.indexOf('\t');
+        final String chr = trimmedLine.substring(0, pos - 1).trim();
+        final int len = Integer.parseInt(trimmedLine.substring(pos + 1));
+
+        this.list.add(chr);
+        this.lengths.put(chr, len);
+      }
 
       br.close();
 

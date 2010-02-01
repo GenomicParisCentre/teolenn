@@ -354,7 +354,7 @@ public class DesignCommand extends Design {
         ChromosomeNameResource.getRessource(getOligosDir());
 
     // Fill chromosome names and save chromosome list file
-    chromosomeNames.addChromosomesNames(chrOligo.keySet());
+    chromosomeNames.addChromosomesNames(chrOligo);
 
     logger.info(""
         + countOligosCreated(chrOligo) + " oligos created in "

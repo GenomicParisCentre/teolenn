@@ -46,6 +46,7 @@ public class OligoSequenceResource {
 
   private File oligosDir;
   private String chr;
+  private int chrLength = -1;
   private String oligosExtension;
   private int oligoLength;
   private int oligoIntervalLength;
@@ -62,9 +63,10 @@ public class OligoSequenceResource {
    * @param oligoLength the length of the oligonucleotide
    * @return a Sequence Object
    * @throws IOException if an error occurs while reading fasta file
+   * @throws TeolennException If the length of the chromosome is unknown
    */
   public Sequence getSequence(final String chr, final int oligoStartPos,
-      final int oligoLength) throws IOException {
+      final int oligoLength) throws IOException, TeolennException {
 
     return getSequence(chr, oligoStartPos, oligoLength, null);
   }
@@ -78,9 +80,11 @@ public class OligoSequenceResource {
    * @param sequence the result to avoid creating a new object
    * @return a Sequence Object
    * @throws IOException if an error occurs while reading fasta file
+   * @throws TeolennException If the length of the chromosome is unknown
    */
   public Sequence getSequence(final String chromosome, final int oligoStartPos,
-      final int oligoLength, final Sequence sequence) throws IOException {
+      final int oligoLength, final Sequence sequence) throws IOException,
+      TeolennException {
 
     if (chromosome == null || oligoStartPos < 0)
       return null;
@@ -97,7 +101,12 @@ public class OligoSequenceResource {
       this.inChannel = fis.getChannel();
 
       this.positionConstant = calcPositionConstant();
+      this.chrLength =
+          ChromosomeNameResource.getRessource().getChromosomeLength(chromosome);
     }
+
+    if (chrLength == -1)
+      throw new TeolennException("Chromosome length not found.");
 
     final long pos = getFilePos(oligoStartPos, oligoLength, this.start1);
     final int length =
@@ -111,8 +120,10 @@ public class OligoSequenceResource {
     final int read = this.inChannel.read(bb, pos);
 
     if (read != length)
-      throw new IOException("Error while reading sequence "
-          + chromosome + "," + oligoStartPos + ").");
+      throw new TeolennException("Error while reading sequence "
+          + chromosome + "," + oligoStartPos + ". pos=" + pos + " oligolengtg="
+          + oligoLength + " len=" + length + " read=" + read + " bb.capacity="
+          + this.bb.capacity());
 
     return string2Sequence(new String(bb.array(), CHARSET), sequence);
   }
@@ -209,18 +220,58 @@ public class OligoSequenceResource {
   private long getFilePos(final int oligoStartPos,
       final int currentOligoLength, final boolean start1) {
 
-    final int previousPositions = (start1 ? oligoStartPos - 1 : oligoStartPos);
+    final int maxStdPos =
+        this.chrLength - this.oligoLength - this.oligoIntervalLength;
+
     final int repeats = 1 + this.oligoIntervalLength * 2;
 
+    if (oligoStartPos <= maxStdPos) {
+
+      // Compute position until last oligos of the chromosome
+      final int previousPositions =
+          (start1 ? oligoStartPos - 1 : oligoStartPos);
+      final long previousHeaderVariable =
+          calcPositionVariableHeader(oligoStartPos, start1);
+
+      long result =
+          (previousPositions * (this.positionConstant + this.oligoLength) + previousHeaderVariable)
+              * repeats;
+
+      for (int i = this.oligoLength - this.oligoIntervalLength; i < currentOligoLength; i++)
+        result += this.positionConstant + getDigits(oligoStartPos) + i;
+
+      return result;
+    }
+
+    // compute position ofr the last oligos of the chromosome
+
+    final int previousPositions = (start1 ? maxStdPos : maxStdPos + 1);
     final long previousHeaderVariable =
-        calcPositionVariableHeader(oligoStartPos, start1);
+        calcPositionVariableHeader(previousPositions, start1);
 
     long result =
-        (previousPositions * (this.positionConstant + this.oligoLength) + previousHeaderVariable)
+        ((start1 ? previousPositions - 1 : previousPositions)
+            * (this.positionConstant + this.oligoLength) + previousHeaderVariable)
             * repeats;
 
-    for (int i = this.oligoLength - this.oligoIntervalLength; i < currentOligoLength; i++)
-      result += this.positionConstant + getDigits(oligoStartPos) + i;
+    for (int i = previousPositions; i <= oligoStartPos; i++) {
+
+      int max;
+      if (i == oligoStartPos)
+        max =
+            (currentOligoLength + this.oligoIntervalLength) - this.oligoLength;
+      else
+        max =
+            this.chrLength
+                - this.oligoLength + this.oligoIntervalLength - i + 1;
+
+      for (int j = 0; j < max; j++)
+        result +=
+            this.positionConstant
+                + getDigits(i) + this.oligoLength - this.oligoIntervalLength
+                + j;
+
+    }
 
     return result;
   }
