@@ -146,7 +146,7 @@ public class SequenceCore {
   }
 
   private static final int writeAllSubSeq(final StringBuilder sb,
-      final Writer os, final int offset, final int minSize, int maxSize,
+      final Writer os, final int offset, final int minSize, final int maxSize,
       final String header, final boolean flush) throws IOException {
 
     final int endFor = sb.length() - maxSize + 1;
