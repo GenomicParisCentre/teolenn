@@ -253,7 +253,7 @@ public class Design {
    */
   public void setOligoIntervalLength(final int oligoIntervalLength) {
 
-    if (oligoIntervalLength <= 0)
+    if (oligoIntervalLength < 0)
       throw new IllegalArgumentException(
           "Invalid oligo interval length value: " + oligoIntervalLength);
 
