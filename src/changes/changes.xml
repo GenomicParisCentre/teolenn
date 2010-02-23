@@ -24,5 +24,11 @@
                 Support for variable oligonucleotides length.
             </action>
         </release>
+        
+        <release version="2.0.1" description="Teolenn article published" date="2010-02-23">
+            <action dev="jourdren" type="update">
+                Update website with references of Teolenn article.
+            </action>
+        </release>
 	</body>
 </document>
